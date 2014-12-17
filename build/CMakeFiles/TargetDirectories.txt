@@ -1,0 +1,4 @@
+/home/posiie1/GNURadioProys/gr-isdbt/build/docs/doxygen/CMakeFiles/doxygen_target.dir
+/home/posiie1/GNURadioProys/gr-isdbt/build/apps/CMakeFiles/pygen_apps_9a6dd.dir
+/home/posiie1/GNURadioProys/gr-isdbt/build/python/CMakeFiles/pygen_python_81d2b.dir
+/home/posiie1/GNURadioProys/gr-isdbt/build/CMakeFiles/uninstall.dir
