@@ -1,3 +1,4 @@
+build/
 draft
 viejos
 old
@@ -10,5 +11,3 @@ logs
 *.txt~
 *.sh~
 *~
-
-
