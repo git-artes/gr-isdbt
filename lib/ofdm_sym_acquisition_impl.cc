@@ -40,7 +40,7 @@
 #endif
 
 #define USE_VOLK 1
-#define USE_POSIX_MEMALIGN 1
+//#define USE_POSIX_MEMALIGN 1
 
 void print_float(float f)
 {
@@ -76,14 +76,26 @@ namespace gr {
 
       // I calculate the average of datain ...
       float peak_val = -(float)INFINITY; int peak_index = 0; int peak_pos_length = 0;
-      float accum; 
+      float accum = 0; 
+#ifdef USE_VOLK
       volk_32f_accumulator_s32f(&accum,datain,(unsigned int)datain_length); 
+#else
+      for(int i=0; i<datain_length; i++)
+          accum += datain[i]; 
+#endif
       d_avg = accum/(float)datain_length; 
 
       // ... and its maximum. 
-      unsigned int index_max; 
+      unsigned int index_max = 0; 
+#ifdef USE_VOLK
       volk_32f_index_max_16u(&index_max, datain, datain_length); 
-      printf("index_max: %i:\n ", index_max); 
+#else 
+      for(int i=1; i<datain_length; i++){
+          if (datain[i]>datain[index_max])
+              index_max = i; 
+      }
+#endif
+
 
       // I then calculate a threshold which constitutes candidates peaks. 
       float threshold = (datain[index_max]+d_avg)/2.0; 
@@ -282,7 +294,14 @@ namespace gr {
       {
           //printf("entra al peak_detect_process\n");
           //peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
+#ifdef USE_VOLK
           volk_32f_index_max_16u(&max_fede, &d_lambda[0], (lookup_start - lookup_stop)); 
+#else
+      for(int i=1; i<lookup_start-lookup_stop; i++){
+          if (d_lambda[i]>d_lambda[max_fede])
+              max_fede = i; 
+      }
+#endif
           peak_length = 1; 
           peak_max = 0; 
           peak_pos[peak_max] = (int)max_fede; 
@@ -292,7 +311,14 @@ namespace gr {
       {
           //OJO que peak_max está sin inicializar, y peak_detect_process le pone valor sólo si encuentra un pico. 
           //peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
+#ifdef USE_VOLK
           volk_32f_index_max_16u(&max_fede, &d_lambda[0], (lookup_start - lookup_stop)); 
+#else
+      for(int i=1; i<lookup_start-lookup_stop; i++){
+          if (d_lambda[i]>d_lambda[max_fede])
+              max_fede = i; 
+      }
+#endif
           
           //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
           if (max_fede==0 || max_fede==(unsigned int)(lookup_start-lookup_stop-1))
@@ -450,21 +476,27 @@ namespace gr {
       const int alignment = volk_get_alignment();
 
 #ifdef USE_POSIX_MEMALIGN
-      if (posix_memalign((void **)&d_gamma, alignment, sizeof(gr_complex) * d_fft_length))
+      //if (posix_memalign((void **)&d_gamma, alignment, sizeof(gr_complex) * d_fft_length))
+      if (((void **)&d_gamma, alignment, sizeof(gr_complex) * d_fft_length))
         std::cout << "cannot allocate memory: d_gamma" << std::endl;
 
+      //if (posix_memalign((void **)&d_lambda, alignment, sizeof(float) * d_fft_length))
       if (posix_memalign((void **)&d_lambda, alignment, sizeof(float) * d_fft_length))
         std::cout << "cannot allocate memory: d_lambda" << std::endl;
 
+      //if (posix_memalign((void **)&d_derot, alignment, sizeof(gr_complex) * (d_fft_length + d_cp_length)))
       if (posix_memalign((void **)&d_derot, alignment, sizeof(gr_complex) * (d_fft_length + d_cp_length)))
         std::cout << "cannot allocate memory: d_derot" << std::endl;
 
+      //if (posix_memalign((void **)&d_conj, alignment, sizeof(gr_complex) * (2 * d_fft_length + d_cp_length)))
       if (posix_memalign((void **)&d_conj, alignment, sizeof(gr_complex) * (2 * d_fft_length + d_cp_length)))
         std::cout << "cannot allocate memory: d_conj" << std::endl;
 
+      //if (posix_memalign((void **)&d_norm, alignment, sizeof(float) * (2 * d_fft_length + d_cp_length)))
       if (posix_memalign((void **)&d_norm, alignment, sizeof(float) * (2 * d_fft_length + d_cp_length)))
         std::cout << "cannot allocate memoryi: d_norm" << std::endl;
 
+      //if (posix_memalign((void **)&d_corr, alignment, sizeof(gr_complex) * (2 * d_fft_length + d_cp_length)))
       if (posix_memalign((void **)&d_corr, alignment, sizeof(gr_complex) * (2 * d_fft_length + d_cp_length)))
         std::cout << "cannot allocate memoryi: d_corr" << std::endl;
 #else
@@ -549,7 +581,6 @@ namespace gr {
         // TODO - make a FSM
         if (!d_initial_aquisition)
         {
-            
           d_initial_aquisition = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
               &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
 
@@ -563,7 +594,6 @@ namespace gr {
         // It is also calle coarse frequency correction
         if (d_initial_aquisition)
         {
-
           d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
               &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
           
