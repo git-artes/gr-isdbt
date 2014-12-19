@@ -26,6 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND isdbt_sources
+    ofdm_sym_acquisition_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
@@ -63,6 +64,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_sym_acquisition.cc
 )
 
 add_executable(test-isdbt ${test_isdbt_sources})

@@ -73,47 +73,53 @@ namespace gr {
     ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
     {
       int state = 0;
+
+      // I calculate the average of datain ...
       float peak_val = -(float)INFINITY; int peak_index = 0; int peak_pos_length = 0;
+      float accum; 
+      volk_32f_accumulator_s32f(&accum,datain,(unsigned int)datain_length); 
+      d_avg = accum/(float)datain_length; 
 
-      int i = 0;
+      // ... and its maximum. 
+      unsigned int index_max; 
+      volk_32f_index_max_16u(&index_max, datain, datain_length); 
+      printf("index_max: %i:\n ", index_max); 
 
-      while(i < datain_length)
+      // I then calculate a threshold which constitutes candidates peaks. 
+      float threshold = (datain[index_max]+d_avg)/2.0; 
+
+      // a first candidate peak is the absolute maximum
+      peak_pos[peak_pos_length] = index_max; 
+      peak_pos_length++; 
+
+      
+      int look_around = 10; 
+      for ( int i =look_around; i < datain_length-look_around; i++)
       {
         if (state == 0)
         {
-          if (datain[i] > d_avg * d_threshold_factor_rise)
+          if (datain[i] > threshold)
           {
-            //printf("state 0, rise: datain: %f, d_avg: %f, d_threshold_factor_rise: %f\n", datain[i], d_avg, d_threshold_factor_rise);
+              // peaks are going to be searched for then. 
             state = 1;
           }
-          else
-          {
-            d_avg = d_avg_alpha * datain[i] + (1 - d_avg_alpha) * d_avg;
-            //printf("state 0: %i, avg: %f\n", i, d_avg);
-            i++;
-          }
         } 
-        else if (state == 1)
+        if (state == 1)
+            // we look for peaks: if values around it (but not too far away) are smaller. 
         {
-          if (datain[i] > peak_val)
+        /*printf("lambda[%i]: %.10f\n", i, datain[i]);
+        printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", i-1, datain[i-1],i+1, datain[i+1]);
+        printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", i-look_around, datain[i-look_around],i+look_around, datain[i+look_around]);*/
+          if (datain[i-look_around]<datain[i] && datain[i]>datain[i+look_around] && i!=index_max)
           {
             peak_val = datain[i];
             peak_index = i;
-            //printf("state 1, index: %i, peak_val: %f, peak_index: %i, avg: %f, dtain: %f\n", i, peak_val, peak_index, d_avg, datain[i]);
-            d_avg = d_avg_alpha * datain[i] + (1 - d_avg_alpha) * d_avg;
-            i++;
-          }
-          else if (datain[i] > d_avg * d_threshold_factor_fall)
-          {
-            //printf("state 1, fall: %i, avg: %f, datain: %f\n", i, d_avg, datain[i]);
-            d_avg = (d_avg_alpha) * datain[i] + (1 - d_avg_alpha) * d_avg;
-            i++;
-          }
-          else
-          {
+            
             peak_pos[peak_pos_length] = peak_index;
-            //printf("state 1, finish: %i, peak_pos[%i]: %i\n", i, peak_pos_length, peak_pos[peak_pos_length]);
             peak_pos_length++;
+          }
+          else if (datain[i] < threshold)
+          {
             state = 0;
             peak_val = - (float)INFINITY;
           }
@@ -138,7 +144,11 @@ namespace gr {
         *peak_max = maxi;
 #if 0
       for (int i = 0; i < peak_pos_length; i++)
-        printf("peak_pos[%i]: %i, lambda[%i]: %f\n", i, peak_pos[i], i, datain[peak_pos[i]]);
+      {
+        printf("peak_pos[%i]: %i, lambda[%i]: %.10f\n", i, peak_pos[i], peak_pos[i], datain[peak_pos[i]]);
+        printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", peak_pos[i]-1, datain[peak_pos[i]-1],peak_pos[i]+1, datain[peak_pos[i]+1]);
+        printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", peak_pos[i]-look_around, datain[peak_pos[i]-look_around],peak_pos[i]+look_around, datain[peak_pos[i]+look_around]);
+      }
 #endif
       }
 
@@ -270,7 +280,13 @@ namespace gr {
 
       if (lookup_start - lookup_stop >= d_fft_length)
       {
-          peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
+          //printf("entra al peak_detect_process\n");
+          //peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
+          volk_32f_index_max_16u(&max_fede, &d_lambda[0], (lookup_start - lookup_stop)); 
+          peak_length = 1; 
+          peak_max = 0; 
+          peak_pos[peak_max] = (int)max_fede; 
+          //printf("sale del peak_detect_process\n");
       }
       else 
       {
@@ -403,19 +419,19 @@ namespace gr {
 
 
     ofdm_sym_acquisition::sptr
-    ofdm_sym_acquisition::make(int blocks, int fft_length, int occupied_tones, int cp_length, float snr)
+    ofdm_sym_acquisition::make(int fft_length, int cp_length, float snr)
     {
-      return gnuradio::get_initial_sptr (new ofdm_sym_acquisition_impl(blocks, fft_length, occupied_tones, cp_length, snr));
+      return gnuradio::get_initial_sptr (new ofdm_sym_acquisition_impl(fft_length, cp_length, snr));
     }
 
     /*
      * The private constructor
      */
-    ofdm_sym_acquisition_impl::ofdm_sym_acquisition_impl(int blocks, int fft_length, int occupied_tones, int cp_length, float snr)
+    ofdm_sym_acquisition_impl::ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr)
       : block("ofdm_sym_acquisition",
-          io_signature::make(1, 1, sizeof (gr_complex) * blocks),
-          io_signature::make(1, 1, sizeof (gr_complex) * blocks * fft_length)),
-      d_blocks(blocks), d_fft_length(fft_length), d_cp_length(cp_length), d_snr(snr),
+          io_signature::make(1, 1, sizeof (gr_complex) ),
+          io_signature::make(1, 1, sizeof (gr_complex) * fft_length)),
+      d_fft_length(fft_length), d_cp_length(cp_length), d_snr(snr),
       d_index(0), d_phase(0.0), d_phaseinc(0.0), d_cp_found(0), d_count(0), d_nextphaseinc(0), d_nextpos(0), \
         d_sym_acq_count(0),d_sym_acq_timeout(100), d_initial_aquisition(0), \
         d_freq_correction_count(0), d_freq_correction_timeout(0)
@@ -425,9 +441,7 @@ namespace gr {
       d_snr = pow(10, d_snr / 10.0);
       d_rho = d_snr / (d_snr + 1.0);
 
-      printf("OFDM sym acq: blocks: %i\n", blocks);
       printf("OFDM sym acq: fft_length: %i\n", fft_length);
-      printf("OFDM sym acq: occupied_tones: %i\n", occupied_tones);
       printf("OFDM sym acq: SNR: %f\n", d_snr);
 
       const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);

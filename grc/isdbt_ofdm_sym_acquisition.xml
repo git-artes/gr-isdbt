@@ -3,29 +3,19 @@
   <key>isdbt_ofdm_sym_acquisition</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_sym_acquisition($blocks, $fft_length, $occupied_tones, $cp_length, $snr)</make>
+  <make>isdbt.ofdm_sym_acquisition($fft_length, $cp_length, $snr)</make>
   <param>
-    <name>Blocks</name>
-    <key>blocks</key>
-    <type>int</type>
-  </param>
-  <param>
-    <name>Fft_length</name>
+    <name>FFT length</name>
     <key>fft_length</key>
     <type>int</type>
   </param>
   <param>
-    <name>Occupied_tones</name>
-    <key>occupied_tones</key>
-    <type>int</type>
-  </param>
-  <param>
-    <name>Cp_length</name>
+    <name>CP length</name>
     <key>cp_length</key>
     <type>int</type>
   </param>
   <param>
-    <name>Snr</name>
+    <name>SNR</name>
     <key>snr</key>
     <type>float</type>
   </param>

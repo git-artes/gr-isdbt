@@ -22,5 +22,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/isdbt
+    ofdm_sym_acquisition.h DESTINATION include/isdbt
 )

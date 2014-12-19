@@ -46,7 +46,7 @@ namespace gr {
        * class. isdbt::ofdm_sym_acquisition::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int blocks, int fft_length, int occupied_tones, int cp_length, float snr);
+      static sptr make(int fft_length, int cp_length, float snr);
     };
 
   } // namespace isdbt

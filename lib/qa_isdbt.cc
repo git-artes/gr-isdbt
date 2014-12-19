@@ -26,11 +26,13 @@
  */
 
 #include "qa_isdbt.h"
+#include "qa_ofdm_sym_acquisition.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
 {
   CppUnit::TestSuite *s = new CppUnit::TestSuite("isdbt");
+  s->addTest(gr::isdbt::qa_ofdm_sym_acquisition::suite());
 
   return s;
 }

@@ -81,7 +81,7 @@ namespace gr {
       void send_sync_start();
 
      public:
-      ofdm_sym_acquisition_impl(int blocks, int fft_length, int occupied_tones, int cp_length, float snr);
+      ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr);
       ~ofdm_sym_acquisition_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
