@@ -1,0 +1,17 @@
+<block>
+  <name>Sync and channel estimaton</name>
+  <key>isdbt_sync_and_channel_estimaton</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.sync_and_channel_estimaton()</make>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>8192</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>52</vlen>
+  </source>
+</block>
