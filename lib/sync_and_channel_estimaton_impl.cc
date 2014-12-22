@@ -49,8 +49,6 @@ namespace gr {
 		  5245, 5377, 5501, 5531
   };
 
-  const int dvbt = 1; // Igual las salidas y entradas del bloque hay que definirlas a mano
-
     sync_and_channel_estimaton::sptr
     sync_and_channel_estimaton::make()
     {
@@ -99,7 +97,6 @@ namespace gr {
 
         //printf("prbs[%d] = %d\n",k,d_wk[k]);
       }
-      // NO HAY EVOLUCIÓN TEMPORAL. YO PENSÉ QUE SÍ HABÍA. TENEMOS GENERADA LA SECUENCIA Y ES ESTÁTICA.
     }
     /*
      * ---------------------------------------------------------------------
@@ -138,7 +135,7 @@ namespace gr {
         d_zeros_on_left = int(ceil((d_fft_length - (active_carriers)) / 2.0));
 
         // Max frecuency offset to be corrected
-        d_freq_offset_max = 32;
+        d_freq_offset_max = 200;
 
         // Number of continual pilots
         tmcc_carriers_size=52;
@@ -197,9 +194,9 @@ namespace gr {
       // Look for maximum correlation for tmccs
       // in order to obtain postFFT integer frequency correction
 
-      float max = 0; float sum = 0;
-      int start = 0;
-      float phase;
+    float max = 0; gr_complex sum = 0;
+    int start = 0;
+    gr_complex phase;
 
       for (int i = d_zeros_on_left - d_freq_offset_max; i < d_zeros_on_left + d_freq_offset_max; i++)
       {
@@ -208,24 +205,25 @@ namespace gr {
         {
 
         	if (d_known_phase_diff[j] == 0)
-        		phase = std::norm(in[i + tmcc_carriers[j + 1]] + in[i + tmcc_carriers[j]]);//norm devuelve la norma del complejo, e.g. norm(3,4) = 25
+        		phase = in[i + tmcc_carriers[j + 1]]*conj(in[i + tmcc_carriers[j]]);//norm devuelve la norma del complejo, e.g. norm(3,4) = 25
         	else
-        		phase = std::norm(in[i + tmcc_carriers[j + 1]] - in[i + tmcc_carriers[j]]);
-            sum +=d_known_phase_diff[j]*phase;
+        		phase = -in[i + tmcc_carriers[j + 1]]*conj(in[i + tmcc_carriers[j]]);
+            //sum +=d_known_phase_diff[2]*phase;
+            sum +=phase;
 
             /* ORIGINALMENTE ERA DE ESTA MANERA
               phase = std::norm(in[i + tmcc_carriers[j + 1]] - in[i + tmcc_carriers[j]]);
               sum += d_known_phase_diff[j] * phase;
-             */
+
           /* d_known_phase_diff[j] es el valor que debería dar phase en un caso ideal */
         }
-
-        if (sum > max)
+       // printf("sum=%f\n",sum);
+        if (abs(sum) > max)
         {
         /*
          * Cuando sum es maximo es que en i tenemos la PRIMER piloto, i.e. el ubicado en cero
          */
-          max = sum;
+          max = abs(sum);
           start = i;
         }
         //printf("max=%f\n",max);
@@ -271,11 +269,11 @@ namespace gr {
 
         for (int i = 0; i < tmcc_carriers_size; i++)
         {
-          out[i] = in[tmcc_carriers[i]+d_freq_offset+d_zeros_on_left];
-
+         out[i] = in[tmcc_carriers[i]+d_freq_offset+d_zeros_on_left];
+         //out[i] = in[8000];
 
         }
-       // printf("-->>d_freq_offset: %i\n", d_freq_offset);
+       printf("-->>d_freq_offset: %i\n", d_freq_offset);
 
 
 
