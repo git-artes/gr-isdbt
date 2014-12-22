@@ -27,6 +27,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND isdbt_sources
     ofdm_sym_acquisition_impl.cc
+    sync_and_channel_estimaton_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)

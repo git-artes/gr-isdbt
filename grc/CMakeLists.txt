@@ -18,5 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    isdbt_ofdm_sym_acquisition.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_ofdm_sym_acquisition.xml
+    isdbt_sync_and_channel_estimaton.xml DESTINATION share/gnuradio/grc/blocks
 )
