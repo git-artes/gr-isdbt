@@ -56,6 +56,10 @@ namespace gr {
         // It will be initialized after process_tmcc_data function
         int d_freq_offset;
 
+        // Variable to keep corrected OFDM symbol
+        // It will be initialized after process_tmcc_data function
+        gr_complex * derotated_in;
+
         int is_sync_start(int nitems);
 
         gr_complex get_tmcc_value(int tmcc);
@@ -64,6 +68,8 @@ namespace gr {
         void generate_prbs();
 
         void process_tmcc_data(const gr_complex * in);
+
+        gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
 
      public:
       sync_and_channel_estimaton_impl();

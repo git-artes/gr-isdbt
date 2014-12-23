@@ -152,6 +152,14 @@ namespace gr {
           //printf("d_wk[%d]= %d\n",tmcc_carriers[i],d_wk[tmcc_carriers[i]]);
           //printf("d_known_phase_diff[%d]= %f\n",i,d_known_phase_diff[i]);
         }
+
+        // Allocate buffer for deroated input symbol
+        derotated_in = new gr_complex[d_fft_length];
+        if (derotated_in == NULL)
+        {
+          std::cout << "error allocating derotated_in" << std::endl;
+          return;
+        }
     }
 
     /*
@@ -165,8 +173,7 @@ namespace gr {
     sync_and_channel_estimaton_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
     	/*
-    	 * Es idéntico a la implementación por defecto salvo que se agrega el 2* noutput_items.
-    	 * La implementación por defecto es:
+    	 * Default implementation is:
     	 *
     	 *	unsigned ninputs = ninput_items_required.size ();
     	 *	for(unsigned i = 0; i < ninputs; i++)
@@ -182,9 +189,8 @@ namespace gr {
     }
 
     /*
-     * FUNCIÓN PROCESS_TMCC_DATA
-     * ESTIMACIÓN DEL OFFSET FRECUENCIAL POST FFT
-     * HABRÍA QUE LLEVAR A ESTA FUNCIÓN A OTRO ARCHIVO
+     * process_tmcc_data function
+     * post-fft frequency offset estimation
      * -----------------------------------------------------------------------------------------
      */
 
@@ -240,10 +246,25 @@ namespace gr {
     }
 
 
+    gr_complex *
+	sync_and_channel_estimaton_impl::frequency_correction(const gr_complex * in, gr_complex * out)
+    {
+      // TODO - use PI control loop to calculate tracking corrections
+      int symbol_count = 1;
+
+      for (int k = 0; k < d_fft_length; k++)
+      {
+        out[k] = in[k + d_freq_offset];
+      }
+
+      return (out);
+    }
+
+
     /*
      *
-     * FUNCIÓN GENERAL_WORK
-     * ACÁ SE HACE EL SIGNAL PROCESSING
+     * general_work function
+     * Here is where all the signal processing is done
      * ----------------------------------------------------------------------------------------
      */
 
@@ -258,22 +279,24 @@ namespace gr {
         gr_complex *out = (gr_complex *) output_items[0];
 
         /*
-         * Acá comienza el procesamiento
+         * Here starts the processing
          */
 
         // Process tmcc data
         for (int i = 0; i < noutput_items; i++)
         {
         	process_tmcc_data(&in[i* d_ninput]);
+
+        	// Correct ofdm symbol
+        	frequency_correction(&in[i* d_ninput], derotated_in);
         }
 
         for (int i = 0; i < tmcc_carriers_size; i++)
         {
-         out[i] = in[tmcc_carriers[i]+d_freq_offset+d_zeros_on_left];
-         //out[i] = in[8000];
-
+        	out[i] = derotated_in[tmcc_carriers[i]+d_zeros_on_left];
         }
-       printf("-->>d_freq_offset: %i\n", d_freq_offset);
+
+        printf("-->>d_freq_offset: %i\n", d_freq_offset);
 
 
 
