@@ -43,15 +43,21 @@ namespace gr {
         // Max frecuency offset to be corrected
         int d_freq_offset_max;
 
-        // Number of continual pilots
+        // Number of tmcc pilots
         int tmcc_carriers_size;
+        
+        // Number of sp pilots
+        int sp_carriers_size;
 
         int active_carriers;
 
+//TODO This should be initialized elsewhere. 
         // PRPS generator data buffer
         char d_wk[5617];
 
         float d_known_phase_diff[52-1];
+
+        gr_complex d_channel_gain[5617]; 
 
         // It will be initialized after process_tmcc_data function
         int d_freq_offset;
@@ -62,14 +68,16 @@ namespace gr {
 
         int is_sync_start(int nitems);
 
-        gr_complex get_tmcc_value(int tmcc);
+        gr_complex get_pilot_value(int index);
 
         // Generate PRBS
         void generate_prbs();
 
         void process_tmcc_data(const gr_complex * in);
-
+        
         gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
+        
+        void process_sp_data(const gr_complex * in);
 
      public:
       sync_and_channel_estimaton_impl();

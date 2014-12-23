@@ -74,11 +74,11 @@ namespace gr {
      * ---------------------------------------------------------------------
      */
     gr_complex
-	sync_and_channel_estimaton_impl::get_tmcc_value(int tmcc)
+	sync_and_channel_estimaton_impl::get_pilot_value(int index)
     {
       //TODO - can be calculated at the beginning
     	/* Obtenemos el valor +4/3 cuando d_wk[tmcc] = 0 y -4/3 cuando d_wk[tmcc] = 1*/
-      return gr_complex((float)(4 * 2 * (0.5 - d_wk[tmcc])) / 3, 0);
+      return gr_complex((float)(4 * 2 * (0.5 - d_wk[index])) / 3, 0);
     }
     /*
      * ---------------------------------------------------------------------
@@ -117,6 +117,7 @@ namespace gr {
      * Para probar sólo sacar las carrier continuas, pongo la salida en 45 y la entrada en 2048, pero para isdbt tienen que ser los valores que dice arriba.
      */
     {
+        active_carriers = 5617;
     	/*
     	 * Definimos el tamaño de la entrada y la salida
     	 */
@@ -129,7 +130,6 @@ namespace gr {
         //FFT length
         d_fft_length = 8192;
 
-        active_carriers = 5617;
 
         // Number of zeros on the left of the IFFT
         d_zeros_on_left = int(ceil((d_fft_length - (active_carriers)) / 2.0));
@@ -137,22 +137,22 @@ namespace gr {
         // Max frecuency offset to be corrected
         d_freq_offset_max = 200;
 
-        // Number of continual pilots
+        // Number of tmcc pilots
         tmcc_carriers_size=52;
+
+        // Number of sp pilots
+        sp_carriers_size=5616/12;
 
         // Generate PRBS
     	generate_prbs();
 
-        // Obtain phase diff for all continual pilots
+        // Obtain phase diff for all tmcc pilots
         for (int i = 0; i < (tmcc_carriers_size - 1); i++)
         {
           d_known_phase_diff[i] = \
-            std::norm(get_tmcc_value(tmcc_carriers[i + 1]) - get_tmcc_value(tmcc_carriers[i]));
-          //printf("get_tmcc_value(tmcc_carriers[%d])= %f\n",i,std::norm(get_tmcc_value(tmcc_carriers[i])));
-          //printf("d_wk[%d]= %d\n",tmcc_carriers[i],d_wk[tmcc_carriers[i]]);
-          //printf("d_known_phase_diff[%d]= %f\n",i,d_known_phase_diff[i]);
+            std::norm(get_pilot_value(tmcc_carriers[i + 1]) - get_pilot_value(tmcc_carriers[i]));
         }
-
+        
         // Allocate buffer for deroated input symbol
         derotated_in = new gr_complex[d_fft_length];
         if (derotated_in == NULL)
@@ -200,7 +200,8 @@ namespace gr {
       // Look for maximum correlation for tmccs
       // in order to obtain postFFT integer frequency correction
 
-    float max = 0; gr_complex sum = 0;
+    float max = 0; 
+    gr_complex sum = 0;
     int start = 0;
     gr_complex phase;
 
@@ -249,9 +250,6 @@ namespace gr {
     gr_complex *
 	sync_and_channel_estimaton_impl::frequency_correction(const gr_complex * in, gr_complex * out)
     {
-      // TODO - use PI control loop to calculate tracking corrections
-      int symbol_count = 1;
-
       for (int k = 0; k < d_fft_length; k++)
       {
         out[k] = in[k + d_freq_offset];
@@ -260,6 +258,87 @@ namespace gr {
       return (out);
     }
 
+    /*
+     * process_sp_data function
+     * post-fft frequency offset estimation
+     * -----------------------------------------------------------------------------------------
+     */
+
+    void
+	sync_and_channel_estimaton_impl::process_sp_data(const gr_complex * in)
+    {
+        /* First thing is to locate the scattered pilots
+        */
+
+        /*************************************************************/
+        // Find out the OFDM symbol index (value 0 to 3) sent
+        // in current block by correlating scattered symbols with
+        // current block - result is (symbol index % 4)
+        /*************************************************************/
+        float max = 0; 
+        gr_complex sum;
+        int current_symbol = 0; 
+
+        int next_sp_carrier; 
+        int current_sp_carrier; 
+        gr_complex phase; 
+        for (int sym_count = 0; sym_count < 4; sym_count++)
+        {
+            sum = 0; 
+            for (int i=0; i < sp_carriers_size-1; i++)
+            {
+                next_sp_carrier = 12*(i+1)+3*sym_count; 
+                current_sp_carrier = 12*i+3*sym_count; 
+
+                if (d_wk[next_sp_carrier]==d_wk[current_sp_carrier])
+                    phase = in[next_sp_carrier+d_zeros_on_left]*conj(in[current_sp_carrier+d_zeros_on_left]);
+                else
+                    phase = -in[next_sp_carrier+d_zeros_on_left]*conj(in[current_sp_carrier+d_zeros_on_left]);
+                sum += phase; 
+                //printf("next_sp_carrier: %i; current_sp_carrier: %i\n", next_sp_carrier, current_sp_carrier); 
+            }
+            //printf("sum: %f; sym_count: %i\n", abs(sum), sym_count); 
+            if (abs(sum)>max)
+            {
+                max = abs(sum); 
+                current_symbol = sym_count; 
+            }
+        }
+        //printf("current_symbol FINAL: %i\n", current_symbol); 
+
+        /*************************************************************/
+        // Keep data for channel estimator
+        // This method interpolates scattered measurements across one OFDM symbol
+        // It does not use measurements from the previous OFDM symnbols (does not use history)
+        // as it may have encountered a phase change for the current phase only
+        /*************************************************************/
+
+        // I first calculate the channel gain on the SP carriers. 
+        for (int i = 0; i < sp_carriers_size; i++)
+        {
+            current_sp_carrier = 12*i+3*current_symbol; 
+            d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/get_pilot_value(current_sp_carrier); 
+        }
+
+        // I then interpolate to obtain the channel gain on the rest of the carriers. 
+        gr_complex tg_alpha; 
+        for (int i = 0; i < sp_carriers_size-1; i++)
+        {
+            current_sp_carrier = 12*i+3*current_symbol; 
+            next_sp_carrier = 12*(i+1)+3*current_symbol; 
+            // Calculate tg(alpha) due to linear interpolation
+            tg_alpha = (d_channel_gain[next_sp_carrier] - d_channel_gain[current_sp_carrier]) / gr_complex(12.0, 0.0);
+
+
+            // Calculate interpolation for all intermediate values
+            for (int j = 1; j < next_sp_carrier-current_sp_carrier; j++)
+            {
+                d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier] + tg_alpha * gr_complex(j, 0.0);
+            }
+
+        }
+
+    }
 
     /*
      *
@@ -281,7 +360,6 @@ namespace gr {
         /*
          * Here starts the processing
          */
-
         // Process tmcc data
         for (int i = 0; i < noutput_items; i++)
         {
@@ -289,14 +367,18 @@ namespace gr {
 
         	// Correct ofdm symbol
         	frequency_correction(&in[i* d_ninput], derotated_in);
+            process_sp_data(&derotated_in[i*d_ninput]); 
+            
+            // TODO should this go outside the loop??
+            for (int carrier = 0; carrier < tmcc_carriers_size; carrier++)
+            {
+        	    //out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]]; 
+        	    out[i*d_noutput +carrier] = derotated_in[2800+d_zeros_on_left]/d_channel_gain[2800]; 
+            }
         }
 
-        for (int i = 0; i < tmcc_carriers_size; i++)
-        {
-        	out[i] = derotated_in[tmcc_carriers[i]+d_zeros_on_left];
-        }
-
-        printf("-->>d_freq_offset: %i\n", d_freq_offset);
+    
+        //printf("-->>d_freq_offset: %i\n", d_freq_offset);
 
 
 
