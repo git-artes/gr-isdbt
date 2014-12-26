@@ -110,7 +110,9 @@ namespace gr {
     sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl()
       : gr::block("sync_and_channel_estimaton",
               gr::io_signature::make(1, 1, sizeof(gr_complex)*8192),
-              gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
+			  //gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
+    			gr::io_signature::make(1, 1, sizeof(gr_complex)*5617))
+
     /*
      * La relación entre salidas y entradas en realidad la marcamos acá. Por cada de entrada de 8192 complejos tenemos una salida de 4992 complejos. La tasa es 1:1, pero en realidad
      * estamos haciendo cierto decimation.
@@ -125,7 +127,9 @@ namespace gr {
         //d_noutput = noutput;
 
     	d_ninput = 8192;
-    	d_noutput =52;
+    	//d_noutput =52;
+    	d_noutput =5617;
+
 
         //FFT length
         d_fft_length = 8192;
@@ -370,10 +374,12 @@ namespace gr {
             process_sp_data(&derotated_in[i*d_ninput]); 
             
             // TODO should this go outside the loop??
-            for (int carrier = 0; carrier < tmcc_carriers_size; carrier++)
+
+            for (int carrier = 0; carrier < active_carriers; carrier++)
             {
-        	    //out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]]; 
-        	    out[i*d_noutput +carrier] = derotated_in[2800+d_zeros_on_left]/d_channel_gain[2800]; 
+        	    //out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]];
+        	    out[i*d_noutput +carrier] = derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
+        	    //printf("tmcc_carriers[%d]=%d\n",carrier,tmcc_carriers[carrier]);
             }
         }
 
