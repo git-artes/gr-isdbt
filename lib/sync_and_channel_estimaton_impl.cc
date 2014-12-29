@@ -110,8 +110,8 @@ namespace gr {
     sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl()
       : gr::block("sync_and_channel_estimaton",
               gr::io_signature::make(1, 1, sizeof(gr_complex)*8192),
-			  //gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
-    			gr::io_signature::make(1, 1, sizeof(gr_complex)*5617))
+			 // gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
+			  gr::io_signature::make(1, 1, sizeof(gr_complex)*5617))
 
     /*
      * La relación entre salidas y entradas en realidad la marcamos acá. Por cada de entrada de 8192 complejos tenemos una salida de 4992 complejos. La tasa es 1:1, pero en realidad
@@ -188,7 +188,7 @@ namespace gr {
         for (int i = 0; i < ninputs; i++)
           ninput_items_required[i] =  2 * noutput_items;
         /*
-         * Por lo que yo entendí esta relación tiene más que ver con el history que con otra cosa. Seguimos teniendo una relación 1:1 entre salidas y entraadas
+         * Por lo que yo entendí esta relación tiene más que ver con el history que con otra cosa. Seguimos teniendo una relación 1:1 entre salidas y entradas
          */
     }
 
@@ -308,7 +308,7 @@ namespace gr {
                 current_symbol = sym_count; 
             }
         }
-        //printf("current_symbol FINAL: %i\n", current_symbol); 
+        //printf("current_symbol FINAL: %i\n", current_symbol);
 
         /*************************************************************/
         // Keep data for channel estimator
@@ -377,9 +377,12 @@ namespace gr {
 
             for (int carrier = 0; carrier < active_carriers; carrier++)
             {
-        	    //out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]];
+
+            	//out[i*d_noutput +carrier] = derotated_in[70+d_zeros_on_left]/d_channel_gain[70];
+            	//out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]];
         	    out[i*d_noutput +carrier] = derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
         	    //printf("tmcc_carriers[%d]=%d\n",carrier,tmcc_carriers[carrier]);
+        	    //printf("carrier =%d\n",carrier);
             }
         }
 
