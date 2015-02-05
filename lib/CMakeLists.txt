@@ -24,11 +24,10 @@ include(GrPlatform) #define LIB_SUFFIX
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
-
 list(APPEND isdbt_sources
     ofdm_sym_acquisition_impl.cc
     sync_and_channel_estimaton_impl.cc
-)
+    subset_of_carriers_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

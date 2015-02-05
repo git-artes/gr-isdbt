@@ -16,8 +16,8 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-
 install(FILES
     isdbt_ofdm_sym_acquisition.xml
-    isdbt_sync_and_channel_estimaton.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_sync_and_channel_estimaton.xml
+    isdbt_subset_of_carriers.xml DESTINATION share/gnuradio/grc/blocks
 )
