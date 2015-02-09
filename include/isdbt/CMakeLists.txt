@@ -24,5 +24,6 @@ install(FILES
     api.h
     ofdm_sym_acquisition.h
     sync_and_channel_estimaton.h
-    subset_of_carriers.h DESTINATION include/isdbt
+    subset_of_carriers.h
+    frequency_deinterleaver.h DESTINATION include/isdbt
 )
