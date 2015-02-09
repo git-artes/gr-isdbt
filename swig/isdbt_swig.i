@@ -12,6 +12,7 @@
 #include "isdbt/sync_and_channel_estimaton.h"
 #include "isdbt/subset_of_carriers.h"
 #include "isdbt/frequency_deinterleaver.h"
+#include "isdbt/time_deinterleaver.h"
 %}
 
 
@@ -24,3 +25,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, sync_and_channel_estimaton);
 GR_SWIG_BLOCK_MAGIC2(isdbt, subset_of_carriers);
 %include "isdbt/frequency_deinterleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_deinterleaver);
+%include "isdbt/time_deinterleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, time_deinterleaver);

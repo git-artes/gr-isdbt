@@ -28,6 +28,7 @@
 #include "qa_isdbt.h"
 #include "qa_ofdm_sym_acquisition.h"
 #include "qa_frequency_deinterleaver.h"
+#include "qa_time_deinterleaver.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -35,6 +36,7 @@ qa_isdbt::suite()
   CppUnit::TestSuite *s = new CppUnit::TestSuite("isdbt");
   s->addTest(gr::isdbt::qa_ofdm_sym_acquisition::suite());
   s->addTest(gr::isdbt::qa_frequency_deinterleaver::suite());
+  s->addTest(gr::isdbt::qa_time_deinterleaver::suite());
 
   return s;
 }
