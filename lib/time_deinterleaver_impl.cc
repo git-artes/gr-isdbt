@@ -49,6 +49,7 @@ namespace gr {
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
+            //TODO the length of the interleaver may change from segment to segment. This should be corrected...
             d_I = length; 
             d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
             d_noutput = d_total_segments*d_carriers_per_segment; 

@@ -1,38 +1,31 @@
-<?xml version="1.0"?>
 <block>
-  <name>time_deinterleaver</name>
+  <name>Time deinterleaver</name>
   <key>isdbt_time_deinterleaver</key>
-  <category>isdbt</category>
+  <category>ISDBT</category>
   <import>import isdbt</import>
   <make>isdbt.time_deinterleaver($mode, $length)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
   <param>
-    <name>...</name>
-    <key>...</key>
-    <type>...</type>
+      <name>Mode</name>
+      <key>mode</key>
+      <value>3</value>
+      <type>int</type>
   </param>
-
-  <!-- Make one 'sink' node per input. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
+  <param>
+    <name>Length</name>
+    <key>length</key>
+    <type>int</type>
+  </param>
+  <check>$mode &gt; 0</check>
+  <check>$mode &lt; 4</check>
+  
   <sink>
     <name>in</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>complex</type>
+    <vlen>13*96*(2**($mode-1))</vlen>
   </sink>
-
-  <!-- Make one 'source' node per output. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>complex</type>
+    <vlen>13*96*(2**($mode-1))</vlen>
   </source>
 </block>
