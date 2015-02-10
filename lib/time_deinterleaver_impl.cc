@@ -30,8 +30,8 @@ namespace gr {
 
 
         // TODO shouldn't these be defined somewhere else??
-        const int d_data_carriers_mode1 = 96; 
-        const int d_total_segments = 13; 
+        const int time_deinterleaver_impl::d_data_carriers_mode1 = 96; 
+        const int time_deinterleaver_impl::d_total_segments = 13; 
 
         time_deinterleaver::sptr
             time_deinterleaver::make(int mode, int length)

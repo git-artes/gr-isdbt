@@ -29,7 +29,8 @@ list(APPEND isdbt_sources
     sync_and_channel_estimaton_impl.cc
     subset_of_carriers_impl.cc
     frequency_deinterleaver_impl.cc
-    time_deinterleaver_impl.cc )
+    time_deinterleaver_impl.cc
+    symbol_demapper_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -66,6 +67,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_sym_acquisition.cc

@@ -21,5 +21,6 @@ install(FILES
     isdbt_sync_and_channel_estimaton.xml
     isdbt_subset_of_carriers.xml
     isdbt_frequency_deinterleaver.xml
-    isdbt_time_deinterleaver.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_time_deinterleaver.xml
+    isdbt_symbol_demapper.xml DESTINATION share/gnuradio/grc/blocks
 )
