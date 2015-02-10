@@ -49,6 +49,8 @@ namespace gr {
 		  5245, 5377, 5501, 5531
   };
 
+  int previous_symbol;
+
     sync_and_channel_estimaton::sptr
     sync_and_channel_estimaton::make()
     {
@@ -110,7 +112,7 @@ namespace gr {
     sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl()
       : gr::block("sync_and_channel_estimaton",
               gr::io_signature::make(1, 1, sizeof(gr_complex)*8192),
-			 // gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
+			  //gr::io_signature::make(1, 1, sizeof(gr_complex)*52))
 			  gr::io_signature::make(1, 1, sizeof(gr_complex)*5617))
 
     /*
@@ -186,7 +188,7 @@ namespace gr {
         int ninputs = ninput_items_required.size();
 
         for (int i = 0; i < ninputs; i++)
-          ninput_items_required[i] =  2 * noutput_items;
+          ninput_items_required[i] =  2* noutput_items;
         /*
          * Por lo que yo entendí esta relación tiene más que ver con el history que con otra cosa. Seguimos teniendo una relación 1:1 entre salidas y entradas
          */
@@ -283,6 +285,7 @@ namespace gr {
         gr_complex sum;
         int current_symbol = 0; 
 
+
         int next_sp_carrier; 
         int current_sp_carrier; 
         gr_complex phase; 
@@ -308,7 +311,9 @@ namespace gr {
                 current_symbol = sym_count; 
             }
         }
-        //printf("current_symbol FINAL: %i\n", current_symbol);
+        if (((current_symbol-previous_symbol) !=1) && ((current_symbol-previous_symbol) !=-3)) printf("previous_symbol: %i, \n current_symbol: %i\n", previous_symbol, current_symbol);
+        previous_symbol = current_symbol;
+
 
         /*************************************************************/
         // Keep data for channel estimator
@@ -376,10 +381,12 @@ namespace gr {
             // TODO should this go outside the loop??
 
             for (int carrier = 0; carrier < active_carriers; carrier++)
-            {
+            //for (int carrier = 0; carrier < 52; carrier++)
+			{
 
-            	//out[i*d_noutput +carrier] = derotated_in[70+d_zeros_on_left]/d_channel_gain[70];
+            	//out[i*d_noutput +carrier] = derotated_in[d_zeros_on_left]/d_channel_gain[0];
             	//out[i*d_noutput +carrier] = derotated_in[tmcc_carriers[carrier]+d_zeros_on_left]/d_channel_gain[tmcc_carriers[carrier]];
+            	//out[i*d_noutput +carrier] = derotated_in[70+d_zeros_on_left]/d_channel_gain[70];
         	    out[i*d_noutput +carrier] = derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
         	    //printf("tmcc_carriers[%d]=%d\n",carrier,tmcc_carriers[carrier]);
         	    //printf("carrier =%d\n",carrier);

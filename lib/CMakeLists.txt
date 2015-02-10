@@ -30,7 +30,8 @@ list(APPEND isdbt_sources
     subset_of_carriers_impl.cc
     frequency_deinterleaver_impl.cc
     time_deinterleaver_impl.cc
-    symbol_demapper_impl.cc )
+    symbol_demapper_impl.cc
+    tmcc_decoder_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

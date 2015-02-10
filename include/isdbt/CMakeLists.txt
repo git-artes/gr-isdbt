@@ -27,5 +27,6 @@ install(FILES
     #subset_of_carriers.h
     #frequency_deinterleaver.h
     #time_deinterleaver.h
-    symbol_demapper.h DESTINATION include/isdbt
+    symbol_demapper.h
+    tmcc_decoder.h DESTINATION include/isdbt
 )

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<block>
+  <name>TMCC Decoder</name>
+  <key>isdbt_tmcc_decoder</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.tmcc_decoder()</make>
+  <sink>
+  	<name>in</name>
+	<type>complex</type>
+	<vlen>5617</vlen>
+  </sink>
+  <source>
+  	<name>out</name>
+	<type>complex</type>
+	<vlen>5617</vlen>
+  </source>
+</block>
+

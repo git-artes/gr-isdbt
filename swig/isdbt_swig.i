@@ -11,6 +11,7 @@
 #include "isdbt/ofdm_sym_acquisition.h"
 #include "isdbt/sync_and_channel_estimaton.h"
 #include "isdbt/symbol_demapper.h"
+#include "isdbt/tmcc_decoder.h"
 //#include "isdbt/subset_of_carriers.h"
 //#include "isdbt/frequency_deinterleaver.h"
 //#include "isdbt/time_deinterleaver.h"
@@ -30,3 +31,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, sync_and_channel_estimaton);
 //GR_SWIG_BLOCK_MAGIC2(isdbt, time_deinterleaver);
 %include "isdbt/symbol_demapper.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, symbol_demapper);
+%include "isdbt/tmcc_decoder.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_decoder);
