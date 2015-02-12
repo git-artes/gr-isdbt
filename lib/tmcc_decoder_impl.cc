@@ -85,7 +85,7 @@ namespace gr {
 
         int end_frame = 0;
 
-        d_symbol_index++;
+        d_symbol_index = (d_symbol_index+ 1) % 204;
 
         // As we have 52 TMCC carriers we will using majority voting for decision
         int tmcc_majority_zero = 0;
@@ -139,32 +139,27 @@ namespace gr {
         {
             d_symbol_index_known = 1;
             end_frame = 1;
-            d_symbol_index = 0;
+            d_symbol_index = 203;
 
             printf("\n Even: ");
             for (int i = 0; i < d_symbols_per_frame; i++)
             	printf("%i", d_rcv_tmcc_data[i]);
             printf("\n");
 
-            // Clear up FIFO
-            //for (int i = 0; i < d_symbols_per_frame; i++)
-            //d_rcv_tmcc_data[i] = 0;
         }
         else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()))
         {
 
             d_symbol_index_known = 1;
             end_frame = 1;
-            d_symbol_index = 0;
+            d_symbol_index = 203;
+
 
             printf("\n Odd: ");
             for (int i = 0; i < d_symbols_per_frame; i++)
             	printf("%i", d_rcv_tmcc_data[i]);
             printf("\n");
 
-          // Clear up FIFO
-          //for (int i = 0; i < d_symbols_per_frame; i++)
-            //d_rcv_tmcc_data[i] = 0;
         }
 
         //if (d_symbol_index ==204){
@@ -174,7 +169,7 @@ namespace gr {
         	//printf("\n");
        // }
 
-        printf("Symbol Index: %i\n", d_symbol_index);
+        //printf("Symbol Index: %i\n", d_symbol_index);
 
         // We return end_frame
         return end_frame;
@@ -185,6 +180,17 @@ namespace gr {
      * ---------------------------------------------------------------------
      */
 
+    int
+	tmcc_decoder_impl::is_sp_carrier(int carrier)
+    {
+    	for (int i=0; i<36; i++)
+    		if (carrier == (12*i+3*(d_symbol_index % 4)))
+    			return 1;
+    	return 0;
+    }
+    /*
+     * ---------------------------------------------------------------------
+     */
     tmcc_decoder::sptr
     tmcc_decoder::make()
     {
@@ -198,7 +204,7 @@ namespace gr {
     tmcc_decoder_impl::tmcc_decoder_impl()
       : gr::block("tmcc_decoder",
               gr::io_signature::make(1, 1, sizeof(gr_complex)*5617),
-			  gr::io_signature::make(1, 1, sizeof(gr_complex)*5617))
+			  gr::io_signature::make(1, 1, sizeof(gr_complex)*384))
     {
         // Number of tmcc pilots
         tmcc_carriers_size=52;
@@ -273,13 +279,27 @@ namespace gr {
         }
         //printf("Symbol Index:= %d\n", d_symbol_index);
 
-
+/*
         for (int carrier = 0; carrier < active_carriers; carrier++)
        // for (int carrier = 0; carrier < 52; carrier++)
         	{
            		out[carrier] = in[carrier];
         	}
+  */
+       // printf("sym_count = %i\n",d_symbol_index % 4);
+       // printf("tmcc_carriers 1 = %i\n",tmcc_carriers[6*4+1]);
 
+
+        int carrier_out = 0;
+        // We only let out the one_seg active carriers
+        for (int carrier = 0; carrier < 432; carrier++)
+         {
+        	if((carrier != 407) && (carrier != 377) && (carrier != 244) && (carrier != 226) && (carrier != 209) && (carrier != 206) && (carrier != 89) && (carrier != 7) && ((carrier+432*6) != tmcc_carriers[6*4]) && ((carrier+432*6) != tmcc_carriers[6*4+1]) && ((carrier+432*6) != tmcc_carriers[6*4+2]) && ((carrier+432*6) != tmcc_carriers[6*4+3]) && (!is_sp_carrier(carrier)))
+            	{
+        		out[carrier_out] = in[carrier + 432*6];
+        		carrier_out++;
+            	}
+         }
         /*
          * Here ends the signal processing
          */

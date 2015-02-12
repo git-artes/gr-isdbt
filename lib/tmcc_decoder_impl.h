@@ -62,6 +62,9 @@ namespace gr {
         // TMCC data processing metod
         int process_tmcc_data(const gr_complex * in);
 
+        // Method used to determinate if a particular carrier is a SP
+        int is_sp_carrier(int carrier);
+
 
      public:
       tmcc_decoder_impl();
