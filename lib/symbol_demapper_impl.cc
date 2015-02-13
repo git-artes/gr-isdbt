@@ -23,6 +23,7 @@
 #endif
 
 #include <math.h>
+#include <stdio.h>
 
 #include <gnuradio/io_signature.h>
 #include "symbol_demapper_impl.h"
@@ -32,9 +33,121 @@ namespace gr {
 
         // TODO shouldn't these go somewhere else??
         const int symbol_demapper_impl::d_data_carriers_mode1 = 96; 
-        const int symbol_demapper_impl::d_total_segments = 13; 
+        const int symbol_demapper_impl::d_total_segments = 1; 
 
-        const float symbol_demapper_impl::d_possible_gains[] = {1.0/sqrt(2), 1.0/sqrt(10), 1.0/sqrt(42)}; 
+        const gr_complex symbol_demapper_impl::d_constellation_qpsk[] = {
+            gr_complex(1/sqrt(2),1/sqrt(2)),
+            gr_complex(1/sqrt(2),-1/sqrt(2)), 
+            gr_complex(-1/sqrt(2),1/sqrt(2)),
+            gr_complex(-1/sqrt(2),-1/sqrt(2))
+        }; 
+        
+        const gr_complex symbol_demapper_impl::d_constellation_16qam[] = {
+            gr_complex(3/sqrt(10),3/sqrt(10)),
+            gr_complex(3/sqrt(10),1/sqrt(10)), 
+            gr_complex(1/sqrt(10),3/sqrt(10)),
+            gr_complex(1/sqrt(10),1/sqrt(10)),
+
+            gr_complex(3/sqrt(10),-3/sqrt(10)),
+            gr_complex(3/sqrt(10),-1/sqrt(10)), 
+            gr_complex(1/sqrt(10),-3/sqrt(10)),
+            gr_complex(1/sqrt(10),-1/sqrt(10)),
+
+            gr_complex(-3/sqrt(10),3/sqrt(10)),
+            gr_complex(-3/sqrt(10),1/sqrt(10)), 
+            gr_complex(-1/sqrt(10),3/sqrt(10)),
+            gr_complex(-1/sqrt(10),1/sqrt(10)),
+            
+            gr_complex(-3/sqrt(10),-3/sqrt(10)),
+            gr_complex(-3/sqrt(10),-1/sqrt(10)), 
+            gr_complex(-1/sqrt(10),-3/sqrt(10)),
+            gr_complex(-1/sqrt(10),-1/sqrt(10))
+        }; 
+        
+        const gr_complex symbol_demapper_impl::d_constellation_64qam[] = {
+            gr_complex(7/sqrt(42),7/sqrt(42)),
+            gr_complex(7/sqrt(42),5/sqrt(42)), 
+            gr_complex(5/sqrt(42),7/sqrt(42)),
+            gr_complex(5/sqrt(42),5/sqrt(42)),
+
+            gr_complex(7/sqrt(42),1/sqrt(42)),
+            gr_complex(7/sqrt(42),3/sqrt(42)), 
+            gr_complex(5/sqrt(42),1/sqrt(42)),
+            gr_complex(5/sqrt(42),3/sqrt(42)),
+
+            gr_complex(1/sqrt(42),7/sqrt(42)),
+            gr_complex(1/sqrt(42),5/sqrt(42)), 
+            gr_complex(3/sqrt(42),7/sqrt(42)),
+            gr_complex(3/sqrt(42),5/sqrt(42)),
+
+            gr_complex(1/sqrt(42),1/sqrt(42)),
+            gr_complex(1/sqrt(42),3/sqrt(42)), 
+            gr_complex(3/sqrt(42),1/sqrt(42)),
+            gr_complex(3/sqrt(42),3/sqrt(42)),
+
+            //////////////
+            gr_complex(7/sqrt(42),-7/sqrt(42)),
+            gr_complex(7/sqrt(42),-5/sqrt(42)), 
+            gr_complex(5/sqrt(42),-7/sqrt(42)),
+            gr_complex(5/sqrt(42),-5/sqrt(42)),
+
+            gr_complex(7/sqrt(42),-1/sqrt(42)),
+            gr_complex(7/sqrt(42),-3/sqrt(42)), 
+            gr_complex(5/sqrt(42),-1/sqrt(42)),
+            gr_complex(5/sqrt(42),-3/sqrt(42)),
+
+            gr_complex(1/sqrt(42),-7/sqrt(42)),
+            gr_complex(1/sqrt(42),-5/sqrt(42)), 
+            gr_complex(3/sqrt(42),-7/sqrt(42)),
+            gr_complex(3/sqrt(42),-5/sqrt(42)),
+
+            gr_complex(1/sqrt(42),-1/sqrt(42)),
+            gr_complex(1/sqrt(42),-3/sqrt(42)), 
+            gr_complex(3/sqrt(42),-1/sqrt(42)),
+            gr_complex(3/sqrt(42),-3/sqrt(42)),
+
+            //////////////
+            gr_complex(-7/sqrt(42),7/sqrt(42)),
+            gr_complex(-7/sqrt(42),5/sqrt(42)), 
+            gr_complex(-5/sqrt(42),7/sqrt(42)),
+            gr_complex(-5/sqrt(42),5/sqrt(42)),
+
+            gr_complex(-7/sqrt(42),1/sqrt(42)),
+            gr_complex(-7/sqrt(42),3/sqrt(42)), 
+            gr_complex(-5/sqrt(42),1/sqrt(42)),
+            gr_complex(-5/sqrt(42),3/sqrt(42)),
+
+            gr_complex(-1/sqrt(42),7/sqrt(42)),
+            gr_complex(-1/sqrt(42),5/sqrt(42)), 
+            gr_complex(-3/sqrt(42),7/sqrt(42)),
+            gr_complex(-3/sqrt(42),5/sqrt(42)),
+
+            gr_complex(-1/sqrt(42),1/sqrt(42)),
+            gr_complex(-1/sqrt(42),3/sqrt(42)), 
+            gr_complex(-3/sqrt(42),1/sqrt(42)),
+            gr_complex(-3/sqrt(42),3/sqrt(42)),
+
+            //////////////
+            gr_complex(-7/sqrt(42),-7/sqrt(42)),
+            gr_complex(-7/sqrt(42),-5/sqrt(42)), 
+            gr_complex(-5/sqrt(42),-7/sqrt(42)),
+            gr_complex(-5/sqrt(42),-5/sqrt(42)),
+
+            gr_complex(-7/sqrt(42),-1/sqrt(42)),
+            gr_complex(-7/sqrt(42),-3/sqrt(42)), 
+            gr_complex(-5/sqrt(42),-1/sqrt(42)),
+            gr_complex(-5/sqrt(42),-3/sqrt(42)),
+
+            gr_complex(-1/sqrt(42),-7/sqrt(42)),
+            gr_complex(-1/sqrt(42),-5/sqrt(42)), 
+            gr_complex(-3/sqrt(42),-7/sqrt(42)),
+            gr_complex(-3/sqrt(42),-5/sqrt(42)),
+
+            gr_complex(-1/sqrt(42),-1/sqrt(42)),
+            gr_complex(-1/sqrt(42),-3/sqrt(42)), 
+            gr_complex(-3/sqrt(42),-1/sqrt(42)),
+            gr_complex(-3/sqrt(42),-3/sqrt(42)),
+        }; 
 
         symbol_demapper::sptr
             symbol_demapper::make(int mode, int constellation_size)
@@ -54,17 +167,17 @@ namespace gr {
             d_mode = mode; 
             d_const_size = constellation_size; 
             if (d_const_size==4){
-                d_gain = d_possible_gains[0]; 
+                d_constellation = d_constellation_qpsk;
             }else if (d_const_size==16){
-                d_gain = d_possible_gains[1]; 
+                d_constellation = d_constellation_16qam; 
             }else {
-                d_gain = d_possible_gains[2]; 
+                d_constellation = d_constellation_64qam; 
             }
 
             d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
             d_noutput = d_total_segments*d_carriers_per_segment; 
 
-            make_constellation(d_const_size);
+            
         }
 
         /*
@@ -73,60 +186,6 @@ namespace gr {
         symbol_demapper_impl::~symbol_demapper_impl()
         {
         }
-
-        void symbol_demapper_impl::make_constellation(int size){
-            // Since constellations are the same as in DVB-T (without alpha and step=2)
-            // we use Bogdan Diaconescu's implementation. 
-
-            //TODO - verify if QPSK works
-
-            // The simetry of the constellation is used to calculate 
-            // 16-QAM from QPSK and 64-QAM form 16-QAM
-
-            int bits_per_axis = log2(size) / 2;
-            int steps_per_axis = sqrt(size) / 2 - 1;
-
-            for (int i = 0; i < size; i++)
-            {
-                // This is the quadrant made of the first two bits starting from MSB
-                int q = i >> (2 * (bits_per_axis - 1)) & 3;
-                // Sign for correctly calculate I and Q in each quadrant
-                int sign0 = (q >> 1) ? -1 : 1; int sign1 = (q & 1) ? -1 : 1;
-
-                int x = (i >> (bits_per_axis - 1)) & ((1 << (bits_per_axis - 1)) - 1);
-                int y = i & ((1 << (bits_per_axis - 1)) - 1);
-
-                int xval = (steps_per_axis - x) * 2;
-                int yval = (steps_per_axis - y) * 2;
-
-                int val = (bin_to_gray(x) << (bits_per_axis - 1)) + bin_to_gray(y);
-
-                // ETSI EN 300 744 Clause 4.3.5
-                // Actually the constellation is gray coded
-                // but the bits on each axis are not taken in consecutive order
-                // So we need to convert from b0b2b4b1b3b5->b0b1b2b3b4b5(QAM64)
-
-                x = 0; y = 0;
-
-                for (int j = 0; j < (bits_per_axis - 1); j++)
-                {
-                    x += ((val >> (1 + 2 * j)) & 1) << j;
-                    y += ((val >> (2 * j)) & 1) << j;
-                }
-
-                val = (q << 2 * (bits_per_axis - 1)) + (x << (bits_per_axis - 1)) + y;
-
-                // Keep corespondence symbol bits->complex symbol in one vector
-                // Norm the signal using gain
-                d_constellation[val] = gr_complex(d_gain,0) * gr_complex(sign0 * xval, sign1 * yval);
-            }
-        }
-
-        int
-            symbol_demapper_impl::bin_to_gray(int val)
-            {
-                return (val >> 1) ^ val;
-            }
 
         int 
             symbol_demapper_impl::find_constellation_value(gr_complex val)
@@ -163,6 +222,8 @@ namespace gr {
                     for (int carrier = 0; carrier<d_noutput; carrier++){
                         // I will for now leave it like this so as to more easily accomodate the 
                         // per-segment constellation possibility later on. 
+                        
+                        
                         out[i*d_noutput+carrier] = find_constellation_value(in[i*d_noutput+carrier]);
                     }
                 }
