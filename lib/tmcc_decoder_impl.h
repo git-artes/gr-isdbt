@@ -37,6 +37,15 @@ namespace gr {
     	// Number of active carriers
     	int active_carriers;
 
+    	// Number of segments
+    	int d_number_of_segments;
+
+    	// Number of carriers per segment
+        int d_carriers_per_segment;
+
+        // Number of data carriers per segment
+        int d_data_carriers_per_segment;
+
     	// Number of symbols per frame
     	int d_symbols_per_frame;
 

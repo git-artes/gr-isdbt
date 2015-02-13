@@ -42,7 +42,7 @@ namespace gr {
 		  2191, 2351, 2437, 2569,\
 		  2693, 2723, 2878, 2941,\
 		  3041, 3218, 3284, 3395,\
-		  3550, 3595, 3755, 3841,\
+		  3505, 3595, 3755, 3841,\
 		  3973, 4097, 4127, 4282,\
 		  4345, 4445, 4622, 4688,\
 		  4799, 4909, 4999, 5159,\
@@ -311,7 +311,7 @@ namespace gr {
                 current_symbol = sym_count; 
             }
         }
-        if (((current_symbol-previous_symbol) !=1) && ((current_symbol-previous_symbol) !=-3)) printf("previous_symbol: %i, \n current_symbol: %i\n", previous_symbol, current_symbol);
+        //if (((current_symbol-previous_symbol) !=1) && ((current_symbol-previous_symbol) !=-3)) printf("previous_symbol: %i, \n current_symbol: %i\n", previous_symbol, current_symbol);
         previous_symbol = current_symbol;
 
 

@@ -27,9 +27,13 @@
 
 namespace gr {
   namespace isdbt {
+
+  // The segments positions
+  const int d_segments_positions[13] = {11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12};
+
   // The tmcc carriers positions
-    const int tmcc_carriers[52] = {
-    		70,133, 233, 410, \
+    const int d_tmcc_carriers[52] = {
+    	70,133, 233, 410, \
 		476, 587, 697, 787, \
 		947, 1033, 1165, 1289,\
 		1319, 1474, 1537, 1637,\
@@ -37,11 +41,28 @@ namespace gr {
 		2191, 2351, 2437, 2569,\
 		2693, 2723, 2878, 2941,\
 		3041, 3218, 3284, 3395,\
-		3550, 3595, 3755, 3841,\
+		3505, 3595, 3755, 3841,\
 		3973, 4097, 4127, 4282,\
 		4345, 4445, 4622, 4688,\
 		4799, 4909, 4999, 5159,\
 		5245, 5377, 5501, 5531
+    };
+
+    // The tmcc carriers positions
+    const int d_ac_carriers[104] = {
+    	  10,   28,  161,  191,  277,  316,  335,  425,\
+		 452,  472,  614,  640,  683,  727,  832,  853,\
+    	 868,  953, 1012, 1061, 1088, 1144, 1195, 1277,\
+    	1394, 1397, 1414, 1432, 1565, 1595, 1681, 1720,\
+    	1739, 1829, 1856, 1876, 2018, 2044, 2087, 2131,\
+    	2236, 2257, 2272, 2357, 2416, 2465, 2492, 2548,\
+    	2599, 2681, 2798, 2801, 2818, 2836, 2969, 2999,\
+    	3085, 3124, 3143, 3233, 3260, 3280, 3422, 3448,\
+    	3491, 3535, 3640, 3661, 3676, 3761, 3820, 3869,\
+    	3896, 3952, 4003, 4085, 4202, 4205, 4222, 4240,\
+    	4373, 4403, 4489, 4528, 4547, 4637, 4664, 4684,\
+    	4826, 4852, 4895, 4939, 5044, 5065, 5080, 5165,\
+    	5224, 5273, 5300, 5356, 5407, 5489, 5606, 5609
     };
 
     // TPS sync sequence for odd and even frames
@@ -92,7 +113,7 @@ namespace gr {
 
         for (int k = 0; k < tmcc_carriers_size; k++)
         {
-            gr_complex phdiff = in[tmcc_carriers[k]] * conj(d_prev_tmcc_symbol[k]);
+            gr_complex phdiff = in[d_tmcc_carriers[k]] * conj(d_prev_tmcc_symbol[k]);
             //gr_complex phdiff = in[k] * conj(d_prev_tmcc_symbol[k]);
 
 
@@ -105,7 +126,7 @@ namespace gr {
            // if ((tmcc_majority_zero<0) && (phdiff.real()>0))  printf("TMMC Carriers: %f + j%f\n PREVOUS: %f + j%f\n",in[tmcc_carriers[k]].real(), in[tmcc_carriers[k]].imag(),d_prev_tmcc_symbol[k].real(), d_prev_tmcc_symbol[k].imag());
 
             //d_prev_tmcc_symbol[k] = in[tmcc_carriers[k]];
-            d_prev_tmcc_symbol[k] = in[tmcc_carriers[k]];
+            d_prev_tmcc_symbol[k] = in[d_tmcc_carriers[k]];
 
 
         }
@@ -140,12 +161,12 @@ namespace gr {
             d_symbol_index_known = 1;
             end_frame = 1;
             d_symbol_index = 203;
-
+/*
             printf("\n Even: ");
             for (int i = 0; i < d_symbols_per_frame; i++)
             	printf("%i", d_rcv_tmcc_data[i]);
             printf("\n");
-
+*/
         }
         else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()))
         {
@@ -154,26 +175,18 @@ namespace gr {
             end_frame = 1;
             d_symbol_index = 203;
 
-
+/*
             printf("\n Odd: ");
             for (int i = 0; i < d_symbols_per_frame; i++)
             	printf("%i", d_rcv_tmcc_data[i]);
             printf("\n");
-
+*/
         }
-
-        //if (d_symbol_index ==204){
-        	//printf("\n Symbol Index = 204: ");
-        	//for (int i = 0; i < d_symbols_per_frame; i++)
-        	//	printf("%i", d_rcv_tmcc_data[i]);
-        	//printf("\n");
-       // }
 
         //printf("Symbol Index: %i\n", d_symbol_index);
 
         // We return end_frame
         return end_frame;
-
 
     }
     /*
@@ -183,7 +196,7 @@ namespace gr {
     int
 	tmcc_decoder_impl::is_sp_carrier(int carrier)
     {
-    	for (int i=0; i<36; i++)
+    	for (int i=0;i<36;i++)
     		if (carrier == (12*i+3*(d_symbol_index % 4)))
     			return 1;
     	return 0;
@@ -204,13 +217,21 @@ namespace gr {
     tmcc_decoder_impl::tmcc_decoder_impl()
       : gr::block("tmcc_decoder",
               gr::io_signature::make(1, 1, sizeof(gr_complex)*5617),
-			  gr::io_signature::make(1, 1, sizeof(gr_complex)*384))
+			  gr::io_signature::make(1, 1, sizeof(gr_complex)*4992))
     {
         // Number of tmcc pilots
         tmcc_carriers_size=52;
 
         // Number of active carriers
         active_carriers=5617;
+
+        // Number of segments
+        d_number_of_segments = 13;
+
+        // Number of carriers per segment
+        d_carriers_per_segment = (active_carriers-1)/d_number_of_segments;
+
+        d_data_carriers_per_segment = 384;
 
         // Number of symbols per frame
         d_symbols_per_frame=204;
@@ -271,35 +292,46 @@ namespace gr {
         /*
          * Here starts the signal processing
          */
-        for (int i = 0; i < noutput_items; i++)
-        {
-        	// Process TMCC data
-        	// If a frame is recognized then signal end of frame
-        	int frame_end = process_tmcc_data(&in[i * 5617]);
-        }
-        //printf("Symbol Index:= %d\n", d_symbol_index);
+	for (int i = 0; i < noutput_items; i++) {
+		// Process TMCC data
+		//If a frame is recognized then signal end of frame
+		int frame_end = process_tmcc_data(&in[i * active_carriers]);
 
-/*
-        for (int carrier = 0; carrier < active_carriers; carrier++)
-       // for (int carrier = 0; carrier < 52; carrier++)
-        	{
-           		out[carrier] = in[carrier];
-        	}
-  */
-       // printf("sym_count = %i\n",d_symbol_index % 4);
-       // printf("tmcc_carriers 1 = %i\n",tmcc_carriers[6*4+1]);
+		int carrier_out = 0;
+		int d_spilot_index = 0;
+		int d_acpilot_index = 0;
+		int d_tmccpilot_index = 0;
 
+		for (int carrier = 0; carrier < (active_carriers - 1);carrier++) {
 
-        int carrier_out = 0;
-        // We only let out the one_seg active carriers
-        for (int carrier = 0; carrier < 432; carrier++)
-         {
-        	if((carrier != 407) && (carrier != 377) && (carrier != 244) && (carrier != 226) && (carrier != 209) && (carrier != 206) && (carrier != 89) && (carrier != 7) && ((carrier+432*6) != tmcc_carriers[6*4]) && ((carrier+432*6) != tmcc_carriers[6*4+1]) && ((carrier+432*6) != tmcc_carriers[6*4+2]) && ((carrier+432*6) != tmcc_carriers[6*4+3]) && (!is_sp_carrier(carrier)))
-            	{
-        		out[carrier_out] = in[carrier + 432*6];
-        		carrier_out++;
-            	}
-         }
+			// We see if the current carrier is an scattered pilot
+			if (carrier == (12 * d_spilot_index + 3 * (d_symbol_index % 4))) {
+				d_spilot_index++;
+
+			} else {
+				// We see if the current carrier is an AC pilot
+				if ((carrier == d_ac_carriers[d_acpilot_index])) // && (carrier != 377) && (carrier != 244) && (carrier != 226) && (carrier != 209) && (carrier != 206) && (carrier != 89) && (carrier != 7) && ((carrier+432*6) != tmcc_carriers[6*4]) && ((carrier+432*6) != tmcc_carriers[6*4+1]) && ((carrier+432*6) != tmcc_carriers[6*4+2]) && ((carrier+432*6) != tmcc_carriers[6*4+3]))
+				{
+					d_acpilot_index++;
+
+				} else {
+					// We see if the current carrier is a tmcc pilot
+					if ((carrier == d_tmcc_carriers[d_tmccpilot_index])) {
+						d_tmccpilot_index++;
+
+					} else {
+						// If is none of then we let the carrier out in the proper order
+						//out[carrier_out] = in[i * 5617 + carrier];
+						out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment)] = in[i * active_carriers + carrier];
+						carrier_out++;
+						//if (carrier_out == d_data_carriers_per_segment) carrier_out = 0;
+					}
+				}
+			}
+
+		}
+
+	}
         /*
          * Here ends the signal processing
          */

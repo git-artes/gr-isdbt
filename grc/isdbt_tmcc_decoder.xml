@@ -13,7 +13,7 @@
   <source>
   	<name>out</name>
 	<type>complex</type>
-	<vlen>384</vlen>
+	<vlen>4992</vlen>
   </source>
 </block>
 
