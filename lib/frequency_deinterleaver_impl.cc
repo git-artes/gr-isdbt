@@ -22,6 +22,7 @@
 #include "config.h"
 #endif
 
+#include <stdio.h>
 #include <gnuradio/io_signature.h>
 #include "frequency_deinterleaver_impl.h"
 
@@ -31,7 +32,7 @@ namespace gr {
 
         // TODO shouldn't things like these be defined elsewhere? 
         const int frequency_deinterleaver_impl::d_data_carriers_mode1 = 96; 
-        const int frequency_deinterleaver_impl::d_total_segments = 13; 
+        const int frequency_deinterleaver_impl::d_total_segments = 1; 
 
         const int frequency_deinterleaver_impl::d_random_perm_mode1[] = 
         { 80, 93, 63, 92, 94, 55, 17, 81, 6, 51, 9, 85, 89, 65, 52, 15, 73, 66, 46, 71, 12, 70, 18, 13,\
@@ -126,7 +127,8 @@ namespace gr {
         }
 
         gr_complex * frequency_deinterleaver_impl::derotate(const gr_complex * rotated, gr_complex * derotated){
-            for (int segment = 1; segment<d_total_segments; segment++) 
+            // I begin with the first segment even if its not rotated, since I would have to copy it anyway. I could save a multiplication but I believe is minimal. 
+            for (int segment = 0; segment<d_total_segments; segment++) 
             {
                 for(int carrier = 0; carrier<d_carriers_per_segment; carrier++) 
                 {
@@ -140,8 +142,12 @@ namespace gr {
         gr_complex * frequency_deinterleaver_impl::intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved){
             // The number of segments to enter the deinterleaver. 
             int n = d_total_segments; 
+            // in case of 1-seg, the corresponding segment is not interleaved so I will simply copy it in the output. 
             if (d_1seg){
                 n = d_total_segments-1; 
+                for (int carrier = 0; carrier<d_carriers_per_segment; carrier++){
+                    deinterleaved[carrier] = interleaved[carrier]; 
+                }
             }
 
             int overall_carrier = 0 + (d_total_segments-n)*d_carriers_per_segment; 

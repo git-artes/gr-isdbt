@@ -32,23 +32,17 @@ namespace gr {
 
                 static const int d_data_carriers_mode1; 
                 static const int d_total_segments; 
-                static const float d_possible_gains[]; 
+
+                static const gr_complex d_constellation_qpsk[]; 
+                static const gr_complex d_constellation_16qam[]; 
+                static const gr_complex d_constellation_64qam[]; 
 
                 int d_mode; 
                 int d_const_size; 
-                int d_gain; 
-                gr_complex d_constellation[]; 
+                const gr_complex * d_constellation; 
                 int d_carriers_per_segment; 
                 int d_noutput; 
                 
-                /**
-                 * It puts the complex numbers corresponding to the 
-                 * constellation in the order established by the standard
-                 * so that for example d_constellation[0] corresponds to 
-                 * 1/sqrt(2)+j/sqrt(2) in QPSK
-                 * */
-                void make_constellation(int size); 
-                int bin_to_gray(int val); 
                 int find_constellation_value(gr_complex val); 
             public:
                 symbol_demapper_impl(int mode, int constellation_size);

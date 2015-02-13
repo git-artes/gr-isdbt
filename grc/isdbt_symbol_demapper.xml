@@ -19,11 +19,11 @@
   <sink>
     <name>in</name>
     <type>complex</type>
-    <vlen>13*96*(2**($mode-1))</vlen>
+    <vlen>1*96*(2**($mode-1))</vlen>
   </sink>
   <source>
     <name>out</name>
     <type>byte</type>
-    <vlen>13*96*(2**($mode-1))</vlen>
+    <vlen>1*96*(2**($mode-1))</vlen>
   </source>
 </block>
