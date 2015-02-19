@@ -31,7 +31,8 @@ list(APPEND isdbt_sources
     frequency_deinterleaver_impl.cc
     time_deinterleaver_impl.cc
     symbol_demapper_impl.cc
-    tmcc_decoder_impl.cc )
+    tmcc_decoder_impl.cc
+    bit_deinterleaver_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -68,6 +69,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_deinterleaver.cc

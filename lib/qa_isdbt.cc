@@ -30,6 +30,7 @@
 //#include "qa_frequency_deinterleaver.h"
 //#include "qa_time_deinterleaver.h"
 #include "qa_symbol_demapper.h"
+#include "qa_bit_deinterleaver.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -39,6 +40,7 @@ qa_isdbt::suite()
 //  s->addTest(gr::isdbt::qa_frequency_deinterleaver::suite());
 //  s->addTest(gr::isdbt::qa_time_deinterleaver::suite());
   s->addTest(gr::isdbt::qa_symbol_demapper::suite());
+  s->addTest(gr::isdbt::qa_bit_deinterleaver::suite());
 
   return s;
 }
