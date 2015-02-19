@@ -46,7 +46,7 @@ namespace gr {
        * class. isdbt::sync_and_channel_estimaton::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int fft_length, int payload_length, int offset_max);
     };
 
   } // namespace isdbt

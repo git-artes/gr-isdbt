@@ -22,6 +22,7 @@
 #define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_IMPL_H
 
 #include <isdbt/sync_and_channel_estimaton.h>
+#include <deque>
 
 namespace gr {
   namespace isdbt {
@@ -29,7 +30,7 @@ namespace gr {
     class sync_and_channel_estimaton_impl : public sync_and_channel_estimaton
     {
      private:
-
+	
         //In and Out data length
         int d_ninput;
         int d_noutput;
@@ -43,21 +44,27 @@ namespace gr {
         // Max frecuency offset to be corrected
         int d_freq_offset_max;
 
-        // Number of tmcc pilots
-        int tmcc_carriers_size;
+    	static const int tmcc_carriers_size_2k;
+	static const int tmcc_carriers_2k[];
+    	static const int tmcc_carriers_size_4k;
+	static const int tmcc_carriers_4k[];
+    	static const int tmcc_carriers_size_8k;
+	static const int tmcc_carriers_8k[];
+
+    	int tmcc_carriers_size;
+    	const int * tmcc_carriers;
         
         // Number of sp pilots
         int sp_carriers_size;
 
         int active_carriers;
 
-//TODO This should be initialized elsewhere. 
         // PRPS generator data buffer
-        char d_wk[5617];
+        char * d_wk;
 
-        float d_known_phase_diff[52-1];
+        float * d_known_phase_diff;
 
-        gr_complex d_channel_gain[5617]; 
+        gr_complex * d_channel_gain; 
 
         // It will be initialized after process_tmcc_data function
         int d_freq_offset;
@@ -73,6 +80,8 @@ namespace gr {
         // Generate PRBS
         void generate_prbs();
 
+	void tmcc_positions(int fft);
+
         void process_tmcc_data(const gr_complex * in);
         
         gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
@@ -80,7 +89,7 @@ namespace gr {
         void process_sp_data(const gr_complex * in);
 
      public:
-      sync_and_channel_estimaton_impl();
+      sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
       ~sync_and_channel_estimaton_impl();
 
       // Where all the action really happens
