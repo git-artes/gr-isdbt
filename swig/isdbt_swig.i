@@ -15,6 +15,7 @@
 #include "isdbt/subset_of_carriers.h"
 #include "isdbt/frequency_deinterleaver.h"
 #include "isdbt/time_deinterleaver.h"
+#include "isdbt/bit_deinterleaver.h"
 %}
 
 
@@ -33,3 +34,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, time_deinterleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, symbol_demapper);
 %include "isdbt/tmcc_decoder.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_decoder);
+%include "isdbt/bit_deinterleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver);

@@ -23,5 +23,6 @@ install(FILES
     isdbt_frequency_deinterleaver.xml
     isdbt_time_deinterleaver.xml
     isdbt_symbol_demapper.xml
-    isdbt_tmcc_decoder.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_tmcc_decoder.xml
+    isdbt_bit_deinterleaver.xml DESTINATION share/gnuradio/grc/blocks
 )
