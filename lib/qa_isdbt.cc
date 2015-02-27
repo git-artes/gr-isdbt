@@ -32,6 +32,9 @@
 #include "qa_symbol_demapper.h"
 #include "qa_bit_deinterleaver.h"
 
+//#include "qa_viterbi_decoder_1seg.h"
+#include "qa_energy_descrambler.h"
+
 CppUnit::TestSuite *
 qa_isdbt::suite()
 {
@@ -41,6 +44,9 @@ qa_isdbt::suite()
 //  s->addTest(gr::isdbt::qa_time_deinterleaver::suite());
   s->addTest(gr::isdbt::qa_symbol_demapper::suite());
   s->addTest(gr::isdbt::qa_bit_deinterleaver::suite());
+
+//  s->addTest(gr::isdbt::qa_viterbi_decoder_1seg::suite());
+  s->addTest(gr::isdbt::qa_energy_descrambler::suite());
 
   return s;
 }

@@ -1,0 +1,15 @@
+<block>
+  <name>Viterbi decoder 1seg</name>
+  <key>isdbt_viterbi_decoder_1seg</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.viterbi_decoder_1seg()</make>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+</block>

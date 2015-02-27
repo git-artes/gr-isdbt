@@ -60,8 +60,7 @@ const int tmcc_decoder_impl::tmcc_carriers_4k[] = {
 		70, 133, 233, 410, 476, 587, 697, 787, \
 		947, 1033, 1165, 1289, 1319, 1474, 1537, 1637,\
 		1814, 1880, 1991, 2101,	2191, 2351, 2437, 2569,\
-		2693, 2723 };
-
+		2693, 2723 }; 
 // TMCC carriers size for mode 3 (8K)
 const int tmcc_decoder_impl::tmcc_carriers_size_8k = 52;
 
@@ -335,10 +334,20 @@ tmcc_decoder_impl::general_work (int noutput_items,
 	 * Here starts the signal processing
 	 */
 	 for (int i = 0; i < noutput_items; i++) {
-		 // Process TMCC data
+         if (d_frame_end) {
+            // Signal the beginning of the frame downstream
+            // Being here means that the last OFDM symbol 
+            // constituted a frame ending. 
+             const uint64_t offset = this->nitems_written(0)+i; 
+             pmt::pmt_t key = pmt::string_to_symbol("frame_begin"); 
+             pmt::pmt_t value = pmt::from_long(0xaa); 
+             this->add_item_tag(0,offset,key,value); 
+         }
+		 
+         // Process TMCC data
 
 		 //If a frame is recognized then set signal end of frame to true
-		 int frame_end = process_tmcc_data(&in[i * active_carriers]);
+		 d_frame_end = process_tmcc_data(&in[i * active_carriers]);
 
 		 // Declare and initialize to zero the number of data carrier, spilot, acpilot and tmcc pilot found
 		 int carrier_out = 0;
@@ -367,12 +376,16 @@ tmcc_decoder_impl::general_work (int noutput_items,
 					 } else {
 						 // If is none of then we let the carrier out in the proper order
 						 //out[carrier_out] = in[i * active_carriers + carrier];
-						 out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment)] = in[i * active_carriers + carrier];
+						 out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) + i*d_data_carriers_per_segment*13] = in[i * active_carriers + carrier];
+                         if (abs(in[i*active_carriers + carrier].imag()) < 0.01){
+                             printf("problemas: out=%f+j%f\n",in[i*active_carriers+carrier].real(),in[i*active_carriers+carrier].imag());
+                         }
 						 carrier_out++;
 					 }
 				 }
 			 }
 		 }
+         //printf("data carriers: %d\n",carrier_out);
 	 }
 	 /*
 	  * Here ends the signal processing

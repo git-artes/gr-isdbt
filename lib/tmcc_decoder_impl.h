@@ -96,6 +96,9 @@ namespace gr {
         // See if the symbol index is known
         int d_symbol_index_known;
 
+        // indicates whether the last symbol was a frame end
+        int d_frame_end;
+
         // Symbol Index
         int d_symbol_index;
 

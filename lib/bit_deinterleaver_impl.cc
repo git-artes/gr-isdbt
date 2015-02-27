@@ -96,6 +96,14 @@ namespace gr {
         unsigned char aux = 0; 
         unsigned char mask = 1; 
 
+
+        std::vector<tag_t> tags; 
+        const uint64_t nread = this->nitems_read(0); 
+        this->get_tags_in_range(tags,0,nread,nread+noutput_items,pmt::string_to_symbol("frame_end")); 
+        if(tags.size()){
+            printf("FRAME END!!!!!!!!!!!!!!!!!!!"); 
+        }
+
         for (int i=0; i<noutput_items; i++)
         {
             for (int carrier = 0; carrier<d_noutput; carrier++)

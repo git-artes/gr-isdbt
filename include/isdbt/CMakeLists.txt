@@ -29,5 +29,7 @@ install(FILES
     time_deinterleaver.h
     symbol_demapper.h
     tmcc_decoder.h
-    bit_deinterleaver.h DESTINATION include/isdbt
+    bit_deinterleaver.h
+    viterbi_decoder_1seg.h
+    energy_descrambler.h DESTINATION include/isdbt
 )

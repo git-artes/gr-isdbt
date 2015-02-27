@@ -16,6 +16,8 @@
 #include "isdbt/frequency_deinterleaver.h"
 #include "isdbt/time_deinterleaver.h"
 #include "isdbt/bit_deinterleaver.h"
+#include "isdbt/viterbi_decoder_1seg.h"
+#include "isdbt/energy_descrambler.h"
 %}
 
 
@@ -36,3 +38,8 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, symbol_demapper);
 GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_decoder);
 %include "isdbt/bit_deinterleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver);
+
+%include "isdbt/viterbi_decoder_1seg.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, viterbi_decoder_1seg);
+%include "isdbt/energy_descrambler.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, energy_descrambler);

@@ -48,3 +48,5 @@ GR_ADD_TEST(qa_time_deinterleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DI
 GR_ADD_TEST(qa_symbol_demapper ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper.py)
 GR_ADD_TEST(qa_tmcc_decoder ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tmcc_decoder.py)
 GR_ADD_TEST(qa_bit_deinterleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver.py)
+#GR_ADD_TEST(qa_viterbi_decoder_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg.py)
+GR_ADD_TEST(qa_energy_descrambler ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.py)

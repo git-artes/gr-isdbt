@@ -32,7 +32,12 @@ list(APPEND isdbt_sources
     time_deinterleaver_impl.cc
     symbol_demapper_impl.cc
     tmcc_decoder_impl.cc
-    bit_deinterleaver_impl.cc )
+    bit_deinterleaver_impl.cc
+    viterbi_decoder_1seg_impl.cc
+    d_viterbi.c
+    d_metrics.c
+    d_tab.c
+    energy_descrambler_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -65,10 +70,11 @@ install(TARGETS gnuradio-isdbt
 include(GrTest)
 
 include_directories(${CPPUNIT_INCLUDE_DIRS})
-
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_deinterleaver.cc
