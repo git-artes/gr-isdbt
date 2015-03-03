@@ -460,7 +460,7 @@ namespace gr {
 
 
                     int diff = d_current_symbol-d_previous_symbol;
-                    // If there is any symbol lost, print stuff and signal it downstream
+                    // If there is any symbol lost print stuff
                     if ((diff != 1) && (diff !=-3)){
                         printf("previous_symbol: %i, \n current_symbol: %i\n", d_previous_symbol, d_current_symbol);
                         /*int skip_len = diff-1;
