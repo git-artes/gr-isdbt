@@ -324,8 +324,8 @@ namespace gr {
 #endif
 
                 }
-                if (peak_length>1)
-                    printf("Cuidado!!!! Más de un pico detectado. Hay señal OFDM?"); 
+                if (peak_length!=1)
+                    printf("WARNING: %d likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
                 if (peak_length==1)
                 {
                     peak = peak_pos[peak_max] + lookup_stop;

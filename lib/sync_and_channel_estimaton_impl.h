@@ -25,83 +25,90 @@
 #include <deque>
 
 namespace gr {
-  namespace isdbt {
+    namespace isdbt {
 
-    class sync_and_channel_estimaton_impl : public sync_and_channel_estimaton
-    {
-     private:
-	
-        //In and Out data length
-        int d_ninput;
-        int d_noutput;
+        class sync_and_channel_estimaton_impl : public sync_and_channel_estimaton
+        {
+            private:
 
-        //FFT length
-        int d_fft_length;
+                //In and Out data length
+                int d_ninput;
+                int d_noutput;
 
-        // Number of zeros on the left of the IFFT
-        int d_zeros_on_left;
+                //FFT length
+                int d_fft_length;
 
-        // Max frecuency offset to be corrected
-        int d_freq_offset_max;
+                // Number of zeros on the left of the IFFT
+                int d_zeros_on_left;
 
-    	static const int tmcc_carriers_size_2k;
-	static const int tmcc_carriers_2k[];
-    	static const int tmcc_carriers_size_4k;
-	static const int tmcc_carriers_4k[];
-    	static const int tmcc_carriers_size_8k;
-	static const int tmcc_carriers_8k[];
+                // Max frecuency offset to be corrected
+                int d_freq_offset_max;
 
-    	int tmcc_carriers_size;
-    	const int * tmcc_carriers;
-        
-        // Number of sp pilots
-        int sp_carriers_size;
+                static const int tmcc_carriers_size_2k;
+                static const int tmcc_carriers_2k[];
+                static const int tmcc_carriers_size_4k;
+                static const int tmcc_carriers_4k[];
+                static const int tmcc_carriers_size_8k;
+                static const int tmcc_carriers_8k[];
 
-        int active_carriers;
+                int tmcc_carriers_size;
+                const int * tmcc_carriers;
 
-        // PRPS generator data buffer
-        char * d_wk;
+                // Number of sp pilots
+                int sp_carriers_size;
 
-        float * d_known_phase_diff;
+                int active_carriers;
 
-        gr_complex * d_channel_gain; 
+                // PRPS generator data buffer
+                char * d_wk;
 
-        // It will be initialized after process_tmcc_data function
-        int d_freq_offset;
+                float * d_known_phase_diff;
 
-        // Variable to keep corrected OFDM symbol
-        // It will be initialized after process_tmcc_data function
-        gr_complex * derotated_in;
+                gr_complex * d_channel_gain; 
 
-        int is_sync_start(int nitems);
+                // It will be initialized after process_tmcc_data function
+                int d_freq_offset;
 
-        gr_complex get_pilot_value(int index);
+                // Variable to keep corrected OFDM symbol
+                // It will be initialized after process_tmcc_data function
+                gr_complex * derotated_in;
 
-        // Generate PRBS
-        void generate_prbs();
+                // indicates the symbol relative index calculated from the processing the SPs
+                int d_current_symbol;
+                int d_previous_symbol; 
 
-	void tmcc_positions(int fft);
+                int is_sync_start(int nitems);
 
-        void process_tmcc_data(const gr_complex * in);
-        
-        gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
-        
-        void process_sp_data(const gr_complex * in);
+                gr_complex get_pilot_value(int index);
 
-     public:
-      sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
-      ~sync_and_channel_estimaton_impl();
+                // Generate PRBS
+                void generate_prbs();
 
-      // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+                void tmcc_positions(int fft);
 
-      int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
-    };
+                void process_tmcc_data(const gr_complex * in);
 
-  } // namespace isdbt
+                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
+
+                /*
+                 * Returns the relative symbol index based on where are the SPs
+                 */
+                void process_sp_data(const gr_complex * in);
+
+            public:
+                sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
+                ~sync_and_channel_estimaton_impl();
+
+                // Where all the action really happens
+                void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+                int general_work(int noutput_items,
+                        gr_vector_int &ninput_items,
+                        gr_vector_const_void_star &input_items,
+                        gr_vector_void_star &output_items);
+        };
+
+    } // namespace isdbt
 } // namespace gr
 
 #endif /* INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_IMPL_H */

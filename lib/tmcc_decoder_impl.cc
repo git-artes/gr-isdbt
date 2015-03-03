@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "tmcc_decoder_impl.h"
+#include <cmath>
 
 namespace gr {
 namespace isdbt {
@@ -190,7 +191,7 @@ tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
 	int end_frame = 0;
 
 	// This variable should take values between 0 and 203
-	d_symbol_index = (d_symbol_index+ 1) % 204;
+	//d_symbol_index = (d_symbol_index+ 1) % 204;
 
 	// As we have 'tmcc_carriers_size' TMCC carriers we will using majority voting for decision
 	int tmcc_majority_zero = 0;
@@ -223,32 +224,40 @@ tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
 	// Match synchronization signatures
 
 		// We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the even tmcc sync sequence stored in the d_tmcc_sync_evenv queue
-	if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin()))
+	if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin()) & d_since_last_tmcc>=203)
 	{
+		//printf("since tmcc_complete: %d\n", d_since_last_tmcc);
 		// If the sequences match, we set set the symbol index to 203
-		end_frame = 1;
-		d_symbol_index = 203;
+        // (not any more since it was not working correctly)
+		end_frame = d_since_last_tmcc==203;
+        d_since_last_tmcc = 0;
+		//d_symbol_index = 203;
 
 		// Then, we print the full tmcc
-		printf("\n Even: ");
 		for (int i = 0; i < d_symbols_per_frame; i++)
 			printf("%i", d_rcv_tmcc_data[i]);
-		printf("\n");
+        printf("\n");
 
 	}
 		// We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the odd tmcc sync sequence stored in the d_tmcc_sync_oddv queue
-	else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()))
+	else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) & d_since_last_tmcc >= 203)
 	{
+		//printf("since tmcc_complete: %d\n", d_since_last_tmcc);
 		// If the sequences match, we set set the symbol index to 203
-		end_frame = 1;
-		d_symbol_index = 203;
+        // not any more since it was not working correctly
+		end_frame = d_since_last_tmcc==203;
+        d_since_last_tmcc = 0;
+		//d_symbol_index = 203;
 
 		// Then, we print the full tmcc
-		printf("\n Odd: ");
 		for (int i = 0; i < d_symbols_per_frame; i++)
 			printf("%i", d_rcv_tmcc_data[i]);
 		printf("\n");
 	}
+    else 
+    {
+        d_since_last_tmcc++;
+    }
 
 	// We return end_frame
 	return end_frame;
@@ -302,6 +311,7 @@ tmcc_decoder_impl::tmcc_decoder_impl(int payload_length, int data_length)
 		d_rcv_tmcc_data.push_back(0);
 
 	number_symbol = 0;
+    d_since_last_tmcc = 203;
 }
 
 /*
@@ -355,6 +365,31 @@ tmcc_decoder_impl::general_work (int noutput_items,
 		 int d_acpilot_index = 0;
 		 int d_tmccpilot_index = 0;
 
+         /*
+         // check whether a symbol index skip was detected upstream
+         // and correct d_symbol_index accordingly
+        std::vector<tag_t> tags; 
+        const uint64_t nread = this->nitems_read(0); 
+        this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("symbol_index_skip"));
+        if (tags.size())
+        {
+            d_symbol_index = (d_symbol_index + pmt::to_long(tags[0].value)) % 204;
+            printf("se detecto un salto de %d\n",pmt::to_long(tags[0].value));
+        }
+        */
+         
+         //currently, we obtain the symbol relative index (between 0 and 3)
+         //from the block upstream
+        std::vector<tag_t> tags; 
+        const uint64_t nread = this->nitems_read(0); 
+        this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
+        if (tags.size())
+            d_symbol_index = pmt::to_long(tags[0].value);
+        else 
+            printf("Warning: no relative index found in tag's stream"); 
+
+            
+
 		 // We will determinate which kind of carrier is each. If we find a data carrier, we let it out
 		 for (int carrier = 0; carrier < (active_carriers - 1);carrier++) {
 
@@ -376,10 +411,13 @@ tmcc_decoder_impl::general_work (int noutput_items,
 					 } else {
 						 // If is none of then we let the carrier out in the proper order
 						 //out[carrier_out] = in[i * active_carriers + carrier];
-						 out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) + i*d_data_carriers_per_segment*13] = in[i * active_carriers + carrier];
-                         if (abs(in[i*active_carriers + carrier].imag()) < 0.01){
-                             printf("problemas: out=%f+j%f\n",in[i*active_carriers+carrier].real(),in[i*active_carriers+carrier].imag());
-                         }
+                         gr_complex salida = in[i*active_carriers + carrier]; 
+						 out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
+                         /*if (std::abs(salida.imag()) < 0.01){
+                             printf("problemas (sym=%d, portadora = %d, abs(salida.imag())=%f): out=%f+j%f\n",d_symbol_index,carrier, std::abs(salida.imag()),salida.real(),salida.imag());
+                             for (int j=-5; j<5; j++)
+                                printf("in[%d+%d]=%f+j%f\n",i*active_carriers+carrier,j,in[i*active_carriers+carrier+j].real(),in[i*active_carriers+carrier+j].imag());
+                         }*/
 						 carrier_out++;
 					 }
 				 }

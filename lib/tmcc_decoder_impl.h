@@ -104,6 +104,9 @@ namespace gr {
 
         int number_symbol;
 
+        // how many symbols ago we saw a complete tmcc
+        int d_since_last_tmcc;
+
 
         /*METHODS*/
 
