@@ -57,12 +57,10 @@ namespace gr {
 
             for (int segment=0; segment<d_total_segments; segment++)
             {
-                // I put them in backwards order to negate the effect of the time
-                // interleaver. 
-                for (int carrier = d_carriers_per_segment-1; carrier>=0; carrier--)
+                for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
                {
                     mi = (5*carrier) % d_data_carriers_mode1; 
-                    d_shift.push_back(new std::deque<gr_complex>(d_I*mi,0)); 
+                    d_shift.push_back(new std::deque<gr_complex>(d_I*(d_data_carriers_mode1-1-mi),0)); 
                 }
             }
         }
