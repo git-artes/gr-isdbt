@@ -278,6 +278,14 @@ tmcc_decoder::make(int payload_length, int data_length)
 /*
  * The private constructor
  */
+//TODO this constructor has some totally unnatural parameters as input. 
+//Correct
+//TODO the block complains about :
+//gr::buffer::allocate_buffer: warning: tried to allocate
+//   4 items of size 44928. Due to alignment requirements
+//   32 were allocated.  If this isn't OK, consider padding
+//   your structure to a power-of-two bytes.
+//   On this platform, our allocation granularity is 4096 bytes.
 tmcc_decoder_impl::tmcc_decoder_impl(int payload_length, int data_length)
 : gr::block("tmcc_decoder",
 		gr::io_signature::make(1, 1, sizeof(gr_complex)*payload_length),

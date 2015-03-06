@@ -40,6 +40,10 @@ namespace gr {
     namespace isdbt {
 
         const unsigned char viterbi_decoder_1seg_impl::d_puncture_1_2[2] = {1, 1};
+        const unsigned char viterbi_decoder_1seg_impl::d_puncture_2_3[4] = {1, 1, 0, 1};
+        const unsigned char viterbi_decoder_1seg_impl::d_puncture_3_4[6] = {1, 1, 0, 1, 1, 0};
+        const unsigned char viterbi_decoder_1seg_impl::d_puncture_5_6[10] = {1, 1, 0, 1, 1, 0, 0, 1, 1, 0};
+        const unsigned char viterbi_decoder_1seg_impl::d_puncture_7_8[14] = {1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0};
 
         viterbi_decoder_1seg::sptr
             viterbi_decoder_1seg::make()
@@ -68,8 +72,8 @@ namespace gr {
             d_m = 2;  
 
             // depuncturing matrix
-            d_puncture = d_puncture_1_2;
-            d_ntraceback = 5;
+            d_puncture = d_puncture_2_3;
+            d_ntraceback = 9;
 
             /*
              * We input n bytes, each carrying m bits => nm bits

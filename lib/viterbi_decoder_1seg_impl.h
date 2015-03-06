@@ -35,6 +35,10 @@ namespace gr {
      private:
       // Puncturing vectors
       static const unsigned char d_puncture_1_2[];
+      static const unsigned char d_puncture_2_3[];
+      static const unsigned char d_puncture_3_4[];
+      static const unsigned char d_puncture_5_6[];
+      static const unsigned char d_puncture_7_8[];
 
       // Current puncturing vector
       const unsigned char * d_puncture;
