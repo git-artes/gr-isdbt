@@ -34,9 +34,9 @@ namespace gr {
     const int bit_deinterleaver_impl::d_data_carriers_mode1 = 96; 
     const int bit_deinterleaver_impl::d_total_segments = 1; 
 
-    const int bit_deinterleaver_impl::d_delay_qpsk[2] = {120, 0}; 
-    const int bit_deinterleaver_impl::d_delay_16qam[4] = {120, 80, 40, 0}; 
-    const int bit_deinterleaver_impl::d_delay_64qam[6] = {120, 96, 72, 48, 24, 0}; 
+    const int bit_deinterleaver_impl::d_delay_qpsk[2] = {0, 120}; 
+    const int bit_deinterleaver_impl::d_delay_16qam[4] = {0, 40, 80, 120}; 
+    const int bit_deinterleaver_impl::d_delay_64qam[6] = {0, 24, 48, 72, 96, 120}; 
 
 
     bit_deinterleaver::sptr
@@ -97,12 +97,12 @@ namespace gr {
         unsigned char mask = 1; 
 
 
-        std::vector<tag_t> tags; 
+        /*std::vector<tag_t> tags; 
         const uint64_t nread = this->nitems_read(0); 
         this->get_tags_in_range(tags,0,nread,nread+noutput_items,pmt::string_to_symbol("frame_end")); 
         if(tags.size()){
             printf("FRAME END!!!!!!!!!!!!!!!!!!!"); 
-        }
+        }*/
 
         for (int i=0; i<noutput_items; i++)
         {
@@ -116,6 +116,8 @@ namespace gr {
                 aux = 0; 
                 mask = 1; 
                 for (int b=0; b<d_num_bits; b++){
+                    // The least significant bits are more delayed in the interleaver, so I now
+                    // have to delay more the most significant ones
                     aux |= (*d_shift[carrier])[d_delay[b]] & mask; 
                     //aux |= d_shift[carrier]->at(d_delay[b]) & mask; 
                    mask = mask << 1;  
