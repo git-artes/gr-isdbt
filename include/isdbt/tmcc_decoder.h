@@ -46,7 +46,7 @@ namespace gr {
        * class. isdbt::tmcc_decoder::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int payload_length, int data_length);
+      static sptr make(int mode);
     };
 
   } // namespace isdbt
