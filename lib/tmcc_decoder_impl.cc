@@ -278,8 +278,6 @@ namespace gr {
         /*
          * The private constructor
          */
-        //TODO this constructor has some totally unnatural parameters as input. 
-        //Correct
         //TODO the block complains about :
         //gr::buffer::allocate_buffer: warning: tried to allocate
         //   4 items of size 44928. Due to alignment requirements
