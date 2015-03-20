@@ -37,7 +37,10 @@ list(APPEND isdbt_sources
     d_viterbi.c
     d_metrics.c
     d_tab.c
-    energy_descrambler_impl.cc )
+    energy_descrambler_impl.cc
+    byte_deinterleaver_impl.cc
+    viterbi_decoder_1seg_itpp_impl.cc
+    )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -46,7 +49,7 @@ if(NOT isdbt_sources)
 endif(NOT isdbt_sources)
 
 add_library(gnuradio-isdbt SHARED ${isdbt_sources})
-target_link_libraries(gnuradio-isdbt ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
+target_link_libraries(gnuradio-isdbt ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} itpp)
 set_target_properties(gnuradio-isdbt PROPERTIES DEFINE_SYMBOL "gnuradio_isdbt_EXPORTS")
 
 if(APPLE)
@@ -73,6 +76,8 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg_itpp.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver.cc

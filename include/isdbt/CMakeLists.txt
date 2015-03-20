@@ -31,5 +31,8 @@ install(FILES
     tmcc_decoder.h
     bit_deinterleaver.h
     viterbi_decoder_1seg.h
-    energy_descrambler.h DESTINATION include/isdbt
+    energy_descrambler.h
+    byte_deinterleaver.h
+    viterbi_decoder_1seg_itpp.h
+    DESTINATION include/isdbt
 )

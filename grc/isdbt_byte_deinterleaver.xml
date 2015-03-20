@@ -1,0 +1,21 @@
+<block>
+  <name>Byte deinterleaver</name>
+  <key>isdbt_byte_deinterleaver</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.byte_deinterleaver($blocks)</make>
+  <param>
+    <name>Blocks</name>
+    <key>blocks</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>12*$blocks</vlen>
+  </source>
+</block>

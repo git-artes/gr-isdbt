@@ -104,6 +104,7 @@ namespace gr {
             printf("FRAME END!!!!!!!!!!!!!!!!!!!"); 
         }*/
 
+        //printf("bit_deinterleaver: noutput_items: %d, \n", noutput_items);
         for (int i=0; i<noutput_items; i++)
         {
             for (int carrier = 0; carrier<d_noutput; carrier++)
@@ -124,6 +125,7 @@ namespace gr {
                 }
                 out[i*d_noutput+carrier] = aux; 
                 d_shift[carrier]->pop_back(); 
+                //printf("bit_deinterlever: out: %x\n",aux);
             }
 
         }

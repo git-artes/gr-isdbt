@@ -26,5 +26,8 @@ install(FILES
     isdbt_tmcc_decoder.xml
     isdbt_bit_deinterleaver.xml
     isdbt_viterbi_decoder_1seg.xml
-    isdbt_energy_descrambler.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_energy_descrambler.xml
+    isdbt_byte_deinterleaver.xml
+    #isdbt_viterbi_decoder_1seg_itpp.xml
+    DESTINATION share/gnuradio/grc/blocks
 )

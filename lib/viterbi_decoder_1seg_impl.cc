@@ -60,14 +60,12 @@ namespace gr {
                     gr::io_signature::make(1, 1, sizeof(unsigned char)),
                     gr::io_signature::make(1, 1, sizeof(unsigned char)))
         {
-            // block size
-            d_bsize = 408; 
             // initial state
             d_init = 0; 
             // input of encoder
-            d_k = 1; 
+            d_k = 2; 
             // outpuput of encoder
-            d_n = 2;
+            d_n = 3;
             // constellation size
             d_m = 2;  
 
@@ -89,7 +87,11 @@ namespace gr {
             assert((d_k * d_m) % (8 * d_n));
             set_relative_rate((d_k * d_m) / (8 * d_n));
 
+            // block size in bits. See below
+            d_bsize = 8*204*8/d_k; 
             assert ((d_bsize * d_n) % d_m == 0);
+            // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
+            // thus equivalent to d_bsize*d_k bits.  
             set_output_multiple (d_bsize * d_k / 8);
 
             /*
@@ -98,6 +100,9 @@ namespace gr {
              * It is also the number of input bytes since
              * one byte always contains just one symbol.
              */
+            // to generate the d_bsize*d_k bits in the output, it will need 
+            // d_bsize*d_n bits in the input, equivalent to d_bsize*d_n/d_m symbols 
+            // in the input. 
             d_nsymbols = d_bsize * d_n / d_m;
             // Number of bits after depuncturing a block (before decoding)
             d_nbits = 2 * d_k * d_bsize;
@@ -147,6 +152,7 @@ namespace gr {
                     gr_vector_void_star &output_items)
             {
                 int nstreams = input_items.size();
+                // the number of blocks i will process this call
                 int nblocks = 8 * noutput_items / (d_bsize * d_k);
                 int out_count = 0;
 
@@ -165,19 +171,29 @@ namespace gr {
                     std::vector<tag_t> tags;
                     const uint64_t nread = this->nitems_read(0); //number of items read on port 0
                     this->get_tags_in_range(tags, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("frame_begin"));
+                    //printf("noutput_items=%d, ninput_items=%d, m=%d \n", noutput_items, ninput_items[m],m); 
 
                     if (tags.size())
                     {
                         d_init = 0;
                         d_viterbi_chunks_init_sse2(metric0, path0);
 
-                        //printf("viterbi: superframe_start: %i\n", tags[0].offset - nread);
+                        printf("viterbi: superframe_start: %i\n", tags[0].offset - nread);
 
+
+                        // if we are not aligned with the beginning of a frame, we go 
+                        // to that point by consuming all the inputs
                         if (tags[0].offset - nread)
                         {
                             consume_each(tags[0].offset - nread);
                             return (0);
                         }
+
+                        // signal the frame start downstream 
+                        const uint64_t offset = this->nitems_written(0);
+                        pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
+                        pmt::pmt_t value = pmt::from_long(1);
+                        this->add_item_tag(0, offset, key, value);
                     }
 
                     // This is actually the Viterbi decoder
@@ -199,6 +215,7 @@ namespace gr {
                                     d_inbits[count++] = 2;
 
                                 // Insert received bits
+                                // The most significant bit goes first into the decoder
                                 d_inbits[count++] = (in[(n * d_nsymbols) + i] >> j) & 1;
 
                                 // Depuncture
@@ -235,7 +252,8 @@ namespace gr {
                                     else
                                     {
                                         out[out_count] = c;
-                                        //printf("out[%i]: %x\n", out_count, out[out_count]);
+                                        /*if (out[out_count]==0x47)
+                                            printf("out[%i]: %x\n", out_count, out[out_count]);*/
                                     }
 
                                     out_count++;
@@ -243,6 +261,8 @@ namespace gr {
                             }
                         }
                     }
+                    /*if (out[0] == 0x47)
+                      printf("viterbi: found SYNC\n"); */
                 }
 
                 int to_out = noutput_items;

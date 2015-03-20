@@ -288,37 +288,40 @@ namespace gr {
             : gr::block("tmcc_decoder",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*(1+d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_per_segment_2k*((int)pow(2.0,mode-1))))
-                    {
-                    active_carriers = d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)) + 1; 
-                    // Set the carriers parameters to mode 1, 2 or 3
-                    carriers_parameters(active_carriers);
+        {
+            active_carriers = d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)) + 1; 
+            // Set the carriers parameters to mode 1, 2 or 3
+            carriers_parameters(active_carriers);
 
-                    // Number of carriers per segment
-                    d_carriers_per_segment = (active_carriers-1)/d_total_segments;
+            // Number of carriers per segment
+            d_carriers_per_segment = (active_carriers-1)/d_total_segments;
 
-                    // We allocate memory for d_prev_tmcc_symbol attribute
-                    d_prev_tmcc_symbol = new gr_complex[tmcc_carriers_size];
-                    if (d_prev_tmcc_symbol == NULL)
-                    {
-                    std::cout << "error allocating d_prev_tmcc_symbol" << std::endl;
-                    return;
-                    }
-                    memset(d_prev_tmcc_symbol, 0, tmcc_carriers_size * sizeof(gr_complex));
+            // We allocate memory for d_prev_tmcc_symbol attribute
+            d_prev_tmcc_symbol = new gr_complex[tmcc_carriers_size];
+            if (d_prev_tmcc_symbol == NULL)
+            {
+                std::cout << "error allocating d_prev_tmcc_symbol" << std::endl;
+                return;
+            }
+            memset(d_prev_tmcc_symbol, 0, tmcc_carriers_size * sizeof(gr_complex));
 
-                    // Init TMCC sync sequence
-                    for (int i = 0; i < d_tmcc_sync_size; i++)
-                    {
-                        d_tmcc_sync_evenv.push_back(d_tmcc_sync_even[i]);
-                        d_tmcc_sync_oddv.push_back(d_tmcc_sync_odd[i]);
-                    }
+            // Init TMCC sync sequence
+            for (int i = 0; i < d_tmcc_sync_size; i++)
+            {
+                d_tmcc_sync_evenv.push_back(d_tmcc_sync_even[i]);
+                d_tmcc_sync_oddv.push_back(d_tmcc_sync_odd[i]);
+            }
 
-                    // Init receive TMCC data vector
-                    for (int i = 0; i < d_symbols_per_frame; i++)
-                        d_rcv_tmcc_data.push_back(0);
+            // Init receive TMCC data vector
+            for (int i = 0; i < d_symbols_per_frame; i++)
+                d_rcv_tmcc_data.push_back(0);
 
-                    number_symbol = 0;
-                    d_since_last_tmcc = 203;
-                    }
+            number_symbol = 0;
+            d_since_last_tmcc = 203;
+
+            set_tag_propagation_policy(TPP_DONT); 
+
+        }
 
         /*
          * Our virtual destructor.
@@ -355,6 +358,7 @@ namespace gr {
                         // Being here means that the last OFDM symbol 
                         // constituted a frame ending. 
                         const uint64_t offset = this->nitems_written(0)+i; 
+                        printf("tmcc_decoder: offset=%d, i=%d", offset,i); 
                         pmt::pmt_t key = pmt::string_to_symbol("frame_begin"); 
                         pmt::pmt_t value = pmt::from_long(0xaa); 
                         this->add_item_tag(0,offset,key,value); 

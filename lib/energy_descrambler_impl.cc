@@ -128,7 +128,7 @@ namespace gr {
         else
         {
           // We found a SYNC, descramble the data
-          printf("ENERGY: Found SYNC at in[%i]: %x\n", d_index, in[d_index]);
+          //printf("ENERGY: Found SYNC at in[%i]: %x\n", d_index, in[d_index]);
 
           to_consume = (noutput_items / (d_nblocks * d_bsize)) - 2;
           to_out = noutput_items - 2 * (d_nblocks * d_bsize);
