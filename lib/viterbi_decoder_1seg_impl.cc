@@ -88,7 +88,7 @@ namespace gr {
             set_relative_rate((d_k * d_m) / (8 * d_n));
 
             // block size in bits. See below
-            d_bsize = 8*204*8/d_k; 
+            d_bsize = 204*8/d_k; 
             assert ((d_bsize * d_n) % d_m == 0);
             // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
             // thus equivalent to d_bsize*d_k bits.  
@@ -171,7 +171,9 @@ namespace gr {
                     std::vector<tag_t> tags;
                     const uint64_t nread = this->nitems_read(0); //number of items read on port 0
                     this->get_tags_in_range(tags, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("frame_begin"));
-                    //printf("noutput_items=%d, ninput_items=%d, m=%d \n", noutput_items, ninput_items[m],m); 
+                    printf("noutput_items=%d, ninput_items=%d, m=%d \n", noutput_items, ninput_items[m],m); 
+
+                   // printf("rango: %i\n", noutput_items*8*3/(2*d_m)); 
 
                     if (tags.size())
                     {
@@ -252,8 +254,8 @@ namespace gr {
                                     else
                                     {
                                         out[out_count] = c;
-                                        /*if (out[out_count]==0x47)
-                                            printf("out[%i]: %x\n", out_count, out[out_count]);*/
+                                        //if (out[out_count]==0x47)
+                                        //    printf("out[%i]: %x\n", out_count, out[out_count]);
                                     }
 
                                     out_count++;

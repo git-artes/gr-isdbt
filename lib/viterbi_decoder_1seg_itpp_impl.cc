@@ -77,7 +77,8 @@ namespace gr {
 
 
             // I will output one TSP each time
-            set_output_multiple (204);
+            //set_output_multiple (204);
+            set_output_multiple (64);
 
         }
 
@@ -115,13 +116,14 @@ namespace gr {
                  */
                 std::vector<tag_t> tags;
                 const uint64_t nread = this->nitems_read(0); //number of items read on port 0
-                this->get_tags_in_window(tags, 0, 0, noutput_items*8*3/2, pmt::string_to_symbol("frame_begin"));
+                this->get_tags_in_range(tags, 0, nread, nread+noutput_items*8*3/(2*d_m), pmt::string_to_symbol("frame_begin"));
 
                 if (tags.size())
                 {
                     printf("viterbi: superframe_start: %i\n", tags[0].offset - nread);
 
                     d_code.reset(); 
+                    
                     // if we are not aligned with the beginning of a frame, we go 
                     // to that point by consuming all the inputs
                     if (tags[0].offset - nread)
@@ -153,23 +155,25 @@ namespace gr {
                     //printf("\n");
                 } 
 
-                itpp::bvec d_decoded_bits; 
-                d_code.decode_tail(rx_signal, d_decoded_bits); 
+                itpp::bvec d_decoded_bits(noutput_items*8); 
+                d_decoded_bits = d_code.decode_trunc(rx_signal); 
 
-                //printf("viterbi: noutput_items = %i, d_decoded_bits.length()/8=%f", noutput_items, d_decoded_bits.length()/8.0); 
-                //noutput_items = d_decoded_bits.length()/8; 
+                printf("viterbi: noutput_items = %i, d_decoded_bits.length()/8=%f, rx_signal.length()=%i\n", noutput_items, d_decoded_bits.length()/8.0, rx_signal.length()); 
                 for(int i=0; i<noutput_items; i++){
                     out[i]=0; 
                     for (int b=0; b<8; b++){
-                        //printf("decoded_bits[%i]=%x ", b,(bool) d_decoded_bits[i*8+b]); 
-                        out[i] |= ((bool)d_decoded_bits[i*8+b])<<(8-b-1); 
+                        //printf("decoded_bits[%i]=%x ", i*8+b,(bool) d_decoded_bits[i*8+b]); 
+                        //out[i] |= ((bool)d_decoded_bits[i*8+b])<<(8-b-1); 
+                        out[i] |= ((bool)d_decoded_bits.get(i*8+b))<<(8-b-1); 
                     }
+
                     //if(out[i]==0x47) printf("out[%i]=%x \n", i, out[i]);
                 }
+                printf("decoded_bits.length()=%i, decoded_bits[%i]=%x \n", d_decoded_bits.length(), (noutput_items-1)*8+7,(bool) d_decoded_bits.get((noutput_items-1)*8+7)); 
 
                 // Tell runtime system how many input items we consumed on
                 // each input stream.
-                consume_each (noutput_items*8*3/2);
+                consume_each (noutput_items*8*3/(2*d_m));
 
                 // Tell runtime system how many output items we produced.
                 return noutput_items;

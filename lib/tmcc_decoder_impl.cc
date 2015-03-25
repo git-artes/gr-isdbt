@@ -358,7 +358,7 @@ namespace gr {
                         // Being here means that the last OFDM symbol 
                         // constituted a frame ending. 
                         const uint64_t offset = this->nitems_written(0)+i; 
-                        printf("tmcc_decoder: offset=%d, i=%d", offset,i); 
+                        //printf("tmcc_decoder: offset=%d, i=%d", offset,i); 
                         pmt::pmt_t key = pmt::string_to_symbol("frame_begin"); 
                         pmt::pmt_t value = pmt::from_long(0xaa); 
                         this->add_item_tag(0,offset,key,value); 

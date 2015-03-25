@@ -129,8 +129,8 @@ namespace gr {
                         out[index_out] = d_shift[index_out % d_I]->front();
                         d_shift[index_out % d_I]->pop_front();
                         //printf("DEINTERLEAVER: in[%i]=%x; out[%i]=%x\n", index_out, in[index_out],index_out, out[index_out]);
-                        if (index_out % 204 == 204-1)
-                            printf("DEINTERLEAVER: out[%i]=%x\n", index_out, out[index_out]);
+                        //if (index_out % 204 == 204-1)
+                          //  printf("DEINTERLEAVER: out[%i]=%x\n", index_out, out[index_out]);
                     }
                 }
 

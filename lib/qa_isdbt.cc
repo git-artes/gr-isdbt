@@ -36,6 +36,7 @@
 #include "qa_energy_descrambler.h"
 #include "qa_byte_deinterleaver.h"
 //#include "qa_viterbi_decoder_1seg_itpp.h"
+#include "qa_bit_deinterleaver_streamed.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -51,6 +52,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_energy_descrambler::suite());
   s->addTest(gr::isdbt::qa_byte_deinterleaver::suite());
 //  s->addTest(gr::isdbt::qa_viterbi_decoder_1seg_itpp::suite());
+  s->addTest(gr::isdbt::qa_bit_deinterleaver_streamed::suite());
 
   return s;
 }

@@ -40,7 +40,7 @@ list(APPEND isdbt_sources
     energy_descrambler_impl.cc
     byte_deinterleaver_impl.cc
     viterbi_decoder_1seg_itpp_impl.cc
-    )
+    bit_deinterleaver_streamed_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -76,6 +76,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_streamed.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg_itpp.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc

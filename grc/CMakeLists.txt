@@ -29,5 +29,5 @@ install(FILES
     isdbt_energy_descrambler.xml
     isdbt_byte_deinterleaver.xml
     #isdbt_viterbi_decoder_1seg_itpp.xml
-    DESTINATION share/gnuradio/grc/blocks
+    isdbt_bit_deinterleaver_streamed.xml DESTINATION share/gnuradio/grc/blocks
 )

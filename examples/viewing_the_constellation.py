@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Viewing The Constellation
-# Generated: Wed Mar 18 16:42:23 2015
+# Generated: Mon Mar 23 19:08:23 2015
 ##################################################
 
 from gnuradio import blocks
@@ -98,6 +98,20 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
         	labels=["1/4", "1/8", "1/16", "1/32"],
         )
         self.Add(self._guard_chooser)
+        self.wxgui_scopesink2_0_1_0_0 = scopesink2.scope_sink_c(
+        	self.GetWin(),
+        	title="Constellation (all carriers)",
+        	sample_rate=float(samp_rate*(1-guard)),
+        	v_scale=0,
+        	v_offset=0,
+        	t_scale=0,
+        	ac_couple=False,
+        	xy_mode=True,
+        	num_inputs=1,
+        	trig_mode=wxgui.TRIG_MODE_AUTO,
+        	y_axis_label="Counts",
+        )
+        self.Add(self.wxgui_scopesink2_0_1_0_0.win)
         self.wxgui_scopesink2_0_1_0 = scopesink2.scope_sink_c(
         	self.GetWin(),
         	title="Constellation (all carriers)",
@@ -134,6 +148,7 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
         	noise_seed=0,
         	block_tags=False
         )
+        self.blocks_vector_to_stream_0_2_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, total_carriers)
         self.blocks_vector_to_stream_0_2 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, active_carriers)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_file_source_1 = blocks.file_source(gr.sizeof_gr_complex*1, "/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_laboratorio2", True)
@@ -149,6 +164,8 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
         self.connect((self.blocks_vector_to_stream_0_2, 0), (self.wxgui_scopesink2_0_1_0, 0))
         self.connect((self.isdbt_ofdm_sym_acquisition_0, 0), (self.fft_vxx_0, 0))
         self.connect((self.isdbt_sync_and_channel_estimaton_0, 0), (self.blocks_vector_to_stream_0_2, 0))
+        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0_2_0, 0))
+        self.connect((self.blocks_vector_to_stream_0_2_0, 0), (self.wxgui_scopesink2_0_1_0_0, 0))
 
 
 
@@ -157,8 +174,8 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
 
     def set_mode(self, mode):
         self.mode = mode
-        self.set_total_carriers(2**(10+self.mode))
         self.set_active_carriers(13*108*2**(self.mode-1)+1)
+        self.set_total_carriers(2**(10+self.mode))
         self._mode_chooser.set_value(self.mode)
 
     def get_total_carriers(self):
@@ -175,6 +192,7 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 5.6e6/2.0, 0.5e6, firdes.WIN_HAMMING, 6.76))
         self.wxgui_scopesink2_0_1_0.set_sample_rate(float(self.samp_rate*(1-self.guard)))
+        self.wxgui_scopesink2_0_1_0_0.set_sample_rate(float(self.samp_rate*(1-self.guard)))
 
     def get_offset_freq(self):
         return self.offset_freq
@@ -201,6 +219,7 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
         self.guard = guard
         self._guard_chooser.set_value(self.guard)
         self.wxgui_scopesink2_0_1_0.set_sample_rate(float(self.samp_rate*(1-self.guard)))
+        self.wxgui_scopesink2_0_1_0_0.set_sample_rate(float(self.samp_rate*(1-self.guard)))
 
     def get_active_carriers(self):
         return self.active_carriers

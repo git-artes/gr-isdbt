@@ -19,11 +19,11 @@
  */
 
 
-#ifndef INCLUDED_ISDBT_BIT_DEINTERLEAVER_H
-#define INCLUDED_ISDBT_BIT_DEINTERLEAVER_H
+#ifndef INCLUDED_ISDBT_BIT_DEINTERLEAVER_STREAMED_H
+#define INCLUDED_ISDBT_BIT_DEINTERLEAVER_STREAMED_H
 
 #include <isdbt/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/sync_interpolator.h>
 
 namespace gr {
   namespace isdbt {
@@ -34,17 +34,17 @@ namespace gr {
      * \ingroup isdbt
      *
      */
-    class ISDBT_API bit_deinterleaver : virtual public gr::sync_block
+    class ISDBT_API bit_deinterleaver_streamed : virtual public gr::sync_interpolator
     {
      public:
-      typedef boost::shared_ptr<bit_deinterleaver> sptr;
+      typedef boost::shared_ptr<bit_deinterleaver_streamed> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::bit_deinterleaver.
+       * \brief Return a shared_ptr to a new instance of isdbt::bit_deinterleaver_streamed.
        *
-       * To avoid accidental use of raw pointers, isdbt::bit_deinterleaver's
+       * To avoid accidental use of raw pointers, isdbt::bit_deinterleaver_streamed's
        * constructor is in a private implementation
-       * class. isdbt::bit_deinterleaver::make is the public interface for
+       * class. isdbt::bit_deinterleaver_streamed::make is the public interface for
        * creating new instances.
        */
       static sptr make(int mode, int constellation);
@@ -53,5 +53,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_BIT_DEINTERLEAVER_H */
+#endif /* INCLUDED_ISDBT_BIT_DEINTERLEAVER_STREAMED_H */
 
