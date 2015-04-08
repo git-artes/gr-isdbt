@@ -44,6 +44,9 @@ namespace gr {
                 // Max frecuency offset to be corrected
                 int d_freq_offset_max;
 
+                // to keep track of the SP correllation
+                float * d_corr_sp; 
+
                 static const int tmcc_carriers_size_2k;
                 static const int tmcc_carriers_2k[];
                 static const int tmcc_carriers_size_4k;

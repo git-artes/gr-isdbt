@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Viewing The Constellation
-# Generated: Mon Mar 23 19:08:23 2015
+# Generated: Fri Mar 27 10:43:06 2015
 ##################################################
 
 from gnuradio import blocks
@@ -174,8 +174,8 @@ class viewing_the_constellation(grc_wxgui.top_block_gui):
 
     def set_mode(self, mode):
         self.mode = mode
-        self.set_active_carriers(13*108*2**(self.mode-1)+1)
         self.set_total_carriers(2**(10+self.mode))
+        self.set_active_carriers(13*108*2**(self.mode-1)+1)
         self._mode_chooser.set_value(self.mode)
 
     def get_total_carriers(self):

@@ -30,32 +30,29 @@ namespace gr {
     namespace isdbt {
 
         const int byte_deinterleaver_impl::d_SYNC = 0x47;
-        const int byte_deinterleaver_impl::d_MUX_PKT = 8;
+        const int byte_deinterleaver_impl::d_TSP_SIZE = 204; 
         const int byte_deinterleaver_impl::d_I = 12; 
         const int byte_deinterleaver_impl::d_M = 17; 
 
         byte_deinterleaver::sptr
-            byte_deinterleaver::make(int blocks)
+            byte_deinterleaver::make()
             {
                 return gnuradio::get_initial_sptr
-                    (new byte_deinterleaver_impl(blocks));
+                    (new byte_deinterleaver_impl());
             }
 
         /*
          * The private constructor
          */
-        byte_deinterleaver_impl::byte_deinterleaver_impl(int blocks)
+        byte_deinterleaver_impl::byte_deinterleaver_impl()
             : gr::block("byte_deinterleaver",
                     gr::io_signature::make(1, 1, sizeof(unsigned char)),
-                    gr::io_signature::make(1,1,sizeof(unsigned char)*d_I*blocks))
+                    gr::io_signature::make(1,1,sizeof(unsigned char)*d_TSP_SIZE))
         {
 
-            d_blocks = blocks;
-            // this block will output a vector of size d_blocks*d_I bytes
-            set_relative_rate(1.0/(d_I*d_blocks)); 
-
-            d_noutput = d_I*d_blocks; 
-
+            // this block will output a vector of size d_TSP_SIZE
+            set_relative_rate(1.0/(d_TSP_SIZE)); 
+            
             // The "difficult" part in any deinterleaver is setting the buffer's
             // size right. Here, we put them in the reverse order of the transmitter. 
             for (int i=d_I-1; i>=0; i--)
@@ -79,10 +76,10 @@ namespace gr {
             {
                 int ninputs = ninput_items_required.size ();
 
-                // this block will output a vector of d_blocks*d_I bytes, and will thus require this amount of 
+                // this block will output a vector of d_TSP_SIZE bytes, and will thus require this amount of 
                 // bytes in its input to generate a single output
                 for (int i = 0; i < ninputs; i++){
-                    ninput_items_required[i] = noutput_items * d_I * d_blocks;
+                    ninput_items_required[i] = noutput_items * d_TSP_SIZE;
                     //printf("ninput_items_required[%i]=%i\n",i,ninput_items_required[i]); 
                 }
             }
@@ -104,16 +101,28 @@ namespace gr {
                  */
                 std::vector<tag_t> tags;
                 const uint64_t nread = this->nitems_read(0); //number of items read on port 0
-                this->get_tags_in_range(tags, 0, nread, nread + (noutput_items * d_I * d_blocks), pmt::string_to_symbol("superframe_start"));
+                this->get_tags_in_range(tags, 0, nread, nread + (noutput_items * d_TSP_SIZE), pmt::string_to_symbol("frame_begin"));
                 //printf("tags.size(): %i \n", tags.size()) ; 
 
                 if (tags.size())
                 {
                     if (tags[0].offset - nread)
                     {
+                        //printf("salió del deinterleaver sin generar salidas: %i\n", tags[0].offset-nread); 
                         consume_each(tags[0].offset - nread);
-                        printf("salió del deinterleaver sin generar salidas: %i\n", tags[0].offset-nread); 
                         return (0);
+                    }
+                    else 
+                    {
+                    /*
+                     * Send frame_begin to signal this situation
+                     * downstream
+                     */
+                    const uint64_t offset = this->nitems_written(0);
+                    pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
+                    pmt::pmt_t value = pmt::from_long(1);
+                    this->add_item_tag(0, offset, key, value);
+
                     }
                 }
 
@@ -122,15 +131,15 @@ namespace gr {
                 int index_out = 0; 
                 for (int i = 0; i < noutput_items; i++)
                 {
-                    for (int byte_index = 0; byte_index<d_noutput; byte_index++)
+                    for (int byte_index = 0; byte_index<d_TSP_SIZE; byte_index++)
                     {
-                        index_out = byte_index + i*d_noutput; 
+                        index_out = byte_index + i*d_TSP_SIZE; 
                         d_shift[index_out % d_I]->push_back(in[index_out]);
                         out[index_out] = d_shift[index_out % d_I]->front();
                         d_shift[index_out % d_I]->pop_front();
                         //printf("DEINTERLEAVER: in[%i]=%x; out[%i]=%x\n", index_out, in[index_out],index_out, out[index_out]);
-                        //if (index_out % 204 == 204-1)
-                          //  printf("DEINTERLEAVER: out[%i]=%x\n", index_out, out[index_out]);
+                        if (index_out % 204 == 204-1)
+                            printf("DEINTERLEAVER: out[%i]=%x\n", index_out, out[index_out]);
                     }
                 }
 
@@ -138,7 +147,7 @@ namespace gr {
 
                 // Tell runtime system how many input items we consumed on
                 // each input stream.
-                consume_each(d_noutput*noutput_items);
+                consume_each(d_TSP_SIZE*noutput_items);
 
                 // Tell runtime system how many output items we produced.
                 return (noutput_items);

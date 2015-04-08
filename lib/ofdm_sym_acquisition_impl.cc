@@ -287,7 +287,8 @@ namespace gr {
                 // por primera vez, lo busco en pocos lugares y directamente busco el valor más 
                 // grande de la función de similitidud en ese intervalo corto. 
 
-                if (lookup_start - lookup_stop >= d_fft_length)
+                //if (lookup_start - lookup_stop >= d_fft_length)
+                if(0)
                 {
                     peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
                 }
@@ -580,7 +581,9 @@ namespace gr {
                 // It is also calle coarse frequency correction
                 if (d_initial_aquisition)
                 {
-                    d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+                    //d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
+                    d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
 
                     PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
@@ -617,7 +620,7 @@ namespace gr {
                             d_initial_aquisition = 0;
                             d_freq_correction_count = 0;
 
-                            PRINTF("restart aquisition\n");
+                            printf("restart aquisition\n");
 
                             // Restart wit a half number so that we'll not endup with the same situation
                             // This will prevent peak_detect to not detect anything

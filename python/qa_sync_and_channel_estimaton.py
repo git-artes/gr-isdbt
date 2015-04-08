@@ -21,7 +21,7 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-import isdbt_swig as isdbt
+import isdbt
 
 class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
 
@@ -33,8 +33,26 @@ class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
 
     def test_001_t (self):
         # set up fg
-        self.tb.run ()
-        # check data
+
+        total_segments = 13; 
+        mode = 1; 
+        total_carriers = total_segments*108*2**(mode-1)+1
+        fft_size = 2**(10+mode)
+        sync = isdbt.sync_and_channel_estimaton(fft_size, total_carriers,200)
+
+        src_data = range(fft_size)
+        
+        src = blocks.vector_source_c(src_data, False, fft_size)
+        dst = blocks.vector_sink_c(total_carriers)
+
+        self.tb.connect(src, sync)
+        self.tb.connect(sync,dst)
+        self.tb.run()
+
+        actual_result = dst.data()
+        print src_data
+        print actual_result
+
 
 
 if __name__ == '__main__':

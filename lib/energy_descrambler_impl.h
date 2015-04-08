@@ -29,11 +29,8 @@ namespace gr {
     class energy_descrambler_impl : public energy_descrambler
     {
      private:
-      static const int d_nblocks;
-      static const int d_bsize;
       static const int d_SYNC;
-      static const int d_NSYNC;
-      static const int d_MUX_PKT;
+      static const int d_TSP_SIZE;
 
       // Register for PRBS
       int d_reg;

@@ -84,6 +84,9 @@ namespace gr {
                 const gr_complex *in = (const gr_complex *) input_items[0];
                 gr_complex *out = (gr_complex *) output_items[0];
 
+                // TODO CHECK the tag propagation policy for the frame 
+                // beginnning. 
+
                 for (int i=0; i<noutput_items; i++)
                 {
                     for (int carrier=0; carrier<d_noutput; carrier++)

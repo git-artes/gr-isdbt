@@ -157,6 +157,8 @@ namespace gr {
         /*
          * The private constructor
          */
+        //TODO the parameters in this constructor are counter-intuitive and may lead to segmentation faults if not carefully 
+        //assigned. Correct to a more intuitive one where we only indicate the mode. 
         sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl(int fft_length,int payload_length, int offset_max)
             : gr::block("sync_and_channel_estimaton",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*fft_length),
@@ -180,6 +182,7 @@ namespace gr {
             // Get some memory
             d_wk = new char[active_carriers];
             d_known_phase_diff = new float[tmcc_carriers_size];
+            d_corr_sp = new float[4];
             d_channel_gain = new gr_complex[active_carriers];
 
             // Generate PRBS
@@ -229,7 +232,8 @@ namespace gr {
                  */
                 int ninputs = ninput_items_required.size();
                 for (int i = 0; i < ninputs; i++)
-                    ninput_items_required[i] = 2*noutput_items;
+                    //ninput_items_required[i] = 2*noutput_items;
+                    ninput_items_required[i] = noutput_items;
             }
         /*
          * ---------------------------------------------------------------------
@@ -336,6 +340,7 @@ namespace gr {
                             phase = -in[next_sp_carrier+d_zeros_on_left]*conj(in[current_sp_carrier+d_zeros_on_left]);
                         sum += phase;
                     }
+                    d_corr_sp[sym_count] = abs(sum); 
                     if (abs(sum)>max)
                     {
                         // When sum is maximum is because the current symbol is of type sym_count (0, 1, 2 or 3)
@@ -447,7 +452,7 @@ namespace gr {
                     frequency_correction(&in[i* d_ninput], derotated_in);
 
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
-                    process_sp_data(&derotated_in[i*d_ninput]);
+                    process_sp_data(derotated_in);
 
                     // Assign the output and equalize the channel
                     for (int carrier = 0; carrier < active_carriers; carrier++)
@@ -455,7 +460,7 @@ namespace gr {
                         out[i*d_noutput +carrier] = derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
                         gr_complex salida = out[i*d_noutput+carrier];
                         if(isinf(out[i*d_noutput + carrier].real()))
-                            printf("CUIDADO: out[%d]=%f+j%f: gain=%f+j%f\n",i*d_noutput+carrier,salida.real(),salida.imag(),d_channel_gain[carrier].real(),d_channel_gain[carrier].imag());
+                            printf("CUIDADO: noutput_items: %d, out[%d]=%f+j%f: gain=%f+j%f\n",noutput_items, i*d_noutput+carrier,salida.real(),salida.imag(),d_channel_gain[carrier].real(),d_channel_gain[carrier].imag());
                     }
 
 
@@ -463,6 +468,11 @@ namespace gr {
                     // If there is any symbol lost print stuff
                     if ((diff != 1) && (diff !=-3)){
                         printf("previous_symbol: %i, \n current_symbol: %i\n", d_previous_symbol, d_current_symbol);
+                        printf("d_corr_sp = {%f, %f, %f, %f}\n",d_corr_sp[0], d_corr_sp[1], d_corr_sp[2], d_corr_sp[3]); 
+                        for (int carrier = 0; carrier < active_carriers; carrier++)
+                        {
+                            //printf("out(%d)=%f+j*(%f); \n",i*d_noutput+carrier+1,out[i*d_noutput+carrier].real(),out[i*d_noutput+carrier].imag());
+                        }
                         /*int skip_len = diff-1;
                         //TODO there is probably a much better way to do this. 
                         if (diff<0)

@@ -30,16 +30,15 @@ namespace gr {
     {
      private:
       static const int d_SYNC;
-      static const int d_MUX_PKT;
+      static const int d_TSP_SIZE; 
       static const int d_I;
       static const int d_M;
       
-      int d_blocks;
       int d_noutput; 
       std::vector< std::deque<unsigned char> * > d_shift;
 
      public:
-      byte_deinterleaver_impl(int blocks);
+      byte_deinterleaver_impl();
       ~byte_deinterleaver_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

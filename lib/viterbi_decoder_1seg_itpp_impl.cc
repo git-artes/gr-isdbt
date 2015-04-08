@@ -77,8 +77,8 @@ namespace gr {
 
 
             // I will output one TSP each time
-            //set_output_multiple (204);
-            set_output_multiple (64);
+            set_output_multiple (204);
+            //set_output_multiple (64);
 
         }
 
@@ -140,13 +140,17 @@ namespace gr {
                 }
 
                 //printf("viterbi: noutput_items: %d, ninput_items[0]:%d\n", noutput_items,ninput_items[0]);
-                itpp::vec rx_signal(noutput_items*8*3/2);
-                for (int i=0; i<rx_signal.length()/d_m; i++){
+                d_rx_signal.clear();
+                d_rx_signal.set_length(noutput_items*8*3/2);
+                for (int i=0; i<d_rx_signal.length()/d_m; i++){
                     //printf("viterbi: in[%i]=%x, ", i, in[i]);
                     for (int b=0; b<d_m; b++){
                         // TODO I believe that we first receive the MSb, 
                         // but I am not sure. Check. 
-                        rx_signal[i*d_m+b] = ( ((in[i]>>(d_m-b-1)) & 1) == 1 ? -1:1 ); 
+                        
+                        //d_rx_signal[i*d_m+b] = ( ((in[i]>>(d_m-b-1)) & 1) == 1 ? -1:1 ); 
+                        d_rx_signal.set(i*d_m+b, ((in[i]>>(d_m-b-1)) & 1) == 1 ? -1:1 ); 
+
                         // this last statement looks somewhat complicated, but it simply assigns a 
                         // -1 if the coded bit was a 1, and a 1 if the coded bit was a 0, following 
                         // the soft bits coding by it++. 
@@ -155,10 +159,12 @@ namespace gr {
                     //printf("\n");
                 } 
 
-                itpp::bvec d_decoded_bits(noutput_items*8); 
-                d_decoded_bits = d_code.decode_trunc(rx_signal); 
+                d_decoded_bits.clear(); 
+                d_decoded_bits.set_length(noutput_items*8); 
+                    
+                d_decoded_bits = d_code.decode_trunc(d_rx_signal); 
 
-                printf("viterbi: noutput_items = %i, d_decoded_bits.length()/8=%f, rx_signal.length()=%i\n", noutput_items, d_decoded_bits.length()/8.0, rx_signal.length()); 
+                printf("viterbi: noutput_items = %i, d_decoded_bits.length()/8=%f, d_rx_signal.length()=%i\n", noutput_items, d_decoded_bits.length()/8.0, d_rx_signal.length()); 
                 for(int i=0; i<noutput_items; i++){
                     out[i]=0; 
                     for (int b=0; b<8; b++){

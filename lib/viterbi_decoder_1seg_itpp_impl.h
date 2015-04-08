@@ -33,6 +33,10 @@ namespace gr {
             private:
                 // The it++ class that will decode the incoming signal. 
                itpp::Punctured_Convolutional_Code d_code;
+                // The it++ class that will keep the incoming signal. 
+               itpp::vec d_rx_signal;
+                // The it++ class that will keep the decoded signal. 
+               itpp::bvec d_decoded_bits;
                 // Block size
                 int d_bsize;
                 // the number of bits per symbol

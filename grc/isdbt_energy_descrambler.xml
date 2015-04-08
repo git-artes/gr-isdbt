@@ -7,10 +7,11 @@
   <sink>
     <name>in</name>
     <type>byte</type>
-    <vlen>8*204</vlen>
+    <vlen>204</vlen>
   </sink>
   <source>
     <name>out</name>
     <type>byte</type>
+    <vlen>204</vlen>
   </source>
 </block>

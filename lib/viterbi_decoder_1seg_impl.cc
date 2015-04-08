@@ -171,16 +171,16 @@ namespace gr {
                     std::vector<tag_t> tags;
                     const uint64_t nread = this->nitems_read(0); //number of items read on port 0
                     this->get_tags_in_range(tags, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("frame_begin"));
-                    printf("noutput_items=%d, ninput_items=%d, m=%d \n", noutput_items, ninput_items[m],m); 
+                    //printf("noutput_items=%d, ninput_items=%d, m=%d, d_nsymbols=%d, a_consumir=%d\n", noutput_items, ninput_items[m],m,d_nsymbols,(nblocks * d_nsymbols)); 
 
                    // printf("rango: %i\n", noutput_items*8*3/(2*d_m)); 
 
-                    if (tags.size())
+                   if (tags.size())
                     {
                         d_init = 0;
                         d_viterbi_chunks_init_sse2(metric0, path0);
 
-                        printf("viterbi: superframe_start: %i\n", tags[0].offset - nread);
+                        //printf("viterbi: superframe_start: %i\n", tags[0].offset - nread);
 
 
                         // if we are not aligned with the beginning of a frame, we go 
@@ -190,12 +190,13 @@ namespace gr {
                             consume_each(tags[0].offset - nread);
                             return (0);
                         }
-
+                        /*
                         // signal the frame start downstream 
                         const uint64_t offset = this->nitems_written(0);
                         pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
                         pmt::pmt_t value = pmt::from_long(1);
                         this->add_item_tag(0, offset, key, value);
+                        */
                     }
 
                     // This is actually the Viterbi decoder
@@ -255,7 +256,7 @@ namespace gr {
                                     {
                                         out[out_count] = c;
                                         //if (out[out_count]==0x47)
-                                        //    printf("out[%i]: %x\n", out_count, out[out_count]);
+                                         //   printf("out[%i]: %x\n", out_count, out[out_count]);
                                     }
 
                                     out_count++;
@@ -276,7 +277,7 @@ namespace gr {
                      * downstream
                      */
                     const uint64_t offset = this->nitems_written(0);
-                    pmt::pmt_t key = pmt::string_to_symbol("superframe_start");
+                    pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
                     pmt::pmt_t value = pmt::from_long(1);
                     this->add_item_tag(0, offset, key, value);
 
