@@ -58,9 +58,9 @@ class qa_frequency_deinterleaver (gr_unittest.TestCase):
                     380 ,162 ,297 ,327 ,10 ,93 ,42 ,250 ,156 ,338 ,292 ,144 ,378 ,294 ,329 ,127 ,270 ,76 ,95 ,91 ,244 ,274 ,27 ,51)
        
         
-        src_data = src_data*total_segments
+        src_data = src_data*total_segments*3
 
-	expected_result = range(96*2**(mode-1))*total_segments
+	expected_result = range(96*2**(mode-1))*total_segments*3
 
         src = blocks.vector_source_c(src_data, False, total_carriers)
         dst = blocks.vector_sink_c(total_carriers)
