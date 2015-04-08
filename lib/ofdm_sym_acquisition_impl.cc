@@ -22,25 +22,29 @@
 #include "config.h"
 #endif
 
+// #define DEBUG 1
+// #define DEBUG_PERF 1
+#define USE_VOLK 1
+#define USE_VOLK_ALIGN 1
+
+#define USE_POSIX_MEMALIGN 1
+
+#include <stdio.h>
+#include <fstream>
+#include <iostream>
 #include <gnuradio/io_signature.h>
 #include "ofdm_sym_acquisition_impl.h"
 #include <complex>
 #include <gnuradio/math.h>
 #include <gnuradio/expj.h>
-#include <stdio.h>
 #include <volk/volk.h>
 #include <gnuradio/fxpt.h>
-
-//#define DEBUG 1
 
 #ifdef DEBUG
 #define PRINTF(a...) printf(a)
 #else
 #define PRINTF(a...)
 #endif
-
-#define USE_VOLK 1
-//#define USE_POSIX_MEMALIGN 1
 
 void print_float(float f)
 {
@@ -186,8 +190,11 @@ namespace gr {
                 if(is_unaligned())
                     volk_32fc_magnitude_squared_32f_u(&d_norm[low], &in[low], size);
                 else
+#ifdef USE_VOLK_ALIGN
+                    volk_32fc_magnitude_squared_32f_a(&d_norm[low], &in[low], size);
+#else
                     volk_32fc_magnitude_squared_32f_u(&d_norm[low], &in[low], size);
-                //volk_32fc_magnitude_squared_32f_a(&d_norm[low], &in[low], size);
+#endif
                 //TODO - fix the alignment
 #else
                 for (int i = lookup_start; i >= (lookup_stop - (d_cp_length + d_fft_length - 1)); i--)
@@ -202,8 +209,11 @@ namespace gr {
                 if (is_unaligned())
                     volk_32fc_x2_multiply_conjugate_32fc_u(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
                 else
+#ifdef USE_VOLK_ALIGN
+                    volk_32fc_x2_multiply_conjugate_32fc_a(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
+#else
                     volk_32fc_x2_multiply_conjugate_32fc_u(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
-                //volk_32fc_x2_multiply_conjugate_32fc_a(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
+#endif
                 // TODO fix the alignment
 #else
                 for (int i = lookup_start; i >= (lookup_stop - d_cp_length - 1); i--)
@@ -237,8 +247,11 @@ namespace gr {
                 if (is_unaligned())  
                     volk_32fc_magnitude_32f_u(&d_lambda[low], &d_gamma[low], size);
                 else
+#ifdef USE_VOLK_ALIGN
+                    volk_32fc_magnitude_32f_a(&d_lambda[low], &d_gamma[low], size);
+#else
                     volk_32fc_magnitude_32f_u(&d_lambda[low], &d_gamma[low], size);
-                //volk_32fc_magnitude_32f_a(&d_lambda[low], &d_gamma[low], size);
+#endif
                 // TODO - fix alignment
 #else
                 for (int i = 0; i < (lookup_start - lookup_stop); i++)
@@ -257,10 +270,13 @@ namespace gr {
                 }
                 else
                 {
-                    //volk_32f_s32f_multiply_32f_a(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
-                    //volk_32f_x2_subtract_32f_a(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
+#ifdef USE_VOLK_ALIGN
+                    volk_32f_s32f_multiply_32f_a(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
+                    volk_32f_x2_subtract_32f_a(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
+#else
                     volk_32f_s32f_multiply_32f_u(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
                     volk_32f_x2_subtract_32f_u(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
+#endif
                     //TODO - fix the alignment
                 }
 #else
@@ -454,8 +470,26 @@ namespace gr {
             d_snr = pow(10, d_snr / 10.0);
             d_rho = d_snr / (d_snr + 1.0);
 
-            printf("OFDM sym acq: fft_length: %i\n", fft_length);
-            printf("OFDM sym acq: SNR: %f\n", d_snr);
+#ifdef DEBUG_PERF
+            printf( "start!: %i\n", d_count );
+            outfile.open("file.dat", std::ios::app );
+#ifdef USE_VOLK
+            outfile << "USE_VOLK: 1" << std::endl;
+#else
+            outfile << "USE_VOLK: 0" << std::endl;
+#endif
+#ifdef USE_VOLK_ALIGN
+            outfile << "USE_VOLK_ALIGN: 1" << std::endl;
+#else
+            outfile << "USE_VOLK_ALIGN: 0" << std::endl;
+#endif
+            time_t now = time(0);
+            // char* dt = ctime(&now);
+            outfile << "start time: " << now << std::endl;
+#endif
+
+            PRINTF("OFDM sym acq: fft_length: %i\n", fft_length);
+            PRINTF("OFDM sym acq: SNR: %f\n", d_snr);
 
             const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
             set_alignment(std::max(1, alignment_multiple));
@@ -600,8 +634,13 @@ namespace gr {
                         if(is_unaligned())
                             volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
                         else
-                            //volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
+#ifdef USE_VOLK_ALIGN
+                            // broken GG??, change kernel to generic in ~/.volk/volk_config or use _u version
+                            // volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
                             volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+#else
+                            volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+#endif
                         // TODO - fix the alignment
 #else
                         int j = 0;
@@ -628,6 +667,10 @@ namespace gr {
                         }
                     }
                 }
+#ifdef DEBUG_PERF
+                time_t now = time(0);
+                outfile << "run time: " << now << std::endl;
+#endif
 
                 // Tell runtime system how many input items we consumed on
                 // each input stream.
