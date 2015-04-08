@@ -36,9 +36,9 @@ namespace gr {
         const int symbol_demapper_impl::d_total_segments = 1; 
 
         const gr_complex symbol_demapper_impl::d_constellation_qpsk[] = {
-            gr_complex(1/sqrt(2),1/sqrt(2)),
-            gr_complex(1/sqrt(2),-1/sqrt(2)), 
-            gr_complex(-1/sqrt(2),1/sqrt(2)),
+            gr_complex(+1/sqrt(2),+1/sqrt(2)),
+            gr_complex(+1/sqrt(2),-1/sqrt(2)), 
+            gr_complex(-1/sqrt(2),+1/sqrt(2)),
             gr_complex(-1/sqrt(2),-1/sqrt(2))
         }; 
         
@@ -159,24 +159,32 @@ namespace gr {
         /*
          * The private constructor
          */
-        symbol_demapper_impl::symbol_demapper_impl(int mode, int constellation_size)
-            : gr::sync_block("symbol_demapper",
-                    gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))),
-                    gr::io_signature::make(1, 1, sizeof(unsigned char)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
+        symbol_demapper_impl::
+            symbol_demapper_impl(int mode, int constellation_size)
+                : gr::sync_block("symbol_demapper",
+                    gr::io_signature::make(1, 1, 
+                        sizeof(gr_complex) * d_total_segments *
+                            d_data_carriers_mode1 * ((int)pow(2.0,mode-1))),
+                    gr::io_signature::make(1, 1, 
+                        sizeof(unsigned char) * d_total_segments *
+                            d_data_carriers_mode1 * ((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
             d_const_size = constellation_size; 
-            if (d_const_size==4){
+            if (d_const_size==4) {
                 d_constellation = d_constellation_qpsk;
-            }else if (d_const_size==16){
+            } else if (d_const_size==16) {
                 d_constellation = d_constellation_16qam; 
-            }else {
+            } else if (d_const_size==64) {
                 d_constellation = d_constellation_64qam; 
+            } else {
+            std::cout << 
+                "symbol_demapper: error in d_const_size\n"; 
             }
 
-            d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
+            d_carriers_per_segment = d_data_carriers_mode1 * 
+                ((int)pow(2.0,mode-1)); 
             d_noutput = d_total_segments*d_carriers_per_segment; 
-
             
         }
 
@@ -196,7 +204,6 @@ namespace gr {
                 for (int i = 0; i < d_const_size; i++)
                 {
                     float dist = std::norm(val - d_constellation[i]);
-
                     if (dist < min_dist)
                     {
                         min_dist = dist;
@@ -206,7 +213,6 @@ namespace gr {
 
                 return min_index;
             }
-
 
 
         int
@@ -220,11 +226,10 @@ namespace gr {
                 for (int i = 0; i < noutput_items; i++)
                 {
                     for (int carrier = 0; carrier<d_noutput; carrier++){
-                        // I will for now leave it like this so as to more easily accomodate the 
+                        // leave it like this for now to easily accomodate the 
                         // per-segment constellation possibility later on. 
-                        
-                        
-                        out[i*d_noutput+carrier] = find_constellation_value(in[i*d_noutput+carrier]);
+                        out[i*d_noutput+carrier] = 
+                            find_constellation_value(in[i*d_noutput+carrier]);
                     }
                 }
 

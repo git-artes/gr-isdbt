@@ -29,6 +29,7 @@ namespace gr {
     class bit_deinterleaver_streamed_impl : public bit_deinterleaver_streamed
     {
      private:
+
          static const int d_data_carriers_mode1; 
          static const int d_total_segments; 
          static const int d_total_layers; 
