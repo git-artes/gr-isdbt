@@ -24,10 +24,10 @@
 
 // #define DEBUG 1
 // #define DEBUG_PERF 1
-#define USE_VOLK 1
-#define USE_VOLK_ALIGN 1
+//#define USE_VOLK 1
+//#define USE_VOLK_ALIGN 1
 
-#define USE_POSIX_MEMALIGN 1
+//#define USE_POSIX_MEMALIGN 1
 
 #include <stdio.h>
 #include <fstream>
@@ -615,9 +615,9 @@ namespace gr {
                 // It is also calle coarse frequency correction
                 if (d_initial_aquisition)
                 {
-                    //d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+                    d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
-                    d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                    //d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
 
                     PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);

@@ -110,6 +110,8 @@ namespace gr {
 
                 if (tags.size())
                 {
+                    //printf("ENERGY DESCRAMBLER: %i \n", pmt::symbol_to_string(tags[0].value)) ; 
+                    std::cout << "ENERGY DESCRAMBLER: "<< tags[0].value <<std::endl ; 
                     init_prbs();
                     if (tags[0].offset - nread)
                     {
@@ -121,19 +123,21 @@ namespace gr {
 
                 for (int i = 0; i < noutput_items; i++)
                 {
-
+                    
+                    // The sync byte should be taken from the end and put in the beginning. 
+                    out[i*d_TSP_SIZE] = d_SYNC; 
                     for (int byte = 0; byte < d_TSP_SIZE-1; byte++)
                     {
-
-                        out[byte + i*d_TSP_SIZE] = in[byte + i*d_TSP_SIZE] ^ clock_prbs(8);
-
+                        out[byte + i*d_TSP_SIZE+1] = in[byte + i*d_TSP_SIZE] ^ clock_prbs(8);
+                        //out[byte + i*d_TSP_SIZE] = in[byte + i*d_TSP_SIZE] ^ clock_prbs(8);
                     }
                     // For subsequent blocks PRBS is clocked also on SYNC
                     // but its output is not used
                     clock_prbs(8);
                     // d_SYNC should be in this position, but I would like to verify it. 
-                    out[d_TSP_SIZE-1 + i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
-                    printf("DESCRAMBLER: out[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, out[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
+                    //out[d_TSP_SIZE-1 + i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
+                    
+                    printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                 }
 
 
