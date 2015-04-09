@@ -98,7 +98,9 @@ namespace gr {
                 int d_symbol_index_known;
 
                 // indicates whether the last symbol was a frame end
-                int d_frame_end;
+                bool d_frame_end;
+                // indicates whther a re-sync should signaled downstream
+                bool d_resync;
 
                 // Symbol Index
                 int d_symbol_index;

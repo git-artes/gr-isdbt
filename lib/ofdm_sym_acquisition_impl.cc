@@ -437,6 +437,7 @@ namespace gr {
                 pmt::pmt_t key = pmt::string_to_symbol("sync_start");
                 pmt::pmt_t value = pmt::from_long(1);
                 this->add_item_tag(0, offset, key, value);
+                printf("OFDM symbol acqu: restarting acquisition"); 
             }
 
         int
