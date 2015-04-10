@@ -24,8 +24,8 @@
 
 // #define DEBUG 1
 // #define DEBUG_PERF 1
-//#define USE_VOLK 1
-//#define USE_VOLK_ALIGN 1
+#define USE_VOLK 1
+#define USE_VOLK_ALIGN 1
 
 //#define USE_POSIX_MEMALIGN 1
 
