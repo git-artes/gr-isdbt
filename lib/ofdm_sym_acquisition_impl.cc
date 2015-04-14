@@ -22,8 +22,9 @@
 #include "config.h"
 #endif
 
-// #define DEBUG 1
-// #define DEBUG_PERF 1
+// #define DEBUG_OFDMSYM 1
+// #define DEBUG_OFDMSYM_VERBOSE 1
+// #define DEBUG_OFDMSYM_PERFORMANCE 1
 #define USE_VOLK 1
 #define USE_VOLK_ALIGN 1
 
@@ -40,7 +41,7 @@
 #include <volk/volk.h>
 #include <gnuradio/fxpt.h>
 
-#ifdef DEBUG
+#ifdef DEBUG_OFDMSYM
 #define PRINTF(a...) printf(a)
 #else
 #define PRINTF(a...)
@@ -63,113 +64,8 @@ void print_double(float d)
 namespace gr {
     namespace isdbt  {
 
-        int 
-            ofdm_sym_acquisition_impl::peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha)
-            {
-                d_avg_alpha = alpha;
-                d_threshold_factor_rise = threshold_factor_rise;
-                d_threshold_factor_fall = threshold_factor_fall;
-                d_avg = 0;
-
-                return (0);
-            }
-
-        int 
-            ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
-            {
-
-                // I calculate the average of datain ...
-                int peak_pos_length = 0;
-                float accum = 0; 
-#ifdef USE_VOLK
-                volk_32f_accumulator_s32f(&accum,datain,(unsigned int)datain_length); 
-#else
-                for(int i=0; i<datain_length; i++)
-                    accum += datain[i]; 
-#endif
-                d_avg = accum/(float)datain_length; 
-
-                // ... and its maximum. 
-                unsigned int index_max = 0; 
-#ifdef USE_VOLK
-                volk_32f_index_max_16u(&index_max, datain, datain_length); 
-#else 
-                for(int i=1; i<datain_length; i++){
-                    if (datain[i]>datain[index_max])
-                        index_max = i; 
-                }
-#endif
-
-
-                // I then calculate a threshold which constitutes candidates peaks. 
-                float threshold = (datain[index_max]+d_avg)/2.0; 
-
-                // a first candidate peak is the absolute maximum
-                peak_pos[peak_pos_length] = index_max; 
-                peak_pos_length++; 
-
-                // However, I will consider that there is a peak if the difference between the maximum and the average is 
-                // somewhat considerable. Else, there is no clear peak, and we are not in the presence of a OFDM signal. 
-                // Please note that the sign of the correlation function may be either positive or negative, and we thus check whether one is 
-                // much bigger than the other (in absolute value) indistinctively. 
-                float factor_avg_to_max = 3; 
-                if (std::abs(datain[index_max]) > factor_avg_to_max*std::abs(d_avg) || std::abs(datain[index_max])<factor_avg_to_max*std::abs(d_avg)){
-
-
-                    int look_around = 10; 
-                    for ( int i =look_around; i < datain_length-look_around; i++)
-                    {
-                        if (datain[i]>threshold && i!=index_max)
-                        {
-                            // we look for peaks: if values around it (but not too far away) are smaller. 
-                            bool local_peak = true; 
-                            for (int j=-look_around; j<=look_around; j++)
-                                local_peak &= (datain[i+j]<=datain[i]); 
-
-                            if (local_peak)
-                            {
-                                peak_pos[peak_pos_length] = i;
-                                peak_pos_length++;
-                            }
-                        }
-                    }
-
-                    // Find peak of peaks
-                    if (peak_pos_length)
-                    {
-                        float max = datain[peak_pos[0]];
-                        int maxi = 0;
-
-                        for (int i = 1; i < peak_pos_length; i++)
-                        {
-                            if (datain[peak_pos[i]] > max)
-                            {
-                                max = datain[peak_pos[i]];
-                                maxi = i;
-                            }
-                        }
-
-                        *peak_max = maxi;
-#if 0
-                        for (int i = 0; i < peak_pos_length; i++)
-                        {
-                            printf("peak_pos[%i]: %i, lambda[%i]: %.10f\n", i, peak_pos[i], peak_pos[i], datain[peak_pos[i]]);
-                            printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", peak_pos[i]-1, datain[peak_pos[i]-1],peak_pos[i]+1, datain[peak_pos[i]+1]);
-                            printf("lambda[%i]: %.10f, lambda[%i]: %.10f\n", peak_pos[i]-look_around, datain[peak_pos[i]-look_around],peak_pos[i]+look_around, datain[peak_pos[i]+look_around]);
-                        }
-#endif
-                    }
-                }
-                else 
-                {
-                    peak_pos_length = 0; 
-                }
-
-                return (peak_pos_length);
-            }
-
         int
-            ofdm_sym_acquisition_impl::ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
+            ofdm_sym_acquisition_impl::ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out )
             {
 
                 assert(lookup_start >= lookup_stop);
@@ -290,59 +186,34 @@ namespace gr {
                     printf("in[%i].re: %.10f, in[%i].img: %.10f\n", i, in[i].real(), i, in[i].imag());
 #endif
 
-
                 int peak_length, peak, peak_max;
                 unsigned int max_fede = 0; 
                 // Find peaks of lambda
                 // We have found an end of symbol at peak_pos[0] + CP + FFT
 
-                // TODO: pruebas larroca
-                // la idea es la siguiente: si estoy haciendo la búsqueda inicial, entonces uso el 
-                // peak_detect_process, que es un buscador de picos en la señal. Es natural que en 
-                // la primera vuelta incluso dude de la presencial del pico. Ya cuando lo encontré 
-                // por primera vez, lo busco en pocos lugares y directamente busco el valor más 
-                // grande de la función de similitidud en ese intervalo corto. 
-
-                //if (lookup_start - lookup_stop >= d_fft_length)
-                if(0)
-                {
-                    peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
-                }
-                else 
-                {
-                    //OJO que peak_max está sin inicializar, y peak_detect_process le pone valor sólo si encuentra un pico. 
-                    //peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max); 
 #ifdef USE_VOLK
-                    volk_32f_index_max_16u(&max_fede, &d_lambda[0], (lookup_start - lookup_stop)); 
+                volk_32f_index_max_16u(&max_fede, &d_lambda[0], (lookup_start - lookup_stop)); 
 #else
-                    for(int i=1; i<lookup_start-lookup_stop; i++){
-                        if (d_lambda[i]>d_lambda[max_fede])
-                            max_fede = i; 
-                    }
-#endif
-
-                    //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
-                    if (max_fede==0 || max_fede==(unsigned int)(lookup_start-lookup_stop-1))
-                    {
-                        peak_length = 0;
-                        peak_max =0; 
-                    }
-                    else
-                    {
-                        peak_length = 1; 
-                        peak_max = 0; 
-                    }
-                    peak_pos[peak_max] = (int)max_fede; 
-
-#if 0
-                    // Print lambda
-                    for (int i = 0; i < (lookup_start - lookup_stop); i++)
-                        printf("lambda[%i]: %.10f\n", i, d_lambda[i]);
-#endif
-
+                for(int i=1; i<lookup_start-lookup_stop; i++){
+                  if (d_lambda[i]>d_lambda[max_fede])
+                     max_fede = i; 
                 }
+#endif
+
+                peak_length = 1; 
+                //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
+                if ( lookup_start-lookup_stop != d_fft_length )
+                    if (max_fede==0 || max_fede==(unsigned int)(lookup_start-lookup_stop-1))
+                     {
+                       peak_length = 0;
+                       // return( peak_length );
+                     }
+                    
+                peak_max = 0; 
+                peak_pos[peak_max] = (int)max_fede; 
+
                 if (peak_length!=1)
-                    printf("WARNING: %d likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
+                    // printf("WARNING: %d GG likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
                 if (peak_length==1)
                 {
                     peak = peak_pos[peak_max] + lookup_stop;
@@ -430,6 +301,99 @@ namespace gr {
 
             }
 
+        int
+            ofdm_sym_acquisition_impl::peak_detection( int * peak_pos, int lookup_start, int lookup_stop )
+            {
+                int peak_max;
+                unsigned int peak_index = 0; 
+                // Find peaks of lambda
+                // We have found an end of symbol at peak_pos[0] + CP + FFT
+
+#ifdef USE_VOLK
+                volk_32f_index_max_16u(&peak_index, &d_lambda[0], (lookup_start - lookup_stop)); 
+#else
+                for(int i=1; i<lookup_start-lookup_stop; i++){
+                    if (d_lambda[i]>d_lambda[peak_index])
+                        peak_index = i; 
+                }
+#endif
+                peak_max = 0; 
+                peak_pos[peak_max] = (int)peak_index; 
+
+                return( peak_index );
+            }
+
+        int
+            ofdm_sym_acquisition_impl::rotation( unsigned int peak_index, int * peak_pos, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
+            {
+                int peak_length;
+                int peak;
+                //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
+                if (peak_index==0 || peak_index==(unsigned int)(lookup_start-lookup_stop-1))
+                    peak_length = 0;
+                else
+                    peak_length = 1; 
+
+                if (peak_length!=1)
+                    printf("WARNING: %d likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
+                if (peak_length==1)
+                {
+                    // peak = peak_pos[peak_max] + lookup_stop;
+                    peak = peak_pos[0] + lookup_stop;
+
+                    *cp_pos = peak;
+
+                    // Calculate frequency correction
+                    /*float peak_epsilon = gr_fast_atan2f(d_gamma[peak_pos[0]]);*/
+                    // float peak_epsilon = fast_atan2f(d_gamma[peak_pos[peak_max]]);
+                    float peak_epsilon = fast_atan2f(d_gamma[peak_pos[0]]);
+                    double sensitivity = (double)(-1) / (double)d_fft_length;
+
+                    // Store phases for derotating the signal
+                    // We always process CP len + FFT len
+                    for (int i = 0; i < (d_cp_length + d_fft_length); i++)
+                    {
+                        if (i == d_nextpos)
+                            d_phaseinc = d_nextphaseinc;
+
+                        // We are interested only in fft_length
+                        d_phase += d_phaseinc;
+
+                        while (d_phase > (float)M_PI)
+                            d_phase -= (float)(2.0 * M_PI);
+                        while (d_phase < (float)(-M_PI))
+                            d_phase += (float)(2.0 * M_PI);
+
+                        derot[i] = gr_expj(d_phase);
+                    }
+
+                    d_nextphaseinc = sensitivity * peak_epsilon;
+                    d_nextpos = peak - (d_cp_length + d_fft_length);
+
+                    *to_consume = d_cp_length + d_fft_length;
+                    *to_out = 1;
+                    return (peak_length);
+                }
+                else
+                {
+                    for (int i = 0; i < (d_cp_length + d_fft_length); i++)
+                    {
+                        d_phase += d_phaseinc;
+
+                        while (d_phase > (float)M_PI)
+                            d_phase -= (float)(2.0 * M_PI);
+                        while (d_phase < (float)(-M_PI))
+                            d_phase += (float)(2.0 * M_PI);
+                    }
+
+                    // We consume only fft_length
+                    *to_consume = d_cp_length + d_fft_length;
+                    *to_out = 0;
+                    return 0;
+                }
+
+            }
+
         void
             ofdm_sym_acquisition_impl::send_sync_start()
             {
@@ -437,16 +401,8 @@ namespace gr {
                 pmt::pmt_t key = pmt::string_to_symbol("sync_start");
                 pmt::pmt_t value = pmt::from_long(1);
                 this->add_item_tag(0, offset, key, value);
-                printf("OFDM symbol acqu: restarting acquisition"); 
+                printf("OFDM symbol acqu: restarting acquisition\n"); 
             }
-
-        int
-            ofdm_sym_acquisition_impl::cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
-            {
-                return (0);
-            }
-
-
 
         ofdm_sym_acquisition::sptr
             ofdm_sym_acquisition::make(int fft_length, int cp_length, float snr)
@@ -471,7 +427,7 @@ namespace gr {
             d_snr = pow(10, d_snr / 10.0);
             d_rho = d_snr / (d_snr + 1.0);
 
-#ifdef DEBUG_PERF
+#ifdef DEBUG_OFDMSYM_PERFORMANCE
             printf( "start!: %i\n", d_count );
             outfile.open("file.dat", std::ios::app );
 #ifdef USE_VOLK
@@ -546,9 +502,6 @@ namespace gr {
             if (d_corr == NULL)
                 std::cout << "cannot allocate memory: d_corr" << std::endl;
 #endif
-
-            //peak_detect_init(0.2, 0.25, 30, 0.0005);
-            peak_detect_init(0.8, 0.9, 30, 0.9);
         }
 
         /*
@@ -604,7 +557,7 @@ namespace gr {
                 if (!d_initial_aquisition)
                 {
                     d_initial_aquisition = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
-                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
+                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
 
                     // Send sync_start downstream
                     send_sync_start();
@@ -616,12 +569,35 @@ namespace gr {
                 // It is also calle coarse frequency correction
                 if (d_initial_aquisition)
                 {
-                    d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
-                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
-                    //d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
-                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
+                    // d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
+                    int prev_d_cp_start = d_cp_start;
+                    // d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+                            &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
+                    if ( !d_cp_found )
+                     {
+                        // int prev_d_to_out = d_to_out;
+                        d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                            &prev_d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
+                        PRINTF("r" );
+#if 0
+                        if ( ( d_to_out == 0 ) && ( prev_d_to_out == 0 ) )
+                         {
+                            PRINTF("no peaks after retry!: initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
+                            // Print input
+                            for (int i = 0; i < (2 * d_fft_length + d_cp_length); i++)
+                                PRINTF("in[%i].re: %.10f, in[%i].img: %.10f\n", i, in[i].real(), i, in[i].imag());
 
+                            // Print lambda
+                            for (int i = 0; i < d_fft_length; i++)
+                                PRINTF("lambda[%i]: %.10f\n", i, d_lambda[i]);
+                         }
+#endif
+                     }
+
+#ifdef DEBUG_OFDMSYM_VERBOSE
                     PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+#endif
 
                     if (d_cp_found)
                     {
@@ -668,7 +644,7 @@ namespace gr {
                         }
                     }
                 }
-#ifdef DEBUG_PERF
+#ifdef DEBUG_OFDMSYM_PERFORMANCE
                 time_t now = time(0);
                 outfile << "run time: " << now << std::endl;
 #endif

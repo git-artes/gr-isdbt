@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
-#define INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
+#ifndef INCLUDED_DVBT_OFDM_SYM_ACQUISITION_IMPL_H
+#define INCLUDED_DVBT_OFDM_SYM_ACQUISITION_IMPL_H
 
 #include <isdbt/ofdm_sym_acquisition.h>
 
@@ -28,7 +28,7 @@ namespace gr {
 
     class ofdm_sym_acquisition_impl : public ofdm_sym_acquisition
     {
-     private:
+    private:
       int d_blocks;
       int d_fft_length;
       int d_cp_length;
@@ -71,16 +71,14 @@ namespace gr {
       int d_to_consume;
       int d_to_out;
 
-      int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
-      int cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
-      
-      int peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha);
-      
-      int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
+      int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out );
+
+      int peak_detection( int * peak_pos, int lookup_start, int lookup_stop );
+
+      int rotation( unsigned int peak_index, int * peak_pos, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
 
       void send_sync_start();
-
-     public:
+    public:
       ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr);
       ~ofdm_sym_acquisition_impl();
 
@@ -88,9 +86,9 @@ namespace gr {
 
       // Where all the action really happens
       int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+           gr_vector_int &ninput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
     };
 
   } // namespace isdbt
