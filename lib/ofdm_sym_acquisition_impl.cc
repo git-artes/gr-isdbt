@@ -213,7 +213,9 @@ namespace gr {
                 peak_pos[peak_max] = (int)max_fede; 
 
                 if (peak_length!=1)
-                    // printf("WARNING: %d GG likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
+                 {
+                    PRINTF("WARNING: %d GG likelihood function peaks detected. OFDM signal at input?\n",peak_length); 
+                 }
                 if (peak_length==1)
                 {
                     peak = peak_pos[peak_max] + lookup_stop;
@@ -572,7 +574,7 @@ namespace gr {
                     // d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
                     int prev_d_cp_start = d_cp_start;
-                    // d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+                    d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
                     if ( !d_cp_found )
                      {
