@@ -22,10 +22,11 @@
 #include "config.h"
 #endif
 
-// #define DEBUG 1
-// #define DEBUG_PERF 1
-// #define USE_VOLK 1
-// #define USE_VOLK_ALIGN 1
+#define DEBUG_OFDMSYM 1
+// #define DEBUG_OFDMSYM_VERBOSE 1
+// #define DEBUG_OFDMSYM_PERFORMANCE 1
+#define USE_VOLK 1
+#define USE_VOLK_ALIGN 1
 
 //#define USE_POSIX_MEMALIGN 1
 
@@ -40,7 +41,7 @@
 #include <volk/volk.h>
 #include <gnuradio/fxpt.h>
 
-#ifdef DEBUG
+#ifdef DEBUG_OFDMSYM
 #define PRINTF(a...) printf(a)
 #else
 #define PRINTF(a...)
@@ -237,7 +238,9 @@ namespace gr {
 
                 }
                 if (peak_length!=1)
-                    printf("WARNING: %d likelihood function peaks detected. GG OFDM signal at input?\n",peak_length); 
+                 {
+                    PRINTF("WARNING: %d likelihood function peaks detected. GG OFDM signal at input?\n",peak_length); 
+                 }
                 if (peak_length==1)
                 {
                     peak = peak_pos[peak_max] + lookup_stop;
@@ -517,10 +520,23 @@ namespace gr {
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
                     if ( !d_cp_found )
                      {
-                        // int prev_d_to_out = d_to_out;
+#if 0
+                        // Print lambda
+                        for (int i = 0; i < d_fft_length ; i++)
+                            printf("lambda-[%i]: %.10f\n", i, d_lambda[i]);
+#endif
+
+                        PRINTF("short_acq -1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
                         d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                             &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
-                        PRINTF("r" );
+                        PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+
+#if 0
+                        // Print lambda
+                        for (int i = 0; i < d_fft_length ; i++)
+                            printf("lambda+[%i]: %.10f\n", i, d_lambda[i]);
+#endif
+                        // PRINTF("r" );
                      }
 
 #ifdef DEBUG_OFDMSYM_VERBOSE
