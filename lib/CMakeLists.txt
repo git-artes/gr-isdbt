@@ -40,7 +40,8 @@ list(APPEND isdbt_sources
     energy_descrambler_impl.cc
     byte_deinterleaver_impl.cc
     viterbi_decoder_1seg_itpp_impl.cc
-    bit_deinterleaver_streamed_impl.cc )
+    bit_deinterleaver_streamed_impl.cc
+    ofdm_sym_acquisition_dvbt_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
