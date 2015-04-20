@@ -44,6 +44,17 @@ namespace gr {
         const int tmcc_decoder_impl::d_tmcc_sync_even[d_tmcc_sync_size] = {0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0};
         const int tmcc_decoder_impl::d_tmcc_sync_odd[d_tmcc_sync_size] = {1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1};
 
+
+		// TMCC parity check matrix written as a (k+1) = 192 dimensions vector
+		const char tmcc_decoder_impl::d_h[] = {	1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,\
+												1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,\
+												1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,\
+												0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1,\
+												0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,\
+												1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0,\
+												0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1,\
+												1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1};
+
         // TMCC carriers size for mode 1 (2K)
         const int tmcc_decoder_impl::tmcc_carriers_size_2k = 13;
 
@@ -181,6 +192,32 @@ namespace gr {
 
             }
 
+		int 
+			tmcc_decoder_impl::tmcc_parity_check(std::deque<char> d_rcv_tmcc_data)
+			{
+				
+				int n = 273,
+					k = 191,
+					r = n-k,
+					i, j, s;
+	
+				char syndrome[r];
+				unsigned char tmcc_large[n];
+
+				memset(&tmcc_large[0], 0, 89);
+				memcpy(&tmcc_large[89], &d_rcv_tmcc_data[20], 184);
+
+				s = 0;
+				for (j=0;j<r;j++){
+					syndrome[j] = 0;
+					for (i=0;i<k+1;i++){
+						syndrome[j] += tmcc_large[i+j]*d_h[i];
+					}
+					if (syndrome[j] % 2) s++;
+				}
+				return s;
+			}
+
         int
             tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
             {
@@ -190,10 +227,7 @@ namespace gr {
 
                 int end_frame = 0;
 
-                // This variable should take values between 0 and 203
-                //d_symbol_index = (d_symbol_index+ 1) % 204;
-
-                // As we have 'tmcc_carriers_size' TMCC carriers we will using majority voting for decision
+                // As we have 'tmcc_carriers_size' TMCC carriers we will be using majority voting for decision
                 int tmcc_majority_zero = 0;
 
                 // For every tmcc carrier in the symbol...
@@ -224,15 +258,16 @@ namespace gr {
                 // Match synchronization signatures
 
                 // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the even tmcc sync sequence stored in the d_tmcc_sync_evenv queue
-                if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin()) & d_since_last_tmcc>=203)
+                if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
                 {
-                    //printf("since tmcc_complete: %d\n", d_since_last_tmcc);
-                    // If the sequences match, we set set the symbol index to 203
-                    // (not any more since it was not working correctly)
-                    end_frame = d_since_last_tmcc==203;
-                    d_since_last_tmcc = 0;
+                    // Then we recognize the end of an ISDB-T frame
+                    end_frame = 1;
+					
+					// This should be erased
+					//end_frame = d_since_last_tmcc==203;
+					//d_since_last_tmcc = 0;
                     //d_symbol_index = 203;
-
+					
                     // Then, we print the full tmcc
                     for (int i = 0; i < d_symbols_per_frame; i++)
                         printf("%i", d_rcv_tmcc_data[i]);
@@ -240,13 +275,15 @@ namespace gr {
 
                 }
                 // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the odd tmcc sync sequence stored in the d_tmcc_sync_oddv queue
-                else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) & d_since_last_tmcc >= 203)
+                else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
                 {
-                    //printf("since tmcc_complete: %d\n", d_since_last_tmcc);
-                    // If the sequences match, we set set the symbol index to 203
-                    // not any more since it was not working correctly
-                    end_frame = d_since_last_tmcc==203;
-                    d_since_last_tmcc = 0;
+
+					// Then we recognize the end of an ISDB-T frame
+         			end_frame = 1;
+
+					// This should be erased
+					// end_frame = d_since_last_tmcc==203;
+					//d_since_last_tmcc = 0;
                     //d_symbol_index = 203;
 
                     // Then, we print the full tmcc
@@ -254,10 +291,11 @@ namespace gr {
                         printf("%i", d_rcv_tmcc_data[i]);
                     printf("\n");
                 }
-                else 
-                {
-                    d_since_last_tmcc++;
-                }
+				// This should be erased
+                //else 
+               // {
+                  //  d_since_last_tmcc++;
+               // }
 
                 // We return end_frame
                 return end_frame;
@@ -317,7 +355,9 @@ namespace gr {
                 d_rcv_tmcc_data.push_back(0);
 
             number_symbol = 0;
-            d_since_last_tmcc = 203;
+
+			// This should be erased 
+            //d_since_last_tmcc = 203;
 
             d_frame_end = false; 
             d_resync = true; 
@@ -395,6 +435,7 @@ namespace gr {
                     int d_acpilot_index = 0;
                     int d_tmccpilot_index = 0;
 
+					// This should be erased
                     /*
                     // check whether a symbol index skip was detected upstream
                     // and correct d_symbol_index accordingly
@@ -410,13 +451,12 @@ namespace gr {
 
                     //currently, we obtain the symbol relative index (between 0 and 3)
                     //from the block upstream
-                    this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
-                    if (tags.size())
-                        d_symbol_index = pmt::to_long(tags[0].value);
-                    else 
-                        printf("Warning: no relative index found in tag's stream"); 
-                    
-
+                    //this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
+                    //if (tags.size())
+                    //    d_symbol_index = pmt::to_long(tags[0].value);
+                    //else 
+                    //    printf("Warning: no relative index found in tag's stream"); 
+                    // --------------------- ERASED
 
 
                     // We will determinate which kind of carrier is each. If we find a data carrier, we let it out

@@ -74,7 +74,7 @@ namespace gr {
                 // Number of segments
                 static const int d_total_segments;
 
-                // Number of segments
+                // Number of symbols per frame
                 static const int d_symbols_per_frame;
 
                 // Number of carriers per segment
@@ -90,6 +90,9 @@ namespace gr {
 
                 static const int d_tmcc_sync_even[];
                 static const int d_tmcc_sync_odd[];
+
+				// TMCC parity check matrix
+				static const char d_h[];
 
                 // Keep TMCC carriers values from previous symbol
                 gr_complex * d_prev_tmcc_symbol;
@@ -107,11 +110,14 @@ namespace gr {
 
                 int number_symbol;
 
+				// This should be erased
                 // how many symbols ago we saw a complete tmcc
-                int d_since_last_tmcc;
+                // int d_since_last_tmcc;
 
 
                 /*METHODS*/
+
+				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data);
 
                 // TMCC data processing metod
                 int process_tmcc_data(const gr_complex * in);
