@@ -537,6 +537,9 @@ namespace gr {
                             printf("lambda+[%i]: %.10f\n", i, d_lambda[i]);
 #endif
                         // PRINTF("r" );
+                        // Send sync_start downstream
+                        send_sync_start();
+
                      }
 
 #ifdef DEBUG_OFDMSYM_VERBOSE

@@ -523,6 +523,9 @@ namespace gr {
                     &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
                 PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
 
+                // Send sync_start downstream
+                send_sync_start();
+
            }
           // PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
 
