@@ -39,8 +39,8 @@
 #define PRINTF(a...)
 #endif
 
-#define USE_VOLK 1
-#define USE_POSIX_MEMALIGN 1
+//#define USE_VOLK 1
+//#define USE_POSIX_MEMALIGN 1
 
 /*----
 void print_float(float f)
@@ -119,6 +119,12 @@ namespace gr {
             peak_val = - (float)INFINITY;
           }
         }
+      }
+
+      // add the peak if we exit the loop with a state==1 but without having add it
+      if (state==1){
+            peak_pos[peak_pos_length] = peak_index;
+            peak_pos_length++;
       }
 
       // Find peak of peaks
