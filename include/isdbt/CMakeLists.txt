@@ -35,5 +35,6 @@ install(FILES
     byte_deinterleaver.h
     viterbi_decoder_1seg_itpp.h
     bit_deinterleaver_streamed.h
-    ofdm_sym_acquisition_dvbt.h DESTINATION include/isdbt
+    ofdm_sym_acquisition_dvbt.h
+    ofdm_sym_acquisition_2.h DESTINATION include/isdbt
 )
