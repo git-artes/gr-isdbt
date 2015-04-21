@@ -451,11 +451,11 @@ namespace gr {
 
                     //currently, we obtain the symbol relative index (between 0 and 3)
                     //from the block upstream
-                    //this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
-                    //if (tags.size())
-                    //    d_symbol_index = pmt::to_long(tags[0].value);
-                    //else 
-                    //    printf("Warning: no relative index found in tag's stream"); 
+                    this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
+                    if (tags.size())
+                        d_symbol_index = pmt::to_long(tags[0].value);
+                    else 
+                        printf("Warning: no relative index found in tag's stream"); 
                     // --------------------- ERASED
 
 
