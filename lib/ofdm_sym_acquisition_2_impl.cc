@@ -31,7 +31,7 @@
 #include <volk/volk.h>
 #include <gnuradio/fxpt.h>
 
-#define DEBUG 1
+// #define DEBUG 1
 
 #ifdef DEBUG
 #define PRINTF(a...) printf(a)
@@ -108,10 +108,12 @@ namespace gr {
             {
                 peak_pos_length = 0;
                 printf("peak_index border! %d, datain_length %d\n", peak_index, datain_length );
+#if 0
                 // Print lambda
                 for (int i = 0; i < datain_length; i++)
                     printf("lambda[%i]: %.10f\n", i, datain[i]);
                 // return( peak_length );
+#endif
             }
         }
 
