@@ -65,7 +65,8 @@ namespace gr {
       d_avg_alpha = alpha;
       d_threshold_factor_rise = threshold_factor_rise;
       d_threshold_factor_fall = threshold_factor_fall;
-      d_avg = 0;
+      // d_avg = 0;
+      d_avg = - (float)INFINITY;
 
       return (0);
     }
@@ -86,23 +87,34 @@ namespace gr {
                 peak_index = i; 
         }
 #endif
+        
 
         peak_pos_length = 1; 
+        // if ( abs( datain[ peak_index ] ) >= abs( d_avg ) * d_threshold_factor_rise )
+        if ( datain[ peak_index ] > ( d_avg - abs( d_avg * ( 1 - d_threshold_factor_rise ) ) ) )
+         {
+            d_avg = d_avg_alpha * datain[ peak_index ] + (1 - d_avg_alpha) * d_avg;
+         }
+        else
+         {
+            peak_pos_length = 0; 
+            printf("peak under/over average! peak %f, avg %f\n", datain[ peak_index ], d_avg );
+         }
+                
         //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
         if ( datain_length != d_fft_length )
         {
-            if ( ( peak_index == 0 ) || ( peak_index == d_fft_length-1 ) )
+            if ( ( peak_index == 0 ) || ( peak_index == datain_length-1 ) )
             {
                 peak_pos_length = 0;
                 printf("peak_index border! %d, datain_length %d\n", peak_index, datain_length );
-#if 0 
                 // Print lambda
                 for (int i = 0; i < datain_length; i++)
                     printf("lambda[%i]: %.10f\n", i, datain[i]);
                 // return( peak_length );
-#endif
             }
         }
+
 #if 0 
         // Print lambda
         for (int i = 0; i < datain_length; i++)
@@ -508,7 +520,8 @@ namespace gr {
 #endif
 
       //peak_detect_init(0.2, 0.25, 30, 0.0005);
-      peak_detect_init(0.8, 0.9, 30, 0.9);
+      // peak_detect_init(0.8, 0.9, 30, 0.9);
+      peak_detect_init(0.7, 0.9, 30, 0.9);
     }
 
     /*
@@ -588,8 +601,6 @@ namespace gr {
                 PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
                 d_extended_range++;
 
-                // Send sync_start downstream
-                // send_sync_start();
            }
           else
                 d_extended_range = 0;
