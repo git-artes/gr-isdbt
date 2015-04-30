@@ -218,6 +218,43 @@ namespace gr {
 				return s;
 			}
 
+		int
+			tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
+				
+				printf("** TMCC ANALYSIS **\n\n");
+				printf("Partial recepcion			: %d\n\n", d_rcv_tmcc_data[27]);
+				printf(">> Layer A\n\n\
+Carrier Modulation Scheme	: %d%d%d\n\
+Convolutional Coding Rate	: %d%d%d\n\
+Interleaving Length			: %d%d%d\n\
+Number of Segments		: %d%d%d%d\n\n",\
+d_rcv_tmcc_data[28], d_rcv_tmcc_data[29],d_rcv_tmcc_data[30],\
+d_rcv_tmcc_data[31],d_rcv_tmcc_data[32],d_rcv_tmcc_data[33],\
+d_rcv_tmcc_data[34],d_rcv_tmcc_data[35],d_rcv_tmcc_data[36],\
+d_rcv_tmcc_data[37],d_rcv_tmcc_data[38],d_rcv_tmcc_data[39],d_rcv_tmcc_data[40]);
+
+				printf(">> Layer B\n\n\
+Carrier Modulation Scheme	: %d%d%d\n\
+Convolutional Coding Rate	: %d%d%d\n\
+Interleaving Length			: %d%d%d\n\
+Number of Segments		: %d%d%d%d\n\n",\
+d_rcv_tmcc_data[41], d_rcv_tmcc_data[42],d_rcv_tmcc_data[43],\
+d_rcv_tmcc_data[44],d_rcv_tmcc_data[45],d_rcv_tmcc_data[46], \
+d_rcv_tmcc_data[47],d_rcv_tmcc_data[48],d_rcv_tmcc_data[49],\
+d_rcv_tmcc_data[50],d_rcv_tmcc_data[51],d_rcv_tmcc_data[52],d_rcv_tmcc_data[53]);
+
+                printf(">> Layer C\n\n\
+Carrier Modulation Scheme	: %d%d%d\n\
+Convolutional Coding Rate	: %d%d%d\n\
+Interleaving Length			: %d%d%d\n\
+Number of Segments		: %d%d%d%d\n\n",\
+d_rcv_tmcc_data[54], d_rcv_tmcc_data[55],d_rcv_tmcc_data[56],\
+d_rcv_tmcc_data[57],d_rcv_tmcc_data[58],d_rcv_tmcc_data[59],\
+d_rcv_tmcc_data[60],d_rcv_tmcc_data[61],d_rcv_tmcc_data[62],\
+d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66]);
+
+			}
+
         int
             tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
             {
@@ -269,10 +306,13 @@ namespace gr {
                     //d_symbol_index = 203;
 					
                     // Then, we print the full tmcc
+					/*
                     for (int i = 0; i < d_symbols_per_frame; i++)
                         printf("%i", d_rcv_tmcc_data[i]);
                     printf("\n");
 
+					*/
+					tmcc_print(d_rcv_tmcc_data);
                 }
                 // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the odd tmcc sync sequence stored in the d_tmcc_sync_oddv queue
                 else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
@@ -287,9 +327,13 @@ namespace gr {
                     //d_symbol_index = 203;
 
                     // Then, we print the full tmcc
+					/*
                     for (int i = 0; i < d_symbols_per_frame; i++)
                         printf("%i", d_rcv_tmcc_data[i]);
                     printf("\n");
+					*/
+					tmcc_print(d_rcv_tmcc_data);
+
                 }
 				// This should be erased
                 //else 

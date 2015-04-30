@@ -119,7 +119,9 @@ namespace gr {
 
 				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data);
 
-                // TMCC data processing metod
+				int tmcc_print(std::deque<char> d_rcv_tmcc_data);
+                
+				// TMCC data processing metod
                 int process_tmcc_data(const gr_complex * in);
 
                 // ...
