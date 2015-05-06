@@ -55,3 +55,4 @@ GR_ADD_TEST(qa_byte_deinterleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DI
 GR_ADD_TEST(qa_bit_deinterleaver_streamed ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_streamed.py)
 GR_ADD_TEST(qa_ofdm_sym_acquisition_dvbt ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_sym_acquisition_dvbt.py)
 GR_ADD_TEST(qa_ofdm_sym_acquisition_2 ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_sym_acquisition_2.py)
+GR_ADD_TEST(qa_reed_solomon_dec_isdbt ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.py)

@@ -31,5 +31,6 @@ install(FILES
     #isdbt_viterbi_decoder_1seg_itpp.xml
     isdbt_bit_deinterleaver_streamed.xml
     isdbt_ofdm_sym_acquisition_dvbt.xml
-    isdbt_ofdm_sym_acquisition_2.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_ofdm_sym_acquisition_2.xml
+    isdbt_reed_solomon_dec_isdbt.xml DESTINATION share/gnuradio/grc/blocks
 )

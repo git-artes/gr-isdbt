@@ -1,0 +1,17 @@
+<block>
+  <name>Reed solomon dec isdbt</name>
+  <key>isdbt_reed_solomon_dec_isdbt</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.reed_solomon_dec_isdbt()</make>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+    <vlen>1*(255-51)</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>1*(239-51)</vlen>
+  </source>
+</block>

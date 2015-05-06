@@ -174,6 +174,9 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
             where = disordered_segments.index(segment)
             reordered_expected_result = reordered_expected_result + expected_result[where*total_data_carriers/13:(where+1)*total_data_carriers/13]
 
+        print reordered_expected_result
+        print actual_result
+
         self.assertFloatTuplesAlmostEqual(reordered_expected_result, actual_result)
 
 

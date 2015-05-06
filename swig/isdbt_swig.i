@@ -23,6 +23,7 @@
 #include "isdbt/bit_deinterleaver_streamed.h"
 #include "isdbt/ofdm_sym_acquisition_dvbt.h"
 #include "isdbt/ofdm_sym_acquisition_2.h"
+#include "isdbt/reed_solomon_dec_isdbt.h"
 %}
 
 
@@ -59,3 +60,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver_streamed);
 GR_SWIG_BLOCK_MAGIC2(isdbt, ofdm_sym_acquisition_dvbt);
 %include "isdbt/ofdm_sym_acquisition_2.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, ofdm_sym_acquisition_2);
+%include "isdbt/reed_solomon_dec_isdbt.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, reed_solomon_dec_isdbt);

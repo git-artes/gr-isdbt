@@ -42,7 +42,10 @@ list(APPEND isdbt_sources
     viterbi_decoder_1seg_itpp_impl.cc
     bit_deinterleaver_streamed_impl.cc
     ofdm_sym_acquisition_dvbt_impl.cc
-    ofdm_sym_acquisition_2_impl.cc )
+    ofdm_sym_acquisition_2_impl.cc
+    reed_solomon_dec_isdbt_impl.cc 
+    reed_solomon.cc
+    )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -78,6 +81,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_streamed.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg_itpp.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
