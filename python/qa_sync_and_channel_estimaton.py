@@ -40,7 +40,7 @@ class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
         fft_size = 2**(10+mode)
         sync = isdbt.sync_and_channel_estimaton(fft_size, total_carriers,200)
 
-        src_data = range(fft_size)
+        src_data = range(fft_size)*2
         
         src = blocks.vector_source_c(src_data, False, fft_size)
         dst = blocks.vector_sink_c(total_carriers)
@@ -50,8 +50,8 @@ class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
         self.tb.run()
 
         actual_result = dst.data()
-        print src_data
-        print actual_result
+        #print src_data
+        #print actual_result
 
 
 

@@ -21,8 +21,8 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-#import isdbt
-import isdbt_swig as isdbt
+import isdbt
+#import isdbt_swig as isdbt
 
 class qa_bit_deinterleaver_streamed (gr_unittest.TestCase):
 

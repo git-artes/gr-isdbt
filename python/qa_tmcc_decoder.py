@@ -174,8 +174,8 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
             where = disordered_segments.index(segment)
             reordered_expected_result = reordered_expected_result + expected_result[where*total_data_carriers/13:(where+1)*total_data_carriers/13]
 
-        print reordered_expected_result
-        print actual_result
+        #print reordered_expected_result
+        #print actual_result
 
         self.assertFloatTuplesAlmostEqual(reordered_expected_result, actual_result)
 
@@ -191,7 +191,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
-        src_data = range(total_carriers)
+        src_data = range(total_carriers)*2
         
         sym_index = 1
         tag = gr.tag_utils.python_to_tag({'offset':0, 'key':gr.pmt.string_to_symbol("relative_symbol_index"), 'value':gr.pmt.from_long(sym_index)})
@@ -230,8 +230,9 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
         for segment in range(13):
             where = disordered_segments.index(segment)
             reordered_expected_result = reordered_expected_result + expected_result[where*total_data_carriers/13:(where+1)*total_data_carriers/13]
-
-        self.assertFloatTuplesAlmostEqual(reordered_expected_result, actual_result)
+        
+        #print actual_result
+        self.assertFloatTuplesAlmostEqual(reordered_expected_result*2, actual_result)
 
 
     def test_sym2_mode3 (self):

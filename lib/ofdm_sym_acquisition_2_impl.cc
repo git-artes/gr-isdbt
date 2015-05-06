@@ -117,10 +117,11 @@ namespace gr {
             }
         }
 
-#if 0 
+#if 0
         // Print lambda
+        if(datain_length<d_fft_length)
         for (int i = 0; i < datain_length; i++)
-            printf("lambda[%i]: %.10f\n", i, datain[i]);
+            printf("nitems_written=%li; nitems_read=%li; lambda[%i]: %.10f\n", this->nitems_written(0), this->nitems_read(0), i, datain[i]);
 
 #endif
 //        printf("peak_index %d, datain_length %d\n", peak_index, datain_length );
@@ -572,6 +573,7 @@ namespace gr {
         const gr_complex *in = (const gr_complex *) input_items[0];
         gr_complex *out = (gr_complex *) output_items[0];
 
+        //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
         int low, size;
 
         // This is initial aquisition of symbol start
@@ -602,10 +604,12 @@ namespace gr {
                     &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
                 PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
                 d_extended_range++;
+                send_sync_start(); 
 
            }
-          else
+          else{
                 d_extended_range = 0;
+          }
 
           // PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
           if ( d_extended_range > 2 )

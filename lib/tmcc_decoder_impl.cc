@@ -45,15 +45,15 @@ namespace gr {
         const int tmcc_decoder_impl::d_tmcc_sync_odd[d_tmcc_sync_size] = {1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1};
 
 
-		// TMCC parity check matrix written as a (k+1) = 192 dimensions vector
-		const char tmcc_decoder_impl::d_h[] = {	1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,\
-												1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,\
-												1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,\
-												0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1,\
-												0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,\
-												1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0,\
-												0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1,\
-												1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1};
+        // TMCC parity check matrix written as a (k+1) = 192 dimensions vector
+        const char tmcc_decoder_impl::d_h[] = {	1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,\
+            1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,\
+                1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,\
+                0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1,\
+                0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,\
+                1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0,\
+                0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1,\
+                1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1};
 
         // TMCC carriers size for mode 1 (2K)
         const int tmcc_decoder_impl::tmcc_carriers_size_2k = 13;
@@ -192,68 +192,68 @@ namespace gr {
 
             }
 
-		int 
-			tmcc_decoder_impl::tmcc_parity_check(std::deque<char> d_rcv_tmcc_data)
-			{
-				
-				int n = 273,
-					k = 191,
-					r = n-k,
-					i, j, s;
-	
-				char syndrome[r];
-				unsigned char tmcc_large[n];
+        int 
+            tmcc_decoder_impl::tmcc_parity_check(std::deque<char> d_rcv_tmcc_data)
+            {
 
-				memset(&tmcc_large[0], 0, 89);
-				memcpy(&tmcc_large[89], &d_rcv_tmcc_data[20], 184);
+                int n = 273,
+                    k = 191,
+                    r = n-k,
+                    i, j, s;
 
-				s = 0;
-				for (j=0;j<r;j++){
-					syndrome[j] = 0;
-					for (i=0;i<k+1;i++){
-						syndrome[j] += tmcc_large[i+j]*d_h[i];
-					}
-					if (syndrome[j] % 2) s++;
-				}
-				return s;
-			}
+                char syndrome[r];
+                unsigned char tmcc_large[n];
 
-		int
-			tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
-				
-				printf("** TMCC ANALYSIS **\n\n");
-				printf("Partial recepcion			: %d\n\n", d_rcv_tmcc_data[27]);
-				printf(">> Layer A\n\n\
-Carrier Modulation Scheme	: %d%d%d\n\
-Convolutional Coding Rate	: %d%d%d\n\
-Interleaving Length			: %d%d%d\n\
-Number of Segments		: %d%d%d%d\n\n",\
-d_rcv_tmcc_data[28], d_rcv_tmcc_data[29],d_rcv_tmcc_data[30],\
-d_rcv_tmcc_data[31],d_rcv_tmcc_data[32],d_rcv_tmcc_data[33],\
-d_rcv_tmcc_data[34],d_rcv_tmcc_data[35],d_rcv_tmcc_data[36],\
-d_rcv_tmcc_data[37],d_rcv_tmcc_data[38],d_rcv_tmcc_data[39],d_rcv_tmcc_data[40]);
+                memset(&tmcc_large[0], 0, 89);
+                memcpy(&tmcc_large[89], &d_rcv_tmcc_data[20], 184);
 
-				printf(">> Layer B\n\n\
-Carrier Modulation Scheme	: %d%d%d\n\
-Convolutional Coding Rate	: %d%d%d\n\
-Interleaving Length			: %d%d%d\n\
-Number of Segments		: %d%d%d%d\n\n",\
-d_rcv_tmcc_data[41], d_rcv_tmcc_data[42],d_rcv_tmcc_data[43],\
-d_rcv_tmcc_data[44],d_rcv_tmcc_data[45],d_rcv_tmcc_data[46], \
-d_rcv_tmcc_data[47],d_rcv_tmcc_data[48],d_rcv_tmcc_data[49],\
-d_rcv_tmcc_data[50],d_rcv_tmcc_data[51],d_rcv_tmcc_data[52],d_rcv_tmcc_data[53]);
+                s = 0;
+                for (j=0;j<r;j++){
+                    syndrome[j] = 0;
+                    for (i=0;i<k+1;i++){
+                        syndrome[j] += tmcc_large[i+j]*d_h[i];
+                    }
+                    if (syndrome[j] % 2) s++;
+                }
+                return s;
+            }
+
+        int
+            tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
+
+                printf("** TMCC ANALYSIS **\n\n");
+                printf("Partial recepcion			: %d\n\n", d_rcv_tmcc_data[27]);
+                printf(">> Layer A\n\n\
+                        Carrier Modulation Scheme	: %d%d%d\n\
+                        Convolutional Coding Rate	: %d%d%d\n\
+                        Interleaving Length			: %d%d%d\n\
+                        Number of Segments		: %d%d%d%d\n\n",\
+                        d_rcv_tmcc_data[28], d_rcv_tmcc_data[29],d_rcv_tmcc_data[30],\
+                        d_rcv_tmcc_data[31],d_rcv_tmcc_data[32],d_rcv_tmcc_data[33],\
+                        d_rcv_tmcc_data[34],d_rcv_tmcc_data[35],d_rcv_tmcc_data[36],\
+                        d_rcv_tmcc_data[37],d_rcv_tmcc_data[38],d_rcv_tmcc_data[39],d_rcv_tmcc_data[40]);
+
+                printf(">> Layer B\n\n\
+                        Carrier Modulation Scheme	: %d%d%d\n\
+                        Convolutional Coding Rate	: %d%d%d\n\
+                        Interleaving Length			: %d%d%d\n\
+                        Number of Segments		: %d%d%d%d\n\n",\
+                        d_rcv_tmcc_data[41], d_rcv_tmcc_data[42],d_rcv_tmcc_data[43],\
+                        d_rcv_tmcc_data[44],d_rcv_tmcc_data[45],d_rcv_tmcc_data[46], \
+                        d_rcv_tmcc_data[47],d_rcv_tmcc_data[48],d_rcv_tmcc_data[49],\
+                        d_rcv_tmcc_data[50],d_rcv_tmcc_data[51],d_rcv_tmcc_data[52],d_rcv_tmcc_data[53]);
 
                 printf(">> Layer C\n\n\
-Carrier Modulation Scheme	: %d%d%d\n\
-Convolutional Coding Rate	: %d%d%d\n\
-Interleaving Length			: %d%d%d\n\
-Number of Segments		: %d%d%d%d\n\n",\
-d_rcv_tmcc_data[54], d_rcv_tmcc_data[55],d_rcv_tmcc_data[56],\
-d_rcv_tmcc_data[57],d_rcv_tmcc_data[58],d_rcv_tmcc_data[59],\
-d_rcv_tmcc_data[60],d_rcv_tmcc_data[61],d_rcv_tmcc_data[62],\
-d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66]);
+                        Carrier Modulation Scheme	: %d%d%d\n\
+                        Convolutional Coding Rate	: %d%d%d\n\
+                        Interleaving Length			: %d%d%d\n\
+                        Number of Segments		: %d%d%d%d\n\n",\
+                        d_rcv_tmcc_data[54], d_rcv_tmcc_data[55],d_rcv_tmcc_data[56],\
+                        d_rcv_tmcc_data[57],d_rcv_tmcc_data[58],d_rcv_tmcc_data[59],\
+                        d_rcv_tmcc_data[60],d_rcv_tmcc_data[61],d_rcv_tmcc_data[62],\
+                        d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66]);
 
-			}
+            }
 
         int
             tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
@@ -299,47 +299,49 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
                 {
                     // Then we recognize the end of an ISDB-T frame
                     end_frame = 1;
-					
-					// This should be erased
-					//end_frame = d_since_last_tmcc==203;
-					//d_since_last_tmcc = 0;
-                    //d_symbol_index = 203;
-					
-                    // Then, we print the full tmcc
-					/*
-                    for (int i = 0; i < d_symbols_per_frame; i++)
-                        printf("%i", d_rcv_tmcc_data[i]);
-                    printf("\n");
 
-					*/
-					tmcc_print(d_rcv_tmcc_data);
+                    // This should be erased
+                    //end_frame = d_since_last_tmcc==203;
+                    //d_since_last_tmcc = 0;
+                    //d_symbol_index = 203;
+
+                    // Then, we print the full tmcc
+                    /*
+                       for (int i = 0; i < d_symbols_per_frame; i++)
+                       printf("%i", d_rcv_tmcc_data[i]);
+                       printf("\n");
+
+*/
+                    //tmcc_print(d_rcv_tmcc_data);
+                    printf("TMCC OK\n"); 
                 }
                 // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the odd tmcc sync sequence stored in the d_tmcc_sync_oddv queue
                 else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
                 {
 
-					// Then we recognize the end of an ISDB-T frame
-         			end_frame = 1;
+                    // Then we recognize the end of an ISDB-T frame
+                    end_frame = 1;
 
-					// This should be erased
-					// end_frame = d_since_last_tmcc==203;
-					//d_since_last_tmcc = 0;
+                    // This should be erased
+                    // end_frame = d_since_last_tmcc==203;
+                    //d_since_last_tmcc = 0;
                     //d_symbol_index = 203;
 
                     // Then, we print the full tmcc
-					/*
-                    for (int i = 0; i < d_symbols_per_frame; i++)
-                        printf("%i", d_rcv_tmcc_data[i]);
-                    printf("\n");
-					*/
-					tmcc_print(d_rcv_tmcc_data);
+                    /*
+                       for (int i = 0; i < d_symbols_per_frame; i++)
+                       printf("%i", d_rcv_tmcc_data[i]);
+                       printf("\n");
+                       */
+                    //tmcc_print(d_rcv_tmcc_data);
+                    printf("TMCC OK\n"); 
 
                 }
-				// This should be erased
+                // This should be erased
                 //else 
-               // {
-                  //  d_since_last_tmcc++;
-               // }
+                // {
+                //  d_since_last_tmcc++;
+                // }
 
                 // We return end_frame
                 return end_frame;
@@ -400,7 +402,7 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
 
             number_symbol = 0;
 
-			// This should be erased 
+            // This should be erased 
             //d_since_last_tmcc = 203;
 
             d_frame_end = false; 
@@ -435,6 +437,7 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
             {
                 const gr_complex *in = (const gr_complex *) input_items[0];
                 gr_complex *out = (gr_complex *) output_items[0];
+                
 
                 /*
                  * Here starts the signal processing
@@ -473,13 +476,7 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
                     //If a frame is recognized then set signal end of frame to true
                     d_frame_end = process_tmcc_data(&in[i * active_carriers]);
 
-                    // Declare and initialize to zero the number of data carrier, spilot, acpilot and tmcc pilot found
-                    int carrier_out = 0;
-                    int d_spilot_index = 0;
-                    int d_acpilot_index = 0;
-                    int d_tmccpilot_index = 0;
-
-					// This should be erased
+                    // This should be erased
                     /*
                     // check whether a symbol index skip was detected upstream
                     // and correct d_symbol_index accordingly
@@ -500,8 +497,13 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
                         d_symbol_index = pmt::to_long(tags[0].value);
                     else 
                         printf("Warning: no relative index found in tag's stream"); 
-                    // --------------------- ERASED
 
+
+                    // Declare and initialize to zero the number of data carrier, spilot, acpilot and tmcc pilot found
+                    int carrier_out = 0;
+                    int d_spilot_index = 0;
+                    int d_acpilot_index = 0;
+                    int d_tmccpilot_index = 0;
 
                     // We will determinate which kind of carrier is each. If we find a data carrier, we let it out
                     for (int carrier = 0; carrier < (active_carriers - 1);carrier++) {
@@ -525,7 +527,7 @@ d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66])
                                     // If is none of then we let the carrier out in the proper order
                                     //out[carrier_out] = in[i * active_carriers + carrier];
                                     gr_complex salida = in[i*active_carriers + carrier]; 
-                                    out[(d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
+                                    out[i*d_data_carriers_per_segment*d_total_segments + (d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
                                     /*if (std::abs(salida.imag()) < 0.01){
                                       printf("problemas (sym=%d, portadora = %d, abs(salida.imag())=%f): out=%f+j%f\n",d_symbol_index,carrier, std::abs(salida.imag()),salida.real(),salida.imag());
                                       for (int j=-5; j<5; j++)

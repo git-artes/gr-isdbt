@@ -95,6 +95,7 @@ namespace gr {
                 const unsigned char *in = (const unsigned char *) input_items[0];
                 unsigned char *out = (unsigned char *) output_items[0];
 
+                //printf("DESCRAMBLER: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
 
                 /*
                  * Look for a tag that signals superframe_start and consume all input items

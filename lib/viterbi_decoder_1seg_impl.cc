@@ -157,6 +157,7 @@ namespace gr {
                 // the number of blocks i will process (output) this call
                 int nblocks = 8 * noutput_items / (d_bsize * d_k);
                 int out_count = 0;
+                
 
                 //gettimeofday(&tvs, &tzs);
 
@@ -180,7 +181,6 @@ namespace gr {
                         d_init = 0;
                         d_viterbi_chunks_init_sse2(metric0, path0);
 
-                        printf("VITERBI: resync: %i\n", tags_resync[0].offset - nread);
 
 
                         // if we are not aligned with the beginning of a frame, we go 

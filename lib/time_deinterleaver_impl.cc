@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "time_deinterleaver_impl.h"
+#include <stdio.h>
 
 namespace gr {
     namespace isdbt {

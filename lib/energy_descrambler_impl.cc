@@ -100,7 +100,7 @@ namespace gr {
 
                 int to_consume, to_out;
 
-                //PRINTF("ENERGY: noutput_items: %i, d_index: %i\n", noutput_items, d_index);
+                //printf("ENERGY: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
 
                 // Search for frame_begin, when the PRBS should be restarted. 
                 std::vector<tag_t> tags;
@@ -138,7 +138,7 @@ namespace gr {
                     // d_SYNC should be in this position, but I would like to verify it. 
                     //out[d_TSP_SIZE-1 + i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
                     
-                    // printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
+                     //printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                 }
 
 
