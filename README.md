@@ -1,27 +1,28 @@
-ISDB-T receiver in GNU Radio
+### ISDB-T receiver in GNU Radio
 
-An opensource implementation of Digital Television standard ISDB-T
-(in particular the so-called "international" version, or ISDB-Tb)
-receiver in GNU Radio.
+** An open source implementation of a receiver for the Digital Television standard ISDB-T (ARIB's STD-B31) in GNU Radio. **
 
-We are in early development stages, any help is welcomed.
-Our first blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on git) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt). 
+In particular, here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
-Notes:
-    The isdb-t receiver supports all constellation types QPSK, QAM16, QAM64 and rates: 1/2, 2/3, 3/4, 5/6, 7/8.
-    All combinations of rates and constellations are tested and working for 2k OFDM.
+We are in early (but very active) development stages, and any help and/or feedback is welcome. Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on git) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt). 
 
-Examples:
-    examples/rx_demo.grc
-    examples/viewing_the_constellation.grc
+** Notes and examples **
 
-Build instructions:
-    mkdir build
-    cd build
-    cmake ../
-    make
-    sudo make install
-    sudo ldconfig
+Roughly speaking, the receiver may be currently separated in two segments regarding operation: 
+- *Up to equalization and TMCC decoding.* The receiver has been tested with mode-3 transmission (8k FFT) and several CP lengths. It works online (we used USRP B100 and BladeRF X115) and is able to display the complete constellation. It should work with the other two modes, but we have not tested it yet. See examples/viewing_the_constellation.grc. 
+- *After TMCC decoding.* The receiver is capable of displaying on-line the 1-segment transmission if present. See examples/rx_demo.grc. The output of the flowgraph is a Transport Stream file which may be played by mplayer (for instance). If before executing the flowgraph we create the file as a pipe (mkfifo test_out.ts), it should display the video online. 
+
+**Build instructions**
+
+git clone https://github.com/git-artes/gr-isdbt.git
+cd gr-isdbt
+mkdir build
+cd build
+cmake ../
+make && sudo make install
+
+If installed for the first time: 
+sudo ldconfig
 
 IIE Instituto de Ingeniería Eléctrica
 Facultad de Ingeniería
@@ -29,3 +30,4 @@ Universidad de la República
 Montevideo, Uruguay
 http://iie.fing.edu.uy/investigacion/grupos/artes/
 
+Please refer to the LICENSE file for contact information and further credits. 
