@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2015 <+YOU OR YOUR COMPANY+>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
-#define INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
+#ifndef INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H
+#define INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H
 
-#include <isdbt/ofdm_sym_acquisition.h>
+#include <isdbt/ofdm_sym_acquisition_2.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ofdm_sym_acquisition_impl : public ofdm_sym_acquisition
+    class ofdm_sym_acquisition_2_impl : public ofdm_sym_acquisition_2
     {
      private:
-      int d_blocks;
+      // Nothing to declare in this block.
       int d_fft_length;
       int d_cp_length;
+      int d_extended_range;
       float d_snr;
       float d_rho;
 
@@ -70,19 +71,28 @@ namespace gr {
       gr_complex * d_derot;
       int d_to_consume;
       int d_to_out;
+      int d_cp_start_tmp;
+      gr_complex * d_derot_tmp;
+      int d_to_consume_tmp;
+      int d_to_out_tmp;
 
       int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
       int cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
       
+      int peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha);
+      
+      int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
+      int peak_detect_process_gg(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
+
       void send_sync_start();
 
      public:
-      ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr);
-      ~ofdm_sym_acquisition_impl();
-
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      ofdm_sym_acquisition_2_impl(int fft_length, int cp_length, float snr);
+      ~ofdm_sym_acquisition_2_impl();
 
       // Where all the action really happens
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
       int general_work(int noutput_items,
 		       gr_vector_int &ninput_items,
 		       gr_vector_const_void_star &input_items,
@@ -92,5 +102,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H */
+#endif /* INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H */
 
