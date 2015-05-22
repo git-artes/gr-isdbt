@@ -33,10 +33,8 @@ install(FILES
     viterbi_decoder_1seg.h
     energy_descrambler.h
     byte_deinterleaver.h
-    viterbi_decoder_1seg_itpp.h
     bit_deinterleaver_streamed.h
     ofdm_sym_acquisition_dvbt.h
-    ofdm_sym_acquisition_2.h
     reed_solomon.h
     reed_solomon_dec_isdbt.h DESTINATION include/isdbt
 )

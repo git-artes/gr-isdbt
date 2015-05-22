@@ -447,12 +447,14 @@ namespace gr {
                 {
                     // Process tmcc data
                     process_tmcc_data(&in[i* d_ninput]);
+                    //printf("d_freq_offset: %i\n", d_freq_offset); 
 
                     // Correct ofdm symbol integer frequency error
                     frequency_correction(&in[i* d_ninput], derotated_in);
 
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
                     process_sp_data(derotated_in);
+                    //printf("current_symbol: %i\n", d_current_symbol); 
 
                     // Assign the output and equalize the channel
                     for (int carrier = 0; carrier < active_carriers; carrier++)

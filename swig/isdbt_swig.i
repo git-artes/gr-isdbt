@@ -19,7 +19,6 @@
 #include "isdbt/viterbi_decoder_1seg.h"
 #include "isdbt/energy_descrambler.h"
 #include "isdbt/byte_deinterleaver.h"
-#include "isdbt/viterbi_decoder_1seg_itpp.h"
 #include "isdbt/bit_deinterleaver_streamed.h"
 #include "isdbt/ofdm_sym_acquisition_dvbt.h"
 #include "isdbt/reed_solomon_dec_isdbt.h"
@@ -50,8 +49,7 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, viterbi_decoder_1seg);
 GR_SWIG_BLOCK_MAGIC2(isdbt, energy_descrambler);
 %include "isdbt/byte_deinterleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, byte_deinterleaver);
-%include "isdbt/viterbi_decoder_1seg_itpp.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, viterbi_decoder_1seg_itpp);
+
 %include "isdbt/bit_deinterleaver_streamed.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver_streamed);
 

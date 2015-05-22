@@ -39,7 +39,6 @@ list(APPEND isdbt_sources
     d_tab.c
     energy_descrambler_impl.cc
     byte_deinterleaver_impl.cc
-    viterbi_decoder_1seg_itpp_impl.cc
     bit_deinterleaver_streamed_impl.cc
     ofdm_sym_acquisition_dvbt_impl.cc
     reed_solomon_dec_isdbt_impl.cc 
@@ -53,7 +52,7 @@ if(NOT isdbt_sources)
 endif(NOT isdbt_sources)
 
 add_library(gnuradio-isdbt SHARED ${isdbt_sources})
-target_link_libraries(gnuradio-isdbt ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} itpp)
+target_link_libraries(gnuradio-isdbt ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
 set_target_properties(gnuradio-isdbt PROPERTIES DEFINE_SYMBOL "gnuradio_isdbt_EXPORTS")
 
 if(APPLE)
@@ -82,7 +81,6 @@ list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_streamed.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg_itpp.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg.cc
