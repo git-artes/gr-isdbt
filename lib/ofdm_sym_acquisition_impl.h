@@ -18,15 +18,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H
-#define INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H
+#ifndef INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
+#define INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H
 
-#include <isdbt/ofdm_sym_acquisition_2.h>
+#include <isdbt/ofdm_sym_acquisition.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ofdm_sym_acquisition_2_impl : public ofdm_sym_acquisition_2
+    class ofdm_sym_acquisition_impl : public ofdm_sym_acquisition
     {
      private:
       // Nothing to declare in this block.
@@ -87,8 +87,8 @@ namespace gr {
       void send_sync_start();
 
      public:
-      ofdm_sym_acquisition_2_impl(int fft_length, int cp_length, float snr);
-      ~ofdm_sym_acquisition_2_impl();
+      ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr);
+      ~ofdm_sym_acquisition_impl();
 
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
@@ -102,5 +102,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_2_IMPL_H */
+#endif /* INCLUDED_ISDBT_OFDM_SYM_ACQUISITION_IMPL_H */
 

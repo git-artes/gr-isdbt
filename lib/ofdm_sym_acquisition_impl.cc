@@ -23,7 +23,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "ofdm_sym_acquisition_2_impl.h"
+#include "ofdm_sym_acquisition_impl.h"
 #include <complex>
 #include <gnuradio/math.h>
 #include <gnuradio/expj.h>
@@ -60,7 +60,7 @@ namespace gr {
   namespace isdbt {
 
     int 
-    ofdm_sym_acquisition_2_impl::peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha)
+    ofdm_sym_acquisition_impl::peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha)
     {
       d_avg_alpha = alpha;
       d_threshold_factor_rise = threshold_factor_rise;
@@ -74,7 +74,7 @@ namespace gr {
 #define GG
 #ifdef GG
     int 
-    ofdm_sym_acquisition_2_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
+    ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
     {
         unsigned int peak_index = 0;
         int peak_pos_length = 0;
@@ -131,7 +131,7 @@ namespace gr {
     }
 #else
     int 
-    ofdm_sym_acquisition_2_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
+    ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
     {
       int state = 0;
       float peak_val = -(float)INFINITY; int peak_index = 0; int peak_pos_length = 0;
@@ -214,7 +214,7 @@ namespace gr {
 #endif
 
     int
-    ofdm_sym_acquisition_2_impl::ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
+    ofdm_sym_acquisition_impl::ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
     {
 
       assert(lookup_start >= lookup_stop);
@@ -431,7 +431,7 @@ namespace gr {
     }
 
     void
-    ofdm_sym_acquisition_2_impl::send_sync_start()
+    ofdm_sym_acquisition_impl::send_sync_start()
     {
       const uint64_t offset = this->nitems_written(0);
       pmt::pmt_t key = pmt::string_to_symbol("sync_start");
@@ -440,23 +440,23 @@ namespace gr {
     }
 
     int
-    ofdm_sym_acquisition_2_impl::cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
+    ofdm_sym_acquisition_impl::cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
     {
       return (0);
     }
 
-    ofdm_sym_acquisition_2::sptr
-    ofdm_sym_acquisition_2::make(int fft_length, int cp_length, float snr)
+    ofdm_sym_acquisition::sptr
+    ofdm_sym_acquisition::make(int fft_length, int cp_length, float snr)
     {
       return gnuradio::get_initial_sptr
-        (new ofdm_sym_acquisition_2_impl(fft_length, cp_length, snr));
+        (new ofdm_sym_acquisition_impl(fft_length, cp_length, snr));
     }
 
     /*
      * The private constructor
      */
-    ofdm_sym_acquisition_2_impl::ofdm_sym_acquisition_2_impl(int fft_length, int cp_length, float snr)
-      : gr::block("ofdm_sym_acquisition_2",
+    ofdm_sym_acquisition_impl::ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr)
+      : gr::block("ofdm_sym_acquisition",
           gr::io_signature::make(1, 1, sizeof (gr_complex) ),
           gr::io_signature::make(1, 1, sizeof (gr_complex) * fft_length)),
       d_fft_length(fft_length), d_cp_length(cp_length), d_snr(snr),
@@ -530,7 +530,7 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    ofdm_sym_acquisition_2_impl::~ofdm_sym_acquisition_2_impl()
+    ofdm_sym_acquisition_impl::~ofdm_sym_acquisition_impl()
     {
 #ifdef USE_POSIX_MEMALIGN
       free(d_gamma);
@@ -550,7 +550,7 @@ namespace gr {
     }
 
     void
-    ofdm_sym_acquisition_2_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    ofdm_sym_acquisition_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       int ninputs = ninput_items_required.size ();
 
@@ -565,7 +565,7 @@ namespace gr {
      */
 
     int
-    ofdm_sym_acquisition_2_impl::general_work (int noutput_items,
+    ofdm_sym_acquisition_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
