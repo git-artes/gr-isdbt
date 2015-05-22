@@ -42,7 +42,6 @@ list(APPEND isdbt_sources
     viterbi_decoder_1seg_itpp_impl.cc
     bit_deinterleaver_streamed_impl.cc
     ofdm_sym_acquisition_dvbt_impl.cc
-    ofdm_sym_acquisition_2_impl.cc
     reed_solomon_dec_isdbt_impl.cc 
     reed_solomon.cc
     )
