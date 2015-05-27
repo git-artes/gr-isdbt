@@ -1,15 +1,17 @@
 <block>
-  <name>Viterbi Decoder 1-Seg</name>
-  <key>isdbt_viterbi_decoder_1seg</key>
+  <name>Energy Descrambler 1-Seg</name>
+  <key>isdbt_energy_descrambler_1seg</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.viterbi_decoder_1seg()</make>
+  <make>isdbt.energy_descrambler_1seg()</make>
   <sink>
     <name>in</name>
     <type>byte</type>
+    <vlen>204</vlen>
   </sink>
   <source>
     <name>out</name>
     <type>byte</type>
+    <vlen>204</vlen>
   </source>
 </block>

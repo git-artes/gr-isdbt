@@ -1,15 +1,17 @@
 <block>
-  <name>Viterbi Decoder 1-Seg</name>
-  <key>isdbt_viterbi_decoder_1seg</key>
+  <name>Reed Solomon Dec 1-Seg</name>
+  <key>isdbt_reed_solomon_dec_1seg</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.viterbi_decoder_1seg()</make>
+  <make>isdbt.reed_solomon_dec_1seg()</make>
   <sink>
     <name>in</name>
     <type>byte</type>
+    <vlen>1*(255-51)</vlen>
   </sink>
   <source>
     <name>out</name>
     <type>byte</type>
+    <vlen>1*(239-51)</vlen>
   </source>
 </block>

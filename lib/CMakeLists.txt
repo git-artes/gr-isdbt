@@ -43,7 +43,13 @@ list(APPEND isdbt_sources
     ofdm_sym_acquisition_dvbt_impl.cc
     reed_solomon_dec_isdbt_impl.cc 
     reed_solomon.cc
-    )
+    frequency_deinterleaver_1seg_impl.cc
+    time_deinterleaver_1seg_impl.cc
+    symbol_demapper_1seg_impl.cc
+    bit_deinterleaver_1seg_impl.cc
+    byte_deinterleaver_1seg_impl.cc
+    energy_descrambler_1seg_impl.cc
+    reed_solomon_dec_1seg_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

@@ -1,0 +1,31 @@
+<block>
+  <name>Time Deinterleaver 1-Seg</name>
+  <key>isdbt_time_deinterleaver_1seg</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.time_deinterleaver_1seg($mode, $length)</make>
+  <param>
+      <name>Mode</name>
+      <key>mode</key>
+      <value>3</value>
+      <type>int</type>
+  </param>
+  <param>
+    <name>Length</name>
+    <key>length</key>
+    <type>int</type>
+  </param>
+  <check>$mode &gt; 0</check>
+  <check>$mode &lt; 4</check>
+  
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>1*96*(2**($mode-1))</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>1*96*(2**($mode-1))</vlen>
+  </source>
+</block>

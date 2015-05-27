@@ -24,24 +24,24 @@
 
 #include <stdio.h>
 #include <gnuradio/io_signature.h>
-#include "frequency_deinterleaver_impl.h"
+#include "frequency_deinterleaver_1seg_impl.h"
 
 namespace gr {
     namespace isdbt {
 
 
         // TODO shouldn't things like these be defined elsewhere? 
-        const int frequency_deinterleaver_impl::d_data_carriers_mode1 = 96; 
-        const int frequency_deinterleaver_impl::d_total_segments = 1; 
+        const int frequency_deinterleaver_1seg_impl::d_data_carriers_mode1 = 96; 
+        const int frequency_deinterleaver_1seg_impl::d_total_segments = 1; 
 
 
-        const int frequency_deinterleaver_impl::d_random_perm_mode1[] = 
+        const int frequency_deinterleaver_1seg_impl::d_random_perm_mode1[] = 
         {80, 93, 63, 92, 94, 55, 17, 81, 6, 51, 9, 85, 89, 65, 52, 15, 73, 66, 46, 71, 12, 70, 18, 13, 
 95, 34, 1, 38, 78, 59, 91, 64, 0, 28, 11, 4, 45, 35, 16, 7, 48, 22, 23, 77, 56, 19, 8, 36, 
 39, 61, 21, 3, 26, 69, 67, 20, 74, 86, 72, 25, 31, 5, 49, 42, 54, 87, 43, 60, 29, 2, 76, 84, 
 83, 40, 14, 79, 27, 57, 44, 37, 30, 68, 47, 88, 75, 41, 90, 10, 33, 32, 62, 50, 58, 82, 53, 24}; 
 
-        const int frequency_deinterleaver_impl::d_random_perm_mode2[] = 
+        const int frequency_deinterleaver_1seg_impl::d_random_perm_mode2[] = 
         {98, 35, 67, 116, 135, 17, 5, 93, 73, 168, 54, 143, 43, 74, 165, 48, 37, 69, 154, 150, 107, 76, 176, 79, 
 175, 36, 28, 78, 47, 128, 94, 163, 184, 72, 142, 2, 86, 14, 130, 151, 114, 68, 46, 183, 122, 112, 180, 42, 
 105, 97, 33, 134, 177, 84, 170, 45, 187, 38, 167, 10, 189, 51, 117, 156, 161, 25, 89, 125, 139, 24, 19, 57, 
@@ -52,7 +52,7 @@ namespace gr {
 64, 9, 30, 157, 126, 179, 148, 63, 188, 171, 106, 104, 158, 115, 34, 186, 29, 108, 53, 91, 169, 110, 27, 59};
 
 
-        const int frequency_deinterleaver_impl::d_random_perm_mode3[] =
+        const int frequency_deinterleaver_1seg_impl::d_random_perm_mode3[] =
         {62, 13, 371, 11, 285, 336, 365, 220, 226, 92, 56, 46, 120, 175, 298, 352, 172, 235, 53, 164, 368, 187, 125, 82, 
 5, 45, 173, 258, 135, 182, 141, 273, 126, 264, 286, 88, 233, 61, 249, 367, 310, 179, 155, 57, 123, 208, 14, 227, 
 100, 311, 205, 79, 184, 185, 328, 77, 115, 277, 112, 20, 199, 178, 143, 152, 215, 204, 139, 234, 358, 192, 309, 183, 
@@ -71,18 +71,18 @@ namespace gr {
 380, 162, 297, 327, 10, 93, 42, 250, 156, 338, 292, 144, 378, 294, 329, 127, 270, 76, 95, 91, 244, 274, 27, 51}; 
 
 
-        frequency_deinterleaver::sptr
-            frequency_deinterleaver::make(bool oneseg, int mode)
+        frequency_deinterleaver_1seg::sptr
+            frequency_deinterleaver_1seg::make(bool oneseg, int mode)
             {
                 return gnuradio::get_initial_sptr
-                    (new frequency_deinterleaver_impl(oneseg, mode));
+                    (new frequency_deinterleaver_1seg_impl(oneseg, mode));
             }
 
         /*
          * The private constructor
          */
-        frequency_deinterleaver_impl::frequency_deinterleaver_impl(bool oneseg, int mode)
-            : gr::sync_block("frequency_deinterleaver",
+        frequency_deinterleaver_1seg_impl::frequency_deinterleaver_1seg_impl(bool oneseg, int mode)
+            : gr::sync_block("frequency_deinterleaver_1seg",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
         {
@@ -110,7 +110,7 @@ namespace gr {
         /*
          * Our virtual destructor.
          */
-        frequency_deinterleaver_impl::~frequency_deinterleaver_impl()
+        frequency_deinterleaver_1seg_impl::~frequency_deinterleaver_1seg_impl()
         {
         }
         
@@ -122,7 +122,7 @@ namespace gr {
          * We will thus simply take this vector (specified in the standard) and in the i-th carrier of the output, put the carrier 
          * of the input corresponding to the i-th entry of this vector. 
          */
-        gr_complex * frequency_deinterleaver_impl::derandomize(const gr_complex * random, gr_complex * not_random){
+        gr_complex * frequency_deinterleaver_1seg_impl::derandomize(const gr_complex * random, gr_complex * not_random){
             for (int segment = 0; segment<d_total_segments; segment++) 
             {
                 for(int carrier = 0; carrier<d_carriers_per_segment; carrier++) 
@@ -146,7 +146,7 @@ namespace gr {
          * I.e. the rotator shifts everything k places to the left, and we should thus shift everything k places 
          * to the right.
          */
-        gr_complex * frequency_deinterleaver_impl::derotate(const gr_complex * rotated, gr_complex * derotated){
+        gr_complex * frequency_deinterleaver_1seg_impl::derotate(const gr_complex * rotated, gr_complex * derotated){
             // I begin with the first segment even if its not rotated, since I would have to copy it anyway. I could save a multiplication but I believe is minimal. 
             for (int segment = 0; segment<d_total_segments; segment++) 
             {
@@ -172,7 +172,7 @@ namespace gr {
          * | s_0 | s_1 | .. | s_{L_d-1}     || s_{L_d} | s_{L_d+1} | .. || .. | s_{n*L_d-1} ||
          * 
          */
-        gr_complex * frequency_deinterleaver_impl::intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved){
+        gr_complex * frequency_deinterleaver_1seg_impl::intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved){
             // The number of segments to enter the deinterleaver. 
             int n = d_total_segments; 
             // in case of 1-seg, the corresponding segment is not interleaved so I will simply copy it in the output. 
@@ -206,7 +206,7 @@ namespace gr {
         
         // The actual processing. 
         int
-            frequency_deinterleaver_impl::work(int noutput_items,
+            frequency_deinterleaver_1seg_impl::work(int noutput_items,
                     gr_vector_const_void_star &input_items,
                     gr_vector_void_star &output_items)
             {

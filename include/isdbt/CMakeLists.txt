@@ -36,5 +36,12 @@ install(FILES
     bit_deinterleaver_streamed.h
     ofdm_sym_acquisition_dvbt.h
     reed_solomon.h
-    reed_solomon_dec_isdbt.h DESTINATION include/isdbt
+    reed_solomon_dec_isdbt.h
+    frequency_deinterleaver_1seg.h
+    time_deinterleaver_1seg.h
+    symbol_demapper_1seg.h
+    bit_deinterleaver_1seg.h
+    byte_deinterleaver_1seg.h
+    energy_descrambler_1seg.h
+    reed_solomon_dec_1seg.h DESTINATION include/isdbt
 )
