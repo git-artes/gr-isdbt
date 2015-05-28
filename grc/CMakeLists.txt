@@ -35,7 +35,5 @@ install(FILES
     isdbt_time_deinterleaver_1seg.xml
     isdbt_symbol_demapper_1seg.xml
     isdbt_bit_deinterleaver_1seg.xml
-    isdbt_byte_deinterleaver_1seg.xml
-    isdbt_energy_descrambler_1seg.xml
-    isdbt_reed_solomon_dec_1seg.xml DESTINATION share/gnuradio/grc/blocks
+    DESTINATION share/gnuradio/grc/blocks
 )

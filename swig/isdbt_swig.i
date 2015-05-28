@@ -26,9 +26,6 @@
 #include "isdbt/time_deinterleaver_1seg.h"
 #include "isdbt/symbol_demapper_1seg.h"
 #include "isdbt/bit_deinterleaver_1seg.h"
-#include "isdbt/byte_deinterleaver_1seg.h"
-#include "isdbt/energy_descrambler_1seg.h"
-#include "isdbt/reed_solomon_dec_1seg.h"
 %}
 
 
@@ -72,9 +69,4 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, time_deinterleaver_1seg);
 GR_SWIG_BLOCK_MAGIC2(isdbt, symbol_demapper_1seg);
 %include "isdbt/bit_deinterleaver_1seg.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver_1seg);
-%include "isdbt/byte_deinterleaver_1seg.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, byte_deinterleaver_1seg);
-%include "isdbt/energy_descrambler_1seg.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, energy_descrambler_1seg);
-%include "isdbt/reed_solomon_dec_1seg.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, reed_solomon_dec_1seg);
+

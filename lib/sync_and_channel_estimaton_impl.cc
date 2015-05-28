@@ -162,7 +162,7 @@ namespace gr {
         sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl(int fft_length,int payload_length, int offset_max)
             : gr::block("sync_and_channel_estimaton",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*fft_length),
-                    gr::io_signature::make(1, 1, sizeof(gr_complex)*payload_length)),
+                    gr::io_signature::make(1, 2, sizeof(gr_complex)*payload_length)),
             d_fft_length(fft_length), active_carriers(payload_length), d_freq_offset_max(offset_max)
 
         {
@@ -438,6 +438,9 @@ namespace gr {
 
                 const gr_complex *in = (const gr_complex *) input_items[0];
                 gr_complex *out = (gr_complex *) output_items[0];
+                gr_complex *out_channel_gain = (gr_complex *) output_items[1];
+
+                bool ch_output_connected = output_items.size()>=2;
 
                 /*
                  * Here starts the signal processing
@@ -463,6 +466,11 @@ namespace gr {
                         gr_complex salida = out[i*d_noutput+carrier];
                         if(isinf(out[i*d_noutput + carrier].real()))
                             printf("CUIDADO: noutput_items: %d, out[%d]=%f+j%f: gain=%f+j%f\n",noutput_items, i*d_noutput+carrier,salida.real(),salida.imag(),d_channel_gain[carrier].real(),d_channel_gain[carrier].imag());
+
+                        if (ch_output_connected){
+                            // the channel taps output is connected
+                            out_channel_gain[i*d_noutput + carrier] = d_channel_gain[carrier]; 
+                        }
                     }
 
 

@@ -41,7 +41,5 @@ install(FILES
     time_deinterleaver_1seg.h
     symbol_demapper_1seg.h
     bit_deinterleaver_1seg.h
-    byte_deinterleaver_1seg.h
-    energy_descrambler_1seg.h
-    reed_solomon_dec_1seg.h DESTINATION include/isdbt
+    DESTINATION include/isdbt
 )
