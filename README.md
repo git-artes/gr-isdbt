@@ -10,7 +10,9 @@ We are in early (but very active) development stages, and any help and/or feedba
 
 Roughly speaking, the receiver may be currently separated in two segments regarding operation: 
 - *Up to equalization and TMCC decoding.* The receiver has been tested with mode-3 transmission (8k FFT) and several CP lengths. It works online (we used USRP B100 and BladeRF X115) and is able to display the complete constellation. It should work with the other two modes, but we have not tested it yet. See examples/viewing_the_constellation.grc. 
-- *After TMCC decoding.* The receiver is capable of displaying on-line the 1-segment transmission if present. See examples/rx_demo.grc. The output of the flowgraph is a Transport Stream file which may be played by mplayer (for instance). If before executing the flowgraph we create the file as a pipe (mkfifo test_out.ts), it should display the video online. 
+- *After TMCC decoding.* The receiver is capable of displaying on-line the 1-segment transmission if present. See examples/rx_1seg_demo.grc. The output of the flowgraph is a Transport Stream file which may be played by mplayer (for instance). If before executing the flowgraph we create the file as a pipe (mkfifo test_out.ts), it should display the video online.   
+
+For more information (papers, signal recording of ISDB-T signals, etc.) please visit our webpage: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/.    
 
 **Build instructions**
 
