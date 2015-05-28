@@ -49,7 +49,7 @@ namespace gr {
        * class. isdbt::frequency_deinterleaver_1seg::make is the public interface for
        * creating new instances.
        */
-      static sptr make(bool oneseg, int mode);
+      static sptr make(int mode);
     };
 
   } // namespace isdbt

@@ -72,29 +72,23 @@ namespace gr {
 
 
         frequency_deinterleaver_1seg::sptr
-            frequency_deinterleaver_1seg::make(bool oneseg, int mode)
+            frequency_deinterleaver_1seg::make(int mode)
             {
                 return gnuradio::get_initial_sptr
-                    (new frequency_deinterleaver_1seg_impl(oneseg, mode));
+                    (new frequency_deinterleaver_1seg_impl(mode));
             }
 
         /*
          * The private constructor
          */
-        frequency_deinterleaver_1seg_impl::frequency_deinterleaver_1seg_impl(bool oneseg, int mode)
+        frequency_deinterleaver_1seg_impl::frequency_deinterleaver_1seg_impl(int mode)
             : gr::sync_block("frequency_deinterleaver_1seg",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
-            d_1seg = oneseg; 
             d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
             d_noutput = d_total_segments*d_carriers_per_segment; 
-
-            /*Initialize the derandomized segments*/
-            d_not_random = new gr_complex [d_noutput]; 
-            /*Initialize the derotated segments*/
-            d_derotated = new gr_complex [d_noutput]; 
 
             if (d_mode==1){
                 d_random_perm = d_random_perm_mode1; 
@@ -134,75 +128,6 @@ namespace gr {
             return not_random; 
         }
 
-        /* The idea is the following. We have to derotate each segment. These symbols are outputted from rotator
-         *  in the following order, for each segment, where k is the segment number: 
-         *  
-         * || s_{0+k mod L_d} | s_{1+k mod L_d} | .. | s_{(L_d + k mod L_d} ||
-         *
-         * where the original order (which we should output in the current block) was the following: 
-         *
-         * || s_0 | s_1 | .. | s_{L_d} ||
-         *  
-         * I.e. the rotator shifts everything k places to the left, and we should thus shift everything k places 
-         * to the right.
-         */
-        gr_complex * frequency_deinterleaver_1seg_impl::derotate(const gr_complex * rotated, gr_complex * derotated){
-            // I begin with the first segment even if its not rotated, since I would have to copy it anyway. I could save a multiplication but I believe is minimal. 
-            for (int segment = 0; segment<d_total_segments; segment++) 
-            {
-                for(int carrier = 0; carrier<d_carriers_per_segment; carrier++) 
-                {
-                    // since the outcome of mod of a negative number is not 100% decided upon (apparently from what I found on the internet), I took this more 
-                    // indirect but unambiguous approach, where I add d_carriers_per_segments to carrier-segment in order to shift everything to the right. 
-                    derotated[carrier+segment*d_carriers_per_segment] = rotated[((carrier+d_carriers_per_segment-segment) % d_carriers_per_segment) + segment*d_carriers_per_segment];
-				   
-                }
-
-            }
-            return derotated; 
-        }
-        
-        /* The idea is the following. We have to deinterleave n segments (where n is either d_total_segments=13 or d_total_segments-1 
-         * if 1-seg is present or not respectively). These symbols are outputted from the interleaver in the following order: 
-         *  
-         * | s_0 | s_n | .. | s_{(L_d-1)*n} || s_1     | s_{n+1}   | .. || .. | s_{n*L_d-1} ||
-         *
-         * where the original order (which we should output in the current block) was the following: 
-         *
-         * | s_0 | s_1 | .. | s_{L_d-1}     || s_{L_d} | s_{L_d+1} | .. || .. | s_{n*L_d-1} ||
-         * 
-         */
-        gr_complex * frequency_deinterleaver_1seg_impl::intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved){
-            // The number of segments to enter the deinterleaver. 
-            int n = d_total_segments; 
-            // in case of 1-seg, the corresponding segment is not interleaved so I will simply copy it in the output. 
-            if (d_1seg){
-                n = d_total_segments-1; 
-                for (int carrier = 0; carrier<d_carriers_per_segment; carrier++){
-                    deinterleaved[carrier] = interleaved[carrier]; 
-                }
-            }
-            
-            //output_carrier will begin at 0 or at d_carriers_per_segment depending on whether there is 
-            //1-seg or not. It will then go up to d_carriers_per_segment*d_total_segments-1 
-            int output_carrier = 0 + (d_total_segments-n)*d_carriers_per_segment; 
-            for(int carrier = 0; carrier<d_carriers_per_segment; carrier++) 
-            {
-                // if 1-seg was present, we skip the first segment
-                for (int segment = d_total_segments-n; segment<d_total_segments; segment++) 
-                {
-                    // we will look for the output by going through each of the n segments to interleave, and 
-                    // offseting by a certain number of carriers. For instance, when carrier=0, output_carrier
-                    // goes from 0 to n-1 (if 1-seg is not present), and we look for these outputs by taking 
-                    // the first carrier of each fo the n segments. 
-                    deinterleaved[output_carrier] = interleaved[segment*d_carriers_per_segment + carrier]; 
-                    output_carrier++; 
-                }
-
-            }
-            return deinterleaved; 
-        }
-        /*----------------------------*/
         
         // The actual processing. 
         int
@@ -216,9 +141,7 @@ namespace gr {
 
                 for (int i = 0; i < noutput_items; i++)
                 {
-                    derandomize(&in[i*d_noutput], d_not_random); 
-                    derotate(d_not_random, d_derotated); 
-                    intersegment_deinterleave(d_derotated, &out[i*d_noutput]); 
+                    derandomize(&in[i*d_noutput], &out[i*d_noutput]); 
                 }
 
                 // Tell runtime system how many output items we produced.

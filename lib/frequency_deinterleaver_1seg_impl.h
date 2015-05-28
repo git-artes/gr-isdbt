@@ -30,14 +30,9 @@ namespace gr {
     {
      private:
          int d_mode; 
-         bool d_1seg; 
          int d_carriers_per_segment; 
          int d_noutput; 
 
-         gr_complex * d_not_random; 
-         gr_complex * d_derotated; 
-       
-            
          static const int d_data_carriers_mode1; 
          static const int d_total_segments; 
 
@@ -53,21 +48,9 @@ namespace gr {
           */
          gr_complex * derandomize(const gr_complex * random, gr_complex * not_random); 
          
-         /*
-          * It simply derotates the carriers of each segment as specified by the standard. 
-          */
-         gr_complex * derotate(const gr_complex * rotated, gr_complex * derotated); 
-         
-         /*
-          * It performs the block inter-segment interleaving as specified in the standard. TODO It currently 
-          * does not support differential modulation schemes, which would require a separate interleaving. 
-          */
-         gr_complex * intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved); 
-
-
 
      public:
-      frequency_deinterleaver_1seg_impl(bool oneseg, int mode);
+      frequency_deinterleaver_1seg_impl(int mode);
       ~frequency_deinterleaver_1seg_impl();
 
       // Where all the action really happens
