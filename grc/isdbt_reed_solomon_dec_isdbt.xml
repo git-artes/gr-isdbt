@@ -1,5 +1,5 @@
 <block>
-  <name>Reed solomon dec isdbt</name>
+  <name>Reed Solomon Dec isdbt</name>
   <key>isdbt_reed_solomon_dec_isdbt</key>
   <category>ISDBT</category>
   <import>import isdbt</import>

@@ -29,8 +29,10 @@ namespace gr {
     class bit_deinterleaver_impl : public bit_deinterleaver
     {
      private:
+
          static const int d_data_carriers_mode1; 
          static const int d_total_segments; 
+         static const int d_total_layers; 
 
          static const int d_delay_qpsk[]; 
          static const int d_delay_16qam[]; 
@@ -50,7 +52,7 @@ namespace gr {
 
 
      public:
-      bit_deinterleaver_impl(int mode, int constellation_size);
+      bit_deinterleaver_impl(int mode, int constellation);
       ~bit_deinterleaver_impl();
 
       // Where all the action really happens

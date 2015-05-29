@@ -23,7 +23,7 @@
 #define INCLUDED_ISDBT_BIT_DEINTERLEAVER_H
 
 #include <isdbt/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/sync_interpolator.h>
 
 namespace gr {
   namespace isdbt {
@@ -34,7 +34,7 @@ namespace gr {
      * \ingroup isdbt
      *
      */
-    class ISDBT_API bit_deinterleaver : virtual public gr::sync_block
+    class ISDBT_API bit_deinterleaver : virtual public gr::sync_interpolator
     {
      public:
       typedef boost::shared_ptr<bit_deinterleaver> sptr;

@@ -1,5 +1,5 @@
 <block>
-  <name>Byte deinterleaver</name>
+  <name>Byte Deinterleaver</name>
   <key>isdbt_byte_deinterleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>

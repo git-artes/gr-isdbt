@@ -1,5 +1,5 @@
 <block>
-  <name>Energy descrambler</name>
+  <name>Energy Descrambler</name>
   <key>isdbt_energy_descrambler</key>
   <category>ISDBT</category>
   <import>import isdbt</import>

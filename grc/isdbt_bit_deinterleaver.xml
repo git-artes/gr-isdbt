@@ -1,5 +1,5 @@
 <block>
-  <name>Bit deinterleaver</name>
+  <name>Bit Deinterleaver</name>
   <key>isdbt_bit_deinterleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
@@ -23,6 +23,5 @@
   <source>
     <name>out</name>
     <type>byte</type>
-    <vlen>1*96*(2**($mode-1))</vlen>
   </source>
 </block>
