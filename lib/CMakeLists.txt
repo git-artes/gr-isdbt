@@ -39,7 +39,7 @@ list(APPEND isdbt_sources
     d_tab.c
     energy_descrambler_impl.cc
     byte_deinterleaver_impl.cc
-    bit_deinterleaver_streamed_impl.cc
+    #bit_deinterleaver_streamed_impl.cc
     ofdm_sym_acquisition_dvbt_impl.cc
     reed_solomon_dec_isdbt_impl.cc 
     reed_solomon.cc
@@ -84,7 +84,6 @@ list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_streamed.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder_1seg.cc
