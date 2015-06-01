@@ -71,8 +71,6 @@ namespace gr {
       return (0);
     }
 
-#define GG
-#ifdef GG
     int 
     ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
     {
@@ -88,7 +86,6 @@ namespace gr {
         }
 #endif
         
-
         peak_pos_length = 1; 
         // if ( abs( datain[ peak_index ] ) >= abs( d_avg ) * d_threshold_factor_rise )
         if ( datain[ peak_index ] > ( d_avg - abs( d_avg * ( 1 - d_threshold_factor_rise ) ) ) )
@@ -129,89 +126,6 @@ namespace gr {
         *peak_max = 0;
         return (peak_pos_length);
     }
-#else
-    int 
-    ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max)
-    {
-      int state = 0;
-      float peak_val = -(float)INFINITY; int peak_index = 0; int peak_pos_length = 0;
-
-      int i = 0;
-
-      while(i < datain_length)
-      {
-        if (state == 0)
-        {
-          if (datain[i] > d_avg * d_threshold_factor_rise)
-          {
-            //printf("state 0, rise: datain: %f, d_avg: %f, d_threshold_factor_rise: %f\n", datain[i], d_avg, d_threshold_factor_rise);
-            state = 1;
-          }
-          else
-          {
-            d_avg = d_avg_alpha * datain[i] + (1 - d_avg_alpha) * d_avg;
-            //printf("state 0: %i, avg: %f\n", i, d_avg);
-            i++;
-          }
-        } 
-        else if (state == 1)
-        {
-          if (datain[i] > peak_val)
-          {
-            peak_val = datain[i];
-            peak_index = i;
-            //printf("state 1, index: %i, peak_val: %f, peak_index: %i, avg: %f, dtain: %f\n", i, peak_val, peak_index, d_avg, datain[i]);
-            d_avg = d_avg_alpha * datain[i] + (1 - d_avg_alpha) * d_avg;
-            i++;
-          }
-          else if (datain[i] > d_avg * d_threshold_factor_fall)
-          {
-            //printf("state 1, fall: %i, avg: %f, datain: %f\n", i, d_avg, datain[i]);
-            d_avg = (d_avg_alpha) * datain[i] + (1 - d_avg_alpha) * d_avg;
-            i++;
-          }
-          else
-          {
-            peak_pos[peak_pos_length] = peak_index;
-            //printf("state 1, finish: %i, peak_pos[%i]: %i\n", i, peak_pos_length, peak_pos[peak_pos_length]);
-            peak_pos_length++;
-            state = 0;
-            peak_val = - (float)INFINITY;
-          }
-        }
-      }
-
-      // add the peak if we exit the loop with a state==1 but without having add it
-      if (state==1){
-            peak_pos[peak_pos_length] = peak_index;
-            peak_pos_length++;
-      }
-
-      // Find peak of peaks
-      if (peak_pos_length)
-      {
-        float max = datain[peak_pos[0]];
-        int maxi = 0;
-
-        for (int i = 1; i < peak_pos_length; i++)
-        {
-          if (datain[peak_pos[i]] > max)
-          {
-            max = datain[peak_pos[i]];
-            maxi = i;
-          }
-        }
-
-        *peak_max = maxi;
-#if 0
-      for (int i = 0; i < peak_pos_length; i++)
-        printf("peak_pos[%i]: %i, lambda[%i]: %f\n", i, peak_pos[i], i, datain[peak_pos[i]]);
-#endif
-      }
-
-      return (peak_pos_length);
-    }
-#endif
 
     int
     ofdm_sym_acquisition_impl::ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
@@ -224,9 +138,6 @@ namespace gr {
 
       // Array to store peak positions
       int peak_pos[d_fft_length];
-#ifndef GG
-      int peak_pos_gg[d_fft_length];
-#endif
       float d_phi[d_fft_length];
 
       // Calculate norm
@@ -333,15 +244,10 @@ namespace gr {
 #endif
 
       int peak_length, peak, peak_max;
-#ifndef GG
-      int peak_length_gg, peak_max_gg;
-#endif
+
       // Find peaks of lambda
       // We have found an end of symbol at peak_pos[0] + CP + FFT
-#ifndef GG
-      peak_length_gg = peak_detect_process_gg(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos_gg[0], &peak_max_gg);
-      printf( "peak_length_gg %05d, peak_pos_gg[0] %05d, peak_max_gg %05d\n", peak_length_gg, peak_pos_gg[0], peak_max_gg );
-#endif
+
       if ((peak_length = peak_detect_process(&d_lambda[0], (lookup_start - lookup_stop), &peak_pos[0], &peak_max)))
       {
 //        printf( "peak_length_xx %05d, peak_pos_xx[0] %05d, peak_max_xx %05d\n", peak_length, peak_pos[0], peak_max );
