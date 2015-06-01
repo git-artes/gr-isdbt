@@ -25,6 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "ofdm_sym_acquisition_impl.h"
 #include <complex>
+#include <math.h>
 #include <gnuradio/math.h>
 #include <gnuradio/expj.h>
 #include <stdio.h>
@@ -364,7 +365,7 @@ namespace gr {
     ofdm_sym_acquisition_impl::ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr)
       : gr::block("ofdm_sym_acquisition",
           gr::io_signature::make(1, 1, sizeof (gr_complex) ),
-          gr::io_signature::make(1, 1, sizeof (gr_complex) * fft_length)),
+          gr::io_signature::make2(1, 2, sizeof (gr_complex) * fft_length,sizeof(float))),
       d_fft_length(fft_length), d_cp_length(cp_length), d_snr(snr),
       d_index(0), d_phase(0.0), d_phaseinc(0.0), d_cp_found(0), d_count(0), d_nextphaseinc(0), d_nextpos(0), \
         d_sym_acq_count(0),d_sym_acq_timeout(100), d_initial_aquisition(0), \
@@ -478,6 +479,9 @@ namespace gr {
     {
         const gr_complex *in = (const gr_complex *) input_items[0];
         gr_complex *out = (gr_complex *) output_items[0];
+        
+        gr_complex *freq_error_out = (gr_complex *) output_items[1];
+        bool freq_error_out_connected = output_items.size()>=2; 
 
         //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
         int low, size;
@@ -547,6 +551,10 @@ namespace gr {
               j++;
             }
 #endif
+
+            if (freq_error_out_connected){
+                freq_error_out[0] = d_nextphaseinc/(pow(2*((long)M_PI),2)*d_fft_length); 
+            }
           }
          else
           {
