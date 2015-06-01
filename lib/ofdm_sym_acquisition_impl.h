@@ -82,7 +82,6 @@ namespace gr {
       int peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha);
       
       int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
-      int peak_detect_process_gg(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
 
       void send_sync_start();
 
