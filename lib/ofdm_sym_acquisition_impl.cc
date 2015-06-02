@@ -480,7 +480,7 @@ namespace gr {
         const gr_complex *in = (const gr_complex *) input_items[0];
         gr_complex *out = (gr_complex *) output_items[0];
         
-        gr_complex *freq_error_out = (gr_complex *) output_items[1];
+        float *freq_error_out = (float *) output_items[1];
         bool freq_error_out_connected = output_items.size()>=2; 
 
         //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));

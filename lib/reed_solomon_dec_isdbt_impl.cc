@@ -24,92 +24,111 @@
 
 #include <gnuradio/io_signature.h>
 #include "reed_solomon_dec_isdbt_impl.h"
+#include <stdio.h>
 
 namespace gr {
-  namespace isdbt {
+    namespace isdbt {
 
-      const int reed_solomon_dec_isdbt_impl::d_p = 2;
-      const int reed_solomon_dec_isdbt_impl::d_m = 8;
-      const int reed_solomon_dec_isdbt_impl::d_gfpoly = 0x11d;
-      const int reed_solomon_dec_isdbt_impl::d_n = 255;
-      const int reed_solomon_dec_isdbt_impl::d_k = 239;
-      const int reed_solomon_dec_isdbt_impl::d_t = 8;
-      const int reed_solomon_dec_isdbt_impl::d_s = 51;
-      const int reed_solomon_dec_isdbt_impl::d_blocks = 1;
+        const int reed_solomon_dec_isdbt_impl::d_p = 2;
+        const int reed_solomon_dec_isdbt_impl::d_m = 8;
+        const int reed_solomon_dec_isdbt_impl::d_gfpoly = 0x11d;
+        const int reed_solomon_dec_isdbt_impl::d_n = 255;
+        const int reed_solomon_dec_isdbt_impl::d_k = 239;
+        const int reed_solomon_dec_isdbt_impl::d_t = 8;
+        const int reed_solomon_dec_isdbt_impl::d_s = 51;
+        const int reed_solomon_dec_isdbt_impl::d_blocks = 1;
 
-    reed_solomon_dec_isdbt::sptr
-    reed_solomon_dec_isdbt::make()
-    {
-      return gnuradio::get_initial_sptr
-        (new reed_solomon_dec_isdbt_impl());
-    }
+        reed_solomon_dec_isdbt::sptr
+            reed_solomon_dec_isdbt::make()
+            {
+                return gnuradio::get_initial_sptr
+                    (new reed_solomon_dec_isdbt_impl());
+            }
 
-    /*
-     * The private constructor
-     */
-    reed_solomon_dec_isdbt_impl::reed_solomon_dec_isdbt_impl()
-      : gr::sync_block("reed_solomon_dec_isdbt",
-              gr::io_signature::make(1, 1, sizeof(unsigned char)*d_blocks*(d_n-d_s)),
-              gr::io_signature::make(1, 1, sizeof(unsigned char)*d_blocks*(d_k-d_s))),
-      d_rs(d_p, d_m, d_gfpoly, d_n, d_k, d_t, d_s, d_blocks)
-    {
-        //TODO why does d_rs cannot be initialized in the body of the constructor??
-   
-      d_in = new unsigned char[d_n];
-      if (d_in == NULL)
-      {
-        std::cout << "Cannot allocate memory" << std::endl;
-        return;
-      }
-      memset(&d_in[0], 0, d_n);
-    
-    }
+        /*
+         * The private constructor
+         */
+        reed_solomon_dec_isdbt_impl::reed_solomon_dec_isdbt_impl()
+            : gr::sync_block("reed_solomon_dec_isdbt",
+                    gr::io_signature::make(1, 1, sizeof(unsigned char)*d_blocks*(d_n-d_s)),
+                    gr::io_signature::make2(1, 2, sizeof(unsigned char)*d_blocks*(d_k-d_s), sizeof(float))),
+            d_rs(d_p, d_m, d_gfpoly, d_n, d_k, d_t, d_s, d_blocks)
+        {
+            //TODO why does d_rs cannot be initialized in the body of the constructor??
 
-    /*
-     * Our virtual destructor.
-     */
-    reed_solomon_dec_isdbt_impl::~reed_solomon_dec_isdbt_impl()
-    {
-      delete [] d_in;
-    }
+            d_in = new unsigned char[d_n];
+            if (d_in == NULL)
+            {
+                std::cout << "Cannot allocate memory" << std::endl;
+                return;
+            }
+            memset(&d_in[0], 0, d_n);
 
-    int
-    reed_solomon_dec_isdbt_impl::work(int noutput_items,
-			  gr_vector_const_void_star &input_items,
-			  gr_vector_void_star &output_items)
-    {
-      const unsigned char *in = (const unsigned char *) input_items[0];
-      unsigned char *out = (unsigned char *) output_items[0];
+        }
 
-      // We receive only nonzero data
-      int in_bsize = d_n - d_s;
-      int out_bsize = d_k - d_s;
+        /*
+         * Our virtual destructor.
+         */
+        reed_solomon_dec_isdbt_impl::~reed_solomon_dec_isdbt_impl()
+        {
+            delete [] d_in;
+        }
 
-      //gettimeofday(&tvs, &tzs);
+        int
+            reed_solomon_dec_isdbt_impl::work(int noutput_items,
+                    gr_vector_const_void_star &input_items,
+                    gr_vector_void_star &output_items)
+            {
+                const unsigned char *in = (const unsigned char *) input_items[0];
+                unsigned char *out = (unsigned char *) output_items[0];
 
-      for (int i = 0; i < (d_blocks * noutput_items); i++)
-      {
-        //TODO - zero copy?
-        // Set first d_s symbols to zero
-        memset(&d_in[0], 0, d_s);
-        // Then copy actual data
-        memcpy(&d_in[d_s], &in[i * in_bsize], in_bsize);
+                float *ber_out = (float *) output_items[1]; 
+                bool ber_out_connected  = output_items.size()>=2;  
 
-        d_rs.rs_decode(d_in, NULL, 0);
+                // We receive only nonzero data
+                int in_bsize = d_n - d_s;
+                int out_bsize = d_k - d_s;
 
-        memcpy(&out[i * out_bsize], &d_in[d_s], out_bsize);
-        //printf("Reed-Solomon: out[0]=%x\n", out[0]); 
-      }
+                //gettimeofday(&tvs, &tzs);
 
-      //gettimeofday(&tve, &tze);
+                for (int i = 0; i < (d_blocks * noutput_items); i++)
+                {
+                    //TODO - zero copy?
+                    // Set first d_s symbols to zero
+                    memset(&d_in[0], 0, d_s);
+                    // Then copy actual data
+                    memcpy(&d_in[d_s], &in[i * in_bsize], in_bsize);
 
-      //printf("reed_solomon: blocks: %i, us: %f\n", d_blocks * noutput_items,
-        //(float) (tve.tv_usec - tvs.tv_usec) / (float) (d_blocks * noutput_items));
+                    d_rs.rs_decode(d_in, NULL, 0);
 
-      // Tell runtime system how many output items we produced.
-      return noutput_items;
-    }
+                    memcpy(&out[i * out_bsize], &d_in[d_s], out_bsize);
 
-  } /* namespace isdbt */
+                    if(ber_out_connected){
+                        unsigned int total_bit_errors = 0; 
+                        unsigned char error; 
+                        for (int B=0; B<out_bsize; B++){
+                            error = out[i*noutput_items+B]^in[i*noutput_items + B]; 
+                            for (int b=0; b<8; b++){
+                                total_bit_errors += ((error>>b)&1); 
+                            }
+                            //if (total_bit_errors>0)
+                            //    printf("out: %x; in: %x; total_bit_errors: %i; error: %x\n", out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
+                        }
+                        ber_out[i*noutput_items] = total_bit_errors/(float)(out_bsize*8.0); 
+                    }
+
+                    //printf("Reed-Solomon: out[0]=%x\n", out[0]); 
+                }
+
+                //gettimeofday(&tve, &tze);
+
+                //printf("reed_solomon: blocks: %i, us: %f\n", d_blocks * noutput_items,
+                //(float) (tve.tv_usec - tvs.tv_usec) / (float) (d_blocks * noutput_items));
+
+                // Tell runtime system how many output items we produced.
+                return noutput_items;
+            }
+
+    } /* namespace isdbt */
 } /* namespace gr */
 
