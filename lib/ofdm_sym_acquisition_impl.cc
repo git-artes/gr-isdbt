@@ -486,27 +486,48 @@ namespace gr {
         //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
         int low, size;
 
-        for (int i = 0; i < noutput_items; i++) {
-            // This is initial aquisition of symbol start
-            // TODO - make a FSM
-            if (!d_initial_aquisition)
+        // This is initial aquisition of symbol start
+        // TODO - make a FSM
+        if (!d_initial_aquisition)
+        {
+          d_initial_aquisition = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+              &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
+
+          d_extended_range = 0;
+
+          // Send sync_start downstream
+          send_sync_start();
+
+          PRINTF("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
+        }
+
+        // This is fractional frequency correction (pre FFT)
+        // It is also calle coarse frequency correction
+        if (d_initial_aquisition)
+        {
+          d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+              &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
+          if ( !d_cp_found )
+           {
+                PRINTF("short_acq -1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+                d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                    &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
+                PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+                d_extended_range++;
+                send_sync_start(); 
+
+           }
+          else{
+                d_extended_range = 0;
+          }
+
+          // PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+          if ( d_extended_range > 2 )
             {
-              d_initial_aquisition = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
-                  &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
-
-              d_extended_range = 0;
-
-              // Send sync_start downstream
-              send_sync_start();
-
-              PRINTF("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
+                d_extended_range = 0;
+                d_cp_found = 0;
             }
 
-<<<<<<< HEAD
-            // This is fractional frequency correction (pre FFT)
-            // It is also calle coarse frequency correction
-            if (d_initial_aquisition)
-=======
           if (d_cp_found )
           {
             d_freq_correction_count = 0;
@@ -539,79 +560,23 @@ namespace gr {
           {
             // If we have a number of consecutive misses then we restart aquisition
             if (++d_freq_correction_count > d_freq_correction_timeout)
->>>>>>> 9c269589c4a78e2b2374d38ff6a243a235a24074
             {
-              d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
-                  &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
-              if ( !d_cp_found )
-               {
-                    PRINTF("short_acq -1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
-                    d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
-                        &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
-                    PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
-                    d_extended_range++;
-                    send_sync_start(); 
+              d_initial_aquisition = 0;
+              d_freq_correction_count = 0;
 
-               }
-              else{
-                    d_extended_range = 0;
-              }
+              printf("restart aquisition\n");
 
-              // PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
-              if ( d_extended_range > 2 )
-                {
-                    d_extended_range = 0;
-                    d_cp_found = 0;
-                }
-
-              if (d_cp_found )
-              {
-                d_freq_correction_count = 0;
-
-                // Derotate the signal and out
-    #ifdef USE_VOLK
-                low = d_cp_start - d_fft_length + 1;
-                size = d_cp_start - (d_cp_start - d_fft_length + 1) + 1;
-
-                if(is_unaligned())
-                  volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
-                else
-                  //volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
-                  volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
-                  // TODO - fix the alignment
-    #else
-                int j = 0;
-                for (int i = (d_cp_start - d_fft_length + 1); i <= d_cp_start; i++)
-                {
-                  out[j] = d_derot[j] * in[i];
-                  j++;
-                }
-    #endif
-              }
-             else
-              {
-                // If we have a number of consecutive misses then we restart aquisition
-                if (++d_freq_correction_count > d_freq_correction_timeout)
-                {
-                  d_initial_aquisition = 0;
-                  d_freq_correction_count = 0;
-
-                  printf("restart aquisition\n");
-
-                  // Restart wit a half number so that we'll not endup with the same situation
-                  // This will prevent peak_detect to not detect anything
-                  d_to_consume = d_to_consume / 2;
-                }
-              }
+              // Restart wit a half number so that we'll not endup with the same situation
+              // This will prevent peak_detect to not detect anything
+              d_to_consume = d_to_consume / 2;
             }
-         }
+          }
+        }
 
         // Tell runtime system how many input items we consumed on
         // each input stream.
         consume_each(d_to_consume);
 
-        if ( d_to_out != 1 )
-            printf("OFDM_SYM: noutput_items: %i\n", d_to_out );
         // Tell runtime system how many output items we produced.
         return (d_to_out);
     }
