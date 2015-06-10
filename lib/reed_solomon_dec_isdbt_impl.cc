@@ -115,6 +115,7 @@ namespace gr {
                             //    printf("out: %x; in: %x; total_bit_errors: %i; error: %x\n", out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
                         }
                         ber_out[i*noutput_items] = total_bit_errors/(float)(out_bsize*8.0); 
+                        //printf("ber_out: %f\n", ber_out[i*noutput_items]); 
                     }
 
                     //printf("Reed-Solomon: out[0]=%x\n", out[0]); 

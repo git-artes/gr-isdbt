@@ -58,7 +58,7 @@ namespace gr {
         viterbi_decoder_1seg_impl::viterbi_decoder_1seg_impl()
             : gr::block("viterbi_decoder_1seg",
                     gr::io_signature::make(1, 1, sizeof(unsigned char)),
-                    gr::io_signature::make(1, 1, sizeof(unsigned char)))
+                    gr::io_signature::make2(1, 2, sizeof(unsigned char),sizeof(float)))
         {
             // initial state
             d_init = 0; 
@@ -135,6 +135,16 @@ namespace gr {
             delete [] d_inbits;
         }
 
+        void viterbi_decoder_1seg_impl::print128_num(__m128i *var, int size)
+        {
+                for (int i=0; i<size; i++){
+                    uint16_t *val = (uint16_t*) &(var[i]);
+                    printf("Numerical-%i: %i %i %i %i %i %i %i %i \n", 
+                            i, val[0], val[1], val[2], val[3], val[4], val[5], 
+                            val[6], val[7]);
+                }
+        }
+
         void
             viterbi_decoder_1seg_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
             {
@@ -157,7 +167,9 @@ namespace gr {
                 // the number of blocks i will process (output) this call
                 int nblocks = 8 * noutput_items / (d_bsize * d_k);
                 int out_count = 0;
-                
+
+                float *ber_out = (float *)output_items[1]; 
+                bool ber_out_connected = output_items.size()>=2; 
 
                 //gettimeofday(&tvs, &tzs);
 
@@ -235,14 +247,17 @@ namespace gr {
                             if ((in_count % 4) == 0) //0 or 3
                             {
                                 d_viterbi_butterfly2_sse2(&d_inbits[in_count & 0xfffffffc], metric0, metric1, path0, path1);
+                                //std::cout<<"metric0: "<<metric0<<" metric1: "<<metric1<<"\n";
                                 //d_viterbi_butterfly2(&d_inbits[in_count & 0xfffffffc], mettab, state0, state1);
 
                                 if ((in_count > 0) && (in_count % 16) == 8) // 8 or 11
                                 {
                                     unsigned char c;
 
-                                    d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
+                                    int correct_bits = d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
                                     //d_viterbi_get_output(state0, &c);
+                                    //std::cout<<"metric0: "<<metric0[0]<<" metric1: "<<metric1[0]<<" ";
+                                    //print128_num(metric0, 4); 
 
                                     if (d_init == 0)
                                     {
@@ -250,6 +265,12 @@ namespace gr {
                                         {
                                             out[out_count - d_ntraceback] = c;
                                             //printf("out_init[%i]: %x\n", out_count - d_ntraceback, out[out_count - d_ntraceback]);
+                                            
+                                            if(ber_out_connected){
+                                                ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                if(ber_out[out_count-d_ntraceback]<0)
+                                                    printf("correct_bits: %i\n", correct_bits); 
+                                            }
                                         }
                                     }
                                     else
@@ -257,6 +278,11 @@ namespace gr {
                                         out[out_count] = c;
                                         //if (out[out_count]==0x47)
                                          //  printf("out[%i]: %x\n", out_count, out[out_count]);
+                                        if(ber_out_connected){
+                                                ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                if(ber_out[out_count]<0)
+                                                    printf("correct_bits: %i\n", correct_bits); 
+                                        }
                                     }
 
                                     out_count++;

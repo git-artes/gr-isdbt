@@ -84,6 +84,8 @@ namespace gr {
      public:
       viterbi_decoder_1seg_impl();
       ~viterbi_decoder_1seg_impl();
+      
+      void print128_num(__m128i *var, int size); 
 
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

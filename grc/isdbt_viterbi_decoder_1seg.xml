@@ -12,4 +12,9 @@
     <name>out</name>
     <type>byte</type>
   </source>
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <optional>1</optional>
+  </source>
 </block>
