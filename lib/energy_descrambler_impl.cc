@@ -110,8 +110,7 @@ namespace gr {
 
                 if (tags.size())
                 {
-                    //printf("ENERGY DESCRAMBLER: %i \n", pmt::symbol_to_string(tags[0].value)) ; 
-                    std::cout << "ENERGY DESCRAMBLER: "<< tags[0].value <<std::endl ; 
+                    //std::cout << "ENERGY DESCRAMBLER: "<< tags[0].value <<std::endl ; 
                     init_prbs();
                     if (tags[0].offset - nread)
                     {

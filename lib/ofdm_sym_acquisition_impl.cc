@@ -25,6 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "ofdm_sym_acquisition_impl.h"
 #include <complex>
+#include <math.h>
 #include <gnuradio/math.h>
 #include <gnuradio/expj.h>
 #include <stdio.h>
@@ -364,7 +365,7 @@ namespace gr {
     ofdm_sym_acquisition_impl::ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr)
       : gr::block("ofdm_sym_acquisition",
           gr::io_signature::make(1, 1, sizeof (gr_complex) ),
-          gr::io_signature::make(1, 1, sizeof (gr_complex) * fft_length)),
+          gr::io_signature::make2(1, 2, sizeof (gr_complex) * fft_length,sizeof(float))),
       d_fft_length(fft_length), d_cp_length(cp_length), d_snr(snr),
       d_index(0), d_phase(0.0), d_phaseinc(0.0), d_cp_found(0), d_count(0), d_nextphaseinc(0), d_nextpos(0), \
         d_sym_acq_count(0),d_sym_acq_timeout(100), d_initial_aquisition(0), \
@@ -478,6 +479,9 @@ namespace gr {
     {
         const gr_complex *in = (const gr_complex *) input_items[0];
         gr_complex *out = (gr_complex *) output_items[0];
+        
+        float *freq_error_out = (float *) output_items[1];
+        bool freq_error_out_connected = output_items.size()>=2; 
 
         //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
         int low, size;
@@ -498,9 +502,44 @@ namespace gr {
               PRINTF("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
             }
 
+<<<<<<< HEAD
             // This is fractional frequency correction (pre FFT)
             // It is also calle coarse frequency correction
             if (d_initial_aquisition)
+=======
+          if (d_cp_found )
+          {
+            d_freq_correction_count = 0;
+
+            // Derotate the signal and out
+#ifdef USE_VOLK
+            low = d_cp_start - d_fft_length + 1;
+            size = d_cp_start - (d_cp_start - d_fft_length + 1) + 1;
+
+            if(is_unaligned())
+              volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+            else
+              //volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
+              volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+              // TODO - fix the alignment
+#else
+            int j = 0;
+            for (int i = (d_cp_start - d_fft_length + 1); i <= d_cp_start; i++)
+            {
+              out[j] = d_derot[j] * in[i];
+              j++;
+            }
+#endif
+
+            if (freq_error_out_connected){
+                freq_error_out[0] = d_nextphaseinc/(pow(2*((long)M_PI),2)*d_fft_length); 
+            }
+          }
+         else
+          {
+            // If we have a number of consecutive misses then we restart aquisition
+            if (++d_freq_correction_count > d_freq_correction_timeout)
+>>>>>>> 9c269589c4a78e2b2374d38ff6a243a235a24074
             {
               d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
                   &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);

@@ -29,4 +29,12 @@
     <type>complex</type>
     <vlen>$fft_length</vlen>
   </source>
+  
+  <!-- optional outputs-->
+  <source>
+      <name>freq. error</name>
+      <type>float</type>
+      <vlen>1</vlen>
+      <optional>1</optional>
+  </source>
 </block>

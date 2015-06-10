@@ -63,14 +63,15 @@ d_viterbi_butterfly_sse2(unsigned char *symbols, __m128i m0[], __m128i m1[], __m
 unsigned char
 d_viterbi_get_output(struct viterbi_state *state, unsigned char *outbuf);
 
-unsigned char
+int
 d_viterbi_get_output_sse2(__m128i *mm0, __m128i *pp0, int ntraceback, unsigned char *outbuf);
 
 
-int 
+int
 d_viterbi(unsigned long *metric,	/* Final path metric (returned value) */
 	unsigned char *data,	/* Decoded output data */
 	unsigned char *symbols,	/* Raw deinterleaved input symbols */
 	unsigned int nbits,	/* Number of output bits */
 	int mettab[2][256]	/* Metric table, [sent sym][rx symbol] */
 );
+
