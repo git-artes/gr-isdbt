@@ -76,6 +76,10 @@ static unsigned char ppresult[TRACEBACK_MAX][64] __attribute__((aligned(16))) = 
 // Position in circular buffer where the current decoded byte is stored
 static int store_pos = 0;
 
+// the accumulated minimum metric, from which we will obtain the total path cost. 
+static int d_last_minmetric = 0; 
+static int d_last_bestmetric = 0; 
+
 #define	BUTTERFLY(i,sym) { \
 	int m0,m1,m2,m3;\
 	/* ACS for 0 branch */\
@@ -282,6 +286,7 @@ d_viterbi_chunks_init_sse2(__m128i *mm0, __m128i *pp0) {
     for (j = 0; j < TRACEBACK_MAX; j++)
       ppresult[j][i] = 0;
   }
+
 }
 
 
@@ -677,7 +682,7 @@ d_viterbi_get_output(struct viterbi_state *state, unsigned char *outbuf) {
   return bestmetric;
 }
 
-unsigned char
+int
 d_viterbi_get_output_sse2(__m128i *mm0, __m128i *pp0, int ntraceback, unsigned char *outbuf) {
   //  Find current best path
   int i;
@@ -731,6 +736,17 @@ d_viterbi_get_output_sse2(__m128i *mm0, __m128i *pp0, int ntraceback, unsigned c
     mm0[i] = _mm_sub_epi8(mm0[i], _mm_set1_epi8(minmetric));
   }
 
-  return bestmetric;
+  int correct_bits = bestmetric - d_last_bestmetric + d_last_minmetric; 
+
+  d_last_bestmetric = bestmetric; 
+  d_last_minmetric = minmetric; 
+
+
+  // I want to return the correct number of bits. The metric in this case is the number of bits that are as the chosen path
+  // and thus what I want. However, to avoid metric overflow, the min metric is always substracted from all the paths' cost 
+  // (see the for-loop above). Thus, I will output the difference between the current and the previous best path (which, 
+  // if this substraction would not be performed, it would output the correct bits from the total incoming bits, e.g. 3/2*8), 
+  // plus the previous minmetric to consider this substraction. 
+  return correct_bits; 
 }
 
