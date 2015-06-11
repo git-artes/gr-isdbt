@@ -487,7 +487,6 @@ namespace gr {
         int low, size;
 
         for (int i = 0; i < noutput_items; i++) {
-
             // This is initial aquisition of symbol start
             // TODO - make a FSM
             if (!d_initial_aquisition)
@@ -581,8 +580,7 @@ namespace gr {
         consume_each(d_to_consume);
 
         if ( d_to_out != 1 )
-            printf("-------------------------------------------------------- d_to_out: %i\n", d_to_out);
-
+          printf("------------------------------------------ d_to_out: %i\n", d_to_out);
         // Tell runtime system how many output items we produced.
         return (d_to_out);
     }
