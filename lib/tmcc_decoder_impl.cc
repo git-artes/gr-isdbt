@@ -33,6 +33,7 @@ namespace gr {
 
         // The segments positions
         const int tmcc_decoder_impl::d_segments_positions[d_total_segments] = {11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12};
+        //const int tmcc_decoder_impl::d_segments_positions[d_total_segments] = {6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12};
 
         // Number of symbols per frame
         const int tmcc_decoder_impl::d_symbols_per_frame=204;
@@ -146,12 +147,16 @@ namespace gr {
         const int tmcc_decoder_impl::sp_per_segment_4k = 18;
         const int tmcc_decoder_impl::sp_per_segment_8k = 36;
 
+        /*
+         * It sets several parameters. 
+         */
         void
-            tmcc_decoder_impl::carriers_parameters(int payload)
+            tmcc_decoder_impl::set_carriers_parameters(int payload)
             {
 
                 /*
-                 * Assing to variables tmcc_carriers, tmcc_carriers_size, d_ac_carriers, ac_carriers_size, d_data_carriers_per_segment and sp_per_segment
+                 * Assign to variables tmcc_carriers, tmcc_carriers_size, d_ac_carriers, ac_carriers_size, 
+                 * d_data_carriers_per_segment and sp_per_segment
                  * the corresponding values according to the transmission mode
                  */
                 switch (payload)
@@ -187,11 +192,64 @@ namespace gr {
                         }
                         break;
                     default:
+                        printf("Error: unexpected payload size in TMCC DECODER. It should be either 1405, 2809 or 5617."); 
                         break;
                 }
+                
+                //the total number of data carriers
+                d_total_data_carriers = d_total_segments*d_data_carriers_per_segment; 
+                // Number of carriers per segment
+                d_carriers_per_segment = (d_active_carriers-1)/d_total_segments;
 
             }
 
+        /*
+         *  it constructs the d_data_carriers array. 
+         */
+        void tmcc_decoder_impl::construct_data_carriers_list(){
+                
+            d_data_carriers = new int[4*d_total_data_carriers]; 
+            
+            for (int symbol_index = 0; symbol_index<4; symbol_index++){
+                int spilot_index = 0; 
+                int ac_pilot_index = 0; 
+                int tmcc_pilot_index = 0; 
+                int carrier_out = 0; 
+
+
+                for (int carrier = 0; carrier < (d_active_carriers - 1);carrier++) {
+
+                    if (carrier == (12 * spilot_index + 3 * (symbol_index % 4))) 
+                    {
+                        // the current carrier is an scattered pilot
+                        spilot_index++;
+                    } 
+                    else if ((carrier == d_ac_carriers[ac_pilot_index]))
+                    {
+                        // the current carrier is an AC pilot
+                        ac_pilot_index++;
+                    } 
+                    else if ((carrier == tmcc_carriers[tmcc_pilot_index])) 
+                    {
+                        // the current carrier is a tmcc pilot
+                        tmcc_pilot_index++;
+                    } 
+                    else 
+                    {
+                        //out[i*d_total_data_carriers + data_carrier] = in[i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]]; 
+
+                        //d_data_carriers[symbol_index*d_total_data_carriers + carrier_out] = d_segments_positions[carrier/d_carriers_per_segment]*d_carriers_per_segment + (carrier % d_carriers_per_segment); 
+                        d_data_carriers[symbol_index*d_total_data_carriers + d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment + (carrier_out%d_data_carriers_per_segment)] = carrier; 
+                        //printf("carrier_out: %i, symbol_index: %i, d_data_carriers[%i]=%i\n", carrier_out, symbol_index, carrier_out+symbol_index*d_total_data_carriers, d_data_carriers[carrier_out+symbol_index*d_total_data_carriers]); 
+                        carrier_out++;
+                    }
+                }
+            }
+        }
+
+        /*
+         * Given a set of bits in the form of a deque<char>, it checks whether or not its BCH code is correct. 
+         */
         int 
             tmcc_decoder_impl::tmcc_parity_check(std::deque<char> d_rcv_tmcc_data)
             {
@@ -218,6 +276,10 @@ namespace gr {
                 return s;
             }
 
+        /*
+         * Basically a function that interprets the TMCC bits (in the form of a deque<char>)
+         * and prints its content. 
+         */
         int
             tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
 
@@ -255,14 +317,19 @@ namespace gr {
 
             }
 
+        /*
+         * The aim of this method is to 1) decode the TMCC carriers and 2) detect the end of a frame indicated 
+         * by the complete reception of the TMCC. 
+         */
         int
             tmcc_decoder_impl::process_tmcc_data(const gr_complex * in)
             {
-                /*
-                 * The aim of this method is to detect the end of a frame
-                 */
 
                 int end_frame = 0;
+
+                /*
+                 * We first decide whether this OFDM symbol carries a 0 or a 1 regarding the tmcc. 
+                 */
 
                 // As we have 'tmcc_carriers_size' TMCC carriers we will be using majority voting for decision
                 int tmcc_majority_zero = 0;
@@ -274,9 +341,13 @@ namespace gr {
                     gr_complex phdiff = in[tmcc_carriers[k]] * conj(d_prev_tmcc_symbol[k]);
 
                     if (phdiff.real() >= 0.0)
+                    {
                         tmcc_majority_zero++;
+                    }
                     else
+                    {
                         tmcc_majority_zero--;
+                    }
 
                     d_prev_tmcc_symbol[k] = in[tmcc_carriers[k]];
                 }
@@ -286,71 +357,56 @@ namespace gr {
 
                 // Add data to tail
                 if (tmcc_majority_zero >= 0)
+                {
                     // If most of symbols voted a zero, we add a zero
                     d_rcv_tmcc_data.push_back(0);
+                }
                 else
+                {
                     // Otherwise, we add a one
                     d_rcv_tmcc_data.push_back(1);
+                }
 
-                // Match synchronization signatures
+                /* 
+                 * We now check whether a complete TMCC frame was received. To do this we first check whether 
+                 * the beginning of what we received so far is equal to the 2-bytes synchronization word. Then 
+                 * we check the BCH parity code at the end. To avoid unnecesary checking, we first verify if the last TMCC 
+                 * was received at least 203 frames ago. 
+                 */
 
-                // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the even tmcc sync sequence stored in the d_tmcc_sync_evenv queue
-                if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
+                if (d_since_last_tmcc>=203)
                 {
-                    // Then we recognize the end of an ISDB-T frame
-                    end_frame = 1;
+                    if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin())
+                            || std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) )
+                    {
+                        if (!tmcc_parity_check(d_rcv_tmcc_data))
+                        {
+                            // Then we recognize the end of an ISDB-T frame
+                            end_frame = 1;
+                            d_since_last_tmcc = 0;
+                            //d_symbol_index = 203;
 
-                    // This should be erased
-                    //end_frame = d_since_last_tmcc==203;
-                    //d_since_last_tmcc = 0;
-                    //d_symbol_index = 203;
-
-                    // Then, we print the full tmcc
-                    /*
-                       for (int i = 0; i < d_symbols_per_frame; i++)
-                       printf("%i", d_rcv_tmcc_data[i]);
-                       printf("\n");
+                            // Then, we print the full tmcc
+                            /*
+                               for (int i = 0; i < d_symbols_per_frame; i++)
+                               printf("%i", d_rcv_tmcc_data[i]);
+                               printf("\n");
 
 */
-                    //tmcc_print(d_rcv_tmcc_data);
-                    printf("TMCC OK\n"); 
+                            //tmcc_print(d_rcv_tmcc_data);
+                            printf("TMCC OK\n"); 
+                        }
+                    }
                 }
-                // We compare bits 1 to 16 of the d_rcv_tmcc_data queue to the odd tmcc sync sequence stored in the d_tmcc_sync_oddv queue
-                else if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) && (!tmcc_parity_check(d_rcv_tmcc_data)))
+                if(!end_frame)
                 {
-
-                    // Then we recognize the end of an ISDB-T frame
-                    end_frame = 1;
-
-                    // This should be erased
-                    // end_frame = d_since_last_tmcc==203;
-                    //d_since_last_tmcc = 0;
-                    //d_symbol_index = 203;
-
-                    // Then, we print the full tmcc
-                    /*
-                       for (int i = 0; i < d_symbols_per_frame; i++)
-                       printf("%i", d_rcv_tmcc_data[i]);
-                       printf("\n");
-                       */
-                    //tmcc_print(d_rcv_tmcc_data);
-                    printf("TMCC OK\n"); 
-
+                    d_since_last_tmcc++;
                 }
-                // This should be erased
-                //else 
-                // {
-                //  d_since_last_tmcc++;
-                // }
 
                 // We return end_frame
                 return end_frame;
 
             }
-
-        /*
-         * ---------------------------------------------------------------------
-         */
 
         tmcc_decoder::sptr
             tmcc_decoder::make(int mode)
@@ -373,12 +429,12 @@ namespace gr {
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*(1+d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_per_segment_2k*((int)pow(2.0,mode-1))))
         {
-            active_carriers = d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)) + 1; 
+            d_active_carriers = d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)) + 1; 
             // Set the carriers parameters to mode 1, 2 or 3
-            carriers_parameters(active_carriers);
+            set_carriers_parameters(d_active_carriers);
 
-            // Number of carriers per segment
-            d_carriers_per_segment = (active_carriers-1)/d_total_segments;
+            construct_data_carriers_list(); 
+
 
             // We allocate memory for d_prev_tmcc_symbol attribute
             d_prev_tmcc_symbol = new gr_complex[tmcc_carriers_size];
@@ -402,8 +458,7 @@ namespace gr {
 
             number_symbol = 0;
 
-            // This should be erased 
-            //d_since_last_tmcc = 203;
+            d_since_last_tmcc = 203;
 
             d_frame_end = false; 
             d_resync = true; 
@@ -449,8 +504,8 @@ namespace gr {
                     if (tags.size())
                     {
                         d_resync = true; 
-                        printf("TMCC DECODER: restart sync\n"); 
                     }
+
                     if (d_frame_end) {
                         // Signal the beginning of the frame downstream
                         // Being here means that the last OFDM symbol 
@@ -460,6 +515,8 @@ namespace gr {
                         pmt::pmt_t key = pmt::string_to_symbol("frame_begin"); 
                         pmt::pmt_t value = pmt::from_long(0xaa); 
                         this->add_item_tag(0,offset,key,value); 
+
+                        // Moreover, if a resync was detected, it is also propagted downstream
                         if (d_resync){
                             d_resync = false; 
                             const uint64_t offset = this->nitems_written(0)+i; 
@@ -474,71 +531,66 @@ namespace gr {
                     // Process TMCC data
 
                     //If a frame is recognized then set signal end of frame to true
-                    d_frame_end = process_tmcc_data(&in[i * active_carriers]);
-
-                    // This should be erased
-                    /*
-                    // check whether a symbol index skip was detected upstream
-                    // and correct d_symbol_index accordingly
-                    std::vector<tag_t> tags; 
-                    const uint64_t nread = this->nitems_read(0); 
-                    this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("symbol_index_skip"));
-                    if (tags.size())
-                    {
-                    d_symbol_index = (d_symbol_index + pmt::to_long(tags[0].value)) % 204;
-                    printf("se detecto un salto de %d\n",pmt::to_long(tags[0].value));
-                    }
-                    */
+                    d_frame_end = process_tmcc_data(&in[i * d_active_carriers]);
 
                     //currently, we obtain the symbol relative index (between 0 and 3)
                     //from the block upstream
                     this->get_tags_in_window(tags,0,i,i+1, pmt::string_to_symbol("relative_symbol_index"));
                     if (tags.size())
+                    {
                         d_symbol_index = pmt::to_long(tags[0].value);
+                    }
                     else 
-                        printf("Warning: no relative index found in tag's stream"); 
+                    {
+                        printf("Warning: no relative index found in tag's stream in TMCC decoder. Mode: %i; i=%i\n", d_total_data_carriers, i); 
+                    }
 
+                    for (int data_carrier = 0; data_carrier < d_total_data_carriers; data_carrier++)
+                    {
+                        //printf("d_data_carriers[%i][%i]=%i; in[%i]=%i", data_carrier, d_symbol_index, d_data_carriers[data_carrier][d_symbol_index],i*d_active_carriers + d_data_carriers[data_carrier][d_symbol_index], in[i*d_active_carriers+d_data_carriers[data_carrier][d_symbol_index]]); 
+                        //printf("indice_out=%i, indice_in=%i\n",i*d_total_data_carriers + data_carrier, i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]); 
+                        out[i*d_total_data_carriers + data_carrier] = in[i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]]; 
+                    }
 
+                    /*
                     // Declare and initialize to zero the number of data carrier, spilot, acpilot and tmcc pilot found
                     int carrier_out = 0;
-                    int d_spilot_index = 0;
-                    int d_acpilot_index = 0;
-                    int d_tmccpilot_index = 0;
+                    int spilot_index = 0;
+                    int acpilot_index = 0;
+                    int tmccpilot_index = 0;
 
                     // We will determinate which kind of carrier is each. If we find a data carrier, we let it out
-                    for (int carrier = 0; carrier < (active_carriers - 1);carrier++) {
+                    for (int carrier = 0; carrier < (d_active_carriers - 1);carrier++) {
 
-                        // We see if the current carrier is an scattered pilot
-                        if (carrier == (12 * d_spilot_index + 3 * (d_symbol_index % 4))) {
-                            d_spilot_index++;
+                    // We see if the current carrier is an scattered pilot
+                    if (carrier == (12 * spilot_index + 3 * (d_symbol_index % 4))) {
+                    spilot_index++;
 
-                        } else {
-                            // We see if the current carrier is an AC pilot
-                            if ((carrier == d_ac_carriers[d_acpilot_index]))
-                            {
-                                d_acpilot_index++;
+                    } else {
+                    // We see if the current carrier is an AC pilot
+                    if ((carrier == d_ac_carriers[acpilot_index]))
+                    {
+                    acpilot_index++;
 
-                            } else {
-                                // We see if the current carrier is a tmcc pilot
-                                if ((carrier == tmcc_carriers[d_tmccpilot_index])) {
-                                    d_tmccpilot_index++;
+                    } else {
+                    // We see if the current carrier is a tmcc pilot
+                    if ((carrier == tmcc_carriers[tmccpilot_index])) {
+                    tmccpilot_index++;
 
-                                } else {
-                                    // If is none of then we let the carrier out in the proper order
-                                    //out[carrier_out] = in[i * active_carriers + carrier];
-                                    gr_complex salida = in[i*active_carriers + carrier]; 
-                                    out[i*d_data_carriers_per_segment*d_total_segments + (d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
-                                    /*if (std::abs(salida.imag()) < 0.01){
-                                      printf("problemas (sym=%d, portadora = %d, abs(salida.imag())=%f): out=%f+j%f\n",d_symbol_index,carrier, std::abs(salida.imag()),salida.real(),salida.imag());
-                                      for (int j=-5; j<5; j++)
-                                      printf("in[%d+%d]=%f+j%f\n",i*active_carriers+carrier,j,in[i*active_carriers+carrier+j].real(),in[i*active_carriers+carrier+j].imag());
-                                      }*/
-                                    carrier_out++;
-                                }
-                            }
-                        }
+                    } else {
+                    // If is none of then we let the carrier out in the proper order
+                    //out[carrier_out] = in[i * d_active_carriers + carrier];
+                    gr_complex salida = in[i*d_active_carriers + carrier]; 
+                    out[i*d_data_carriers_per_segment*d_total_segments + (d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
+                    carrier_out++;
+                    }
+                    }
+                    }
                     }
                     //printf("data carriers: %d\n",carrier_out);
+                    */
+
+
                 }
                 /*
                  * Here ends the signal processing

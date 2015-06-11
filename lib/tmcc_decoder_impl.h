@@ -67,12 +67,15 @@ namespace gr {
                 int sp_per_segment;
 
                 // Number of active carriers
-                int active_carriers;
+                int d_active_carriers;
 
                 static const int d_segments_positions[];
 
                 // Number of segments
                 static const int d_total_segments;
+
+                //the total data carriers
+                int d_total_data_carriers;
 
                 // Number of symbols per frame
                 static const int d_symbols_per_frame;
@@ -110,9 +113,12 @@ namespace gr {
 
                 int number_symbol;
 
-				// This should be erased
                 // how many symbols ago we saw a complete tmcc
-                // int d_since_last_tmcc;
+                int d_since_last_tmcc;
+
+                // a list of the data carriers for the current configuration (mode), one 
+                // list per symbol. 
+                int * d_data_carriers; 
 
 
                 /*METHODS*/
@@ -125,7 +131,10 @@ namespace gr {
                 int process_tmcc_data(const gr_complex * in);
 
                 // ...
-                void carriers_parameters(int payload);
+                void set_carriers_parameters(int payload);
+
+                // it constructs the d_data_carriers_symX arrays. 
+                void construct_data_carriers_list();
 
 
             public:
