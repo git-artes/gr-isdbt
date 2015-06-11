@@ -47,7 +47,7 @@ list(APPEND isdbt_sources
     time_deinterleaver_1seg_impl.cc
     symbol_demapper_1seg_impl.cc
     bit_deinterleaver_1seg_impl.cc
-    )
+    viterbi_decoder_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

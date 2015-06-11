@@ -1,29 +1,129 @@
 <block>
-  <name>Symbol demapper</name>
+  <name>Symbol Demapper</name>
   <key>isdbt_symbol_demapper</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.symbol_demapper($mode, $constellation_size)</make>
+  <make>isdbt.symbol_demapper($mode, $segments_A, $constellation_size_A, $segments_B, $constellation_size_B, $segments_C, $constellation_size_C)</make>
+
   <param>
-    <name>Mode</name>
-    <key>mode</key>
-    <value>3</value>
-    <type>int</type>
+      <name>Transmission Mode</name>
+	  <key>mode</key>
+	  <value>3</value>
+	  <type>enum</type>
+      <option>
+	    <name>MODE1(2K)</name>
+	    <key>1</key>
+      </option>
+	  <option>
+	    <name>MODE2(4K)</name>
+	    <key>2</key>
+	  </option>
+	  <option>
+	    <name>MODE3(8K)</name>
+	    <key>3</key>
+	  </option>
+  </param> 
+
+  <param>
+      <name>Layer A Segments</name>
+      <key>segments_A</key>
+      <value>1</value>
+      <type>int</type>
   </param>
+
   <param>
-    <name>Constellation_size</name>
-    <key>constellation_size</key>
-    <type>int</type>
+	  <name>Layer A Modulation Scheme</name>
+	  <key>constellation_size_A</key>
+	  <value>4</value>
+	  <type>enum</type>
+	  <option>
+	    <name>QPSK</name>
+	    <key>4</key>
+	  </option>
+	  <option>
+	    <name>16QAM</name>
+	    <key>16</key>
+	  </option>
+	  <option>
+	    <name>64QAM</name>
+	    <key>64</key>
+	  </option>
+  </param>
+
+  <param>
+      <name>Layer B Segments</name>
+      <key>segments_B</key>
+      <value>12</value>
+      <type>int</type>
+  </param>
+
+  <param>
+	  <name>Layer B Modulation Scheme</name>
+	  <key>constellation_size_B</key>
+	  <value>64</value>
+	  <type>enum</type>
+      <option>
+	    <name>QPSK</name>
+	    <key>4</key>
+	  </option>
+	  <option>
+	    <name>16QAM</name>
+	    <key>16</key>
+	  </option>
+	  <option>
+	    <name>64QAM</name>
+	    <key>64</key>
+      </option>
+  </param>
+
+  <param>
+      <name>Layer C Segments</name>
+      <key>segments_C</key>
+      <value>0</value>
+      <type>int</type>
+  </param>
+  
+  <param>
+      <name>Layer C Modulation Scheme</name>
+      <key>constellation_size_C</key>  
+      <value>64</value>
+      <type>enum</type>
+      <option>
+	    <name>QPSK</name>
+	    <key>4</key>
+      </option>
+	  <option>
+	    <name>16QAM</name>
+	    <key>16</key>
+	  </option>
+	  <option>
+	    <name>64QAM</name>
+	    <key>64</key>
+	  </option>
   </param>
 
   <sink>
     <name>in</name>
     <type>complex</type>
-    <vlen>1*96*(2**($mode-1))</vlen>
+    <vlen>13*96*(2**($mode-1))</vlen>
   </sink>
   <source>
-    <name>out</name>
+    <name>out A</name>
     <type>byte</type>
-    <vlen>1*96*(2**($mode-1))</vlen>
+    <vlen>($segments_A)*96*(2**($mode-1))</vlen>
   </source>
+
+  <!-- Optional outputs -->
+  <source>
+	<name>out B</name>
+	<type>byte</type>
+    <vlen>($segments_B)*96*(2**($mode-1))</vlen>
+	<optional>1</optional>
+ </source>
+ <source>
+	<name>out C</name>
+	<type>byte</type>
+    <vlen>($segments_C)*96*(2**($mode-1))</vlen>	
+	<optional>1</optional>
+ </source>
 </block>

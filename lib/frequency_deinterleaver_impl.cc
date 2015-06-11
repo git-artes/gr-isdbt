@@ -32,7 +32,7 @@ namespace gr {
 
         // TODO shouldn't things like these be defined elsewhere? 
         const int frequency_deinterleaver_impl::d_data_carriers_mode1 = 96; 
-        const int frequency_deinterleaver_impl::d_total_segments = 1; 
+        const int frequency_deinterleaver_impl::d_total_segments = 13; 
 
 
         const int frequency_deinterleaver_impl::d_random_perm_mode1[] = 

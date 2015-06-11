@@ -1,5 +1,5 @@
 <block>
-  <name>Frequency deinterleaver</name>
+  <name>Frequency Deinterleaver</name>
   <key>isdbt_frequency_deinterleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
@@ -30,11 +30,11 @@
   <sink>
       <name>in</name>
       <type>complex</type>
-      <vlen>1*96*(2**($mode-1))</vlen>
+      <vlen>13*96*(2**($mode-1))</vlen>
   </sink>
   <source>
       <name>out</name>
       <type>complex</type>
-      <vlen>1*96*(2**($mode-1))</vlen>
+      <vlen>13*96*(2**($mode-1))</vlen>
   </source>
 </block>

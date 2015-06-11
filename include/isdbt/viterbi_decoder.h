@@ -19,40 +19,38 @@
  */
 
 
-#ifndef INCLUDED_ISDBT_SYMBOL_DEMAPPER_H
-#define INCLUDED_ISDBT_SYMBOL_DEMAPPER_H
+#ifndef INCLUDED_ISDBT_VITERBI_DECODER_H
+#define INCLUDED_ISDBT_VITERBI_DECODER_H
 
 #include <isdbt/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief It demaps the symbol in each carrier. TODO Different 
-     * constellations may be used in different carriers. Not implemented 
-     * so far. 
+     * \brief <+description of block+>
      * \ingroup isdbt
      *
      */
-    class ISDBT_API symbol_demapper : virtual public gr::sync_block
+    class ISDBT_API viterbi_decoder : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<symbol_demapper> sptr;
+      typedef boost::shared_ptr<viterbi_decoder> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::symbol_demapper.
+       * \brief Return a shared_ptr to a new instance of isdbt::viterbi_decoder.
        *
-       * To avoid accidental use of raw pointers, isdbt::symbol_demapper's
+       * To avoid accidental use of raw pointers, isdbt::viterbi_decoder's
        * constructor is in a private implementation
-       * class. isdbt::symbol_demapper::make is the public interface for
+       * class. isdbt::viterbi_decoder::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C);
+      static sptr make(int constellation_size, int rate);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_SYMBOL_DEMAPPER_H */
+#endif /* INCLUDED_ISDBT_VITERBI_DECODER_H */
 

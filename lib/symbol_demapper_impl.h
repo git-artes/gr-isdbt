@@ -38,14 +38,26 @@ namespace gr {
                 static const gr_complex d_constellation_64qam[]; 
 
                 int d_mode; 
-                int d_const_size; 
-                const gr_complex * d_constellation; 
+                int d_const_size_A;
+			    int d_const_size_B;
+				int d_const_size_C;
+				int d_nsegments_A;
+				int d_nsegments_B;
+				int d_nsegments_C;	
+                const gr_complex * d_constellation_A;
+			    const gr_complex * d_constellation_B;
+				const gr_complex * d_constellation_C;	
                 int d_carriers_per_segment; 
                 int d_noutput; 
+                int d_noutput_A; 
+                int d_noutput_B; 
+                int d_noutput_C; 
                 
-                int find_constellation_value(gr_complex val); 
+                int find_constellation_value_A(gr_complex val);
+			    int	find_constellation_value_B(gr_complex val);
+				int find_constellation_value_C(gr_complex val);
             public:
-                symbol_demapper_impl(int mode, int constellation_size);
+                symbol_demapper_impl(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C);
                 ~symbol_demapper_impl();
 
                 // Where all the action really happens

@@ -33,17 +33,34 @@ namespace gr {
          static const int d_data_carriers_mode1; 
          static const int d_total_segments; 
          static const int d_total_layers; 
+		 static const int d_layer;
+		 //static const int d_layer_A;
+		 //static const int d_layer_B;
+		 //static const int d_layer_C;
 
          static const int d_delay_qpsk[]; 
          static const int d_delay_16qam[]; 
          static const int d_delay_64qam[]; 
          
          int d_mode; 
-         int d_const_size; 
-         int d_num_bits; 
+         int d_const_size;
+         int d_num_bits;
+		 int d_nsegments;
+         const int* d_delay;
+         //int d_const_size_A;
+		 //int d_const_size_B;
+		 //int d_const_size_C; 
+         //int d_num_bits_A;
+		 //int d_num_bits_B;
+		 //int d_num_bits_C;
+		 //int d_nsegments_A;
+	 	 //int d_nsegments_B;
+		 //int d_nsegments_C; 
          int d_carriers_per_segment; 
          int d_noutput; 
-         const int * d_delay; 
+         //const int* d_delay_A;
+		 //const int* d_delay_B;
+		 //const int* d_delay_C; 
 
          //Here are the symbols. To create an output I have to check
          //several symbols back. Where and how many depends on the 
@@ -52,7 +69,7 @@ namespace gr {
 
 
      public:
-      bit_deinterleaver_impl(int mode, int constellation);
+      bit_deinterleaver_impl(int mode, int segments, int constellation_size);
       ~bit_deinterleaver_impl();
 
       // Where all the action really happens

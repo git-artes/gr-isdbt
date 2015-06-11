@@ -35,5 +35,5 @@ install(FILES
     isdbt_time_deinterleaver_1seg.xml
     isdbt_symbol_demapper_1seg.xml
     isdbt_bit_deinterleaver_1seg.xml
-    DESTINATION share/gnuradio/grc/blocks
+    isdbt_viterbi_decoder.xml DESTINATION share/gnuradio/grc/blocks
 )

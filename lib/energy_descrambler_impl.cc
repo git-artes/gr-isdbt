@@ -119,7 +119,7 @@ namespace gr {
                     }
                 }
 
-
+				//printf("--- ENERGY DESCRAMBLER-> noutput_items = %d\n",noutput_items);
                 for (int i = 0; i < noutput_items; i++)
                 {
                     
@@ -137,7 +137,7 @@ namespace gr {
                     // d_SYNC should be in this position, but I would like to verify it. 
                     //out[d_TSP_SIZE-1 + i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
                     
-                     //printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
+                     printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                 }
 
 
