@@ -22,6 +22,7 @@
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import isdbt as isdbt
+import math, random
 
 class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
 
@@ -36,32 +37,40 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.run ()
         # check data
 
+    def generate_random_symbol(self, symbol_length, cp_length):
+        '''Generates a random OFDM symbol (a random complex vector of length symbol_length) and then 
+        prefixes it with the a copy of the last cp_length samples at the beginning. '''
+
+        sym_without_cp_realpart = [random.random() for i in range(symbol_length)]
+        sym_without_cp_imagpart = [random.random() for i in range(symbol_length)]
+        
+        sym_without_cp = [real + (1j)*imag for (real, imag) in zip(sym_without_cp_realpart, sym_without_cp_imagpart)]
+        sym_with_cp = sym_without_cp[len(sym_without_cp)-cp_length:len(sym_without_cp)-1] + sym_without_cp
+        return sym_with_cp
+
     def test_ofdm_symbol_aquisition_1 (self):
 
-        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=8192, cp_length=512, snr=10)
 
-        cp1 = (0.5 + 0.5j,  0.1 - 1.2j, -0.8 - 0.1j, -0.45 + 0.8j,
-               0.8 + 1.0j, -0.5 + 0.1j,  0.5 - 1.2j, -0.2 - 1.0j) * 64      # 8 * 64 = 512 samples
-        frame1_sin_cp1 = (0.5 + 0.5j,  0.1 - 1.2j, -0.8 - 0.1j, -0.45 + 0.8j,
-               0.8 + 1.0j, -0.5 + 0.1j,  0.5 - 1.2j, -0.2 - 1.0j) * 960      # 8 * 960 = 7680 samples (8192-512=7680)
-        frame1 = frame1_sin_cp1 + cp1
+        mode = 3
+        total_carriers = 2**(10+mode)
+        cp_len = 1/8.0
 
-        cp2 = (0.5 + 0.5j,  0.1 - 1.2j, -0.8 - 0.1j, -0.45 + 0.8j,
-               0.8 + 1.0j, -0.5 + 0.1j,  0.5 - 1.2j, -0.2 - 1.0j) * 64      # 8 * 64 = 512 samples
-        frame2_sin_cp2 = (0.5 + 0.5j,  0.1 - 1.2j, -0.8 - 0.1j, -0.45 + 0.8j,
-               0.8 + 1.0j, -0.5 + 0.1j,  0.5 - 1.2j, -0.2 - 1.0j) * 960     # 8 * 960 = 7680 samples (8192-512=7680)
-        frame2 = frame2_sin_cp2 + cp2 
+        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
 
-        src_data =  cp1 + frame1 + cp2 + frame2 
+        src_data =  sym1 + sym2 + sym3 + sym1 + sym2 + sym3
 
         expected_result = \
             (    0,       1,       3,       2,
                  0,       2,       1,       3) * 48
 
         src = blocks.vector_source_c(src_data)
-        dst = blocks.vector_sink_c()
+        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=10)
+        dst = blocks.vector_sink_c(total_carriers)
 
-        self.tb.connect(src,dst)
+        self.tb.connect(src,ofdmsym)
+        self.tb.connect(ofdmsym,dst)
         self.tb.run()
 
         # check data
