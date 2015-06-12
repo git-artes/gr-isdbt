@@ -23,7 +23,7 @@
 #define INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_H
 
 #include <isdbt/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace isdbt {
@@ -33,7 +33,7 @@ namespace gr {
      * \ingroup isdbt
      *
      */
-    class ISDBT_API reed_solomon_dec_isdbt : virtual public gr::sync_block
+    class ISDBT_API reed_solomon_dec_isdbt : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<reed_solomon_dec_isdbt> sptr;
