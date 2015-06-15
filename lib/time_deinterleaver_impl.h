@@ -22,6 +22,7 @@
 #define INCLUDED_ISDBT_TIME_DEINTERLEAVER_IMPL_H
 
 #include <isdbt/time_deinterleaver.h>
+#include <boost/circular_buffer.hpp>
 
 namespace gr {
   namespace isdbt {
@@ -33,17 +34,24 @@ namespace gr {
         static const int d_total_segments; 
 
         int d_mode; 
+	    int d_nsegments_A;
+		int d_nsegments_B;
+		int d_nsegments_C;	
         // following the standard's syntax, this is the 
         // interleaver's depth. 
-        int d_I; 
+        int d_I_A; 
+        int d_I_B; 
+        int d_I_C; 
         int d_carriers_per_segment; 
         int d_noutput; 
 
         // this vector contains the delays of all carriers. 
-        std::vector< std::deque<gr_complex> *> d_shift; 
+        //std::vector< std::deque<gr_complex> *> d_shift; 
+        std::vector< boost::circular_buffer<gr_complex> *> d_shift; 
 
      public:
-      time_deinterleaver_impl(int mode, int length);
+      //time_deinterleaver_impl(int mode, int length);
+      time_deinterleaver_impl(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int lenght_C); 
       ~time_deinterleaver_impl();
 
       // Where all the action really happens

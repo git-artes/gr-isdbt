@@ -46,7 +46,8 @@ namespace gr {
        * class. isdbt::time_deinterleaver::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int mode, int length);
+      //static sptr make(int mode, int length);
+      static sptr make(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int lenght_C); 
     };
 
   } // namespace isdbt

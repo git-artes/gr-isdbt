@@ -25,6 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "time_deinterleaver_impl.h"
 #include <stdio.h>
+#include <assert.h>
 
 namespace gr {
     namespace isdbt {
@@ -35,33 +36,61 @@ namespace gr {
         const int time_deinterleaver_impl::d_total_segments = 13; 
 
         time_deinterleaver::sptr
-            time_deinterleaver::make(int mode, int length)
+            time_deinterleaver::make(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int length_C)
             {
                 return gnuradio::get_initial_sptr
-                    (new time_deinterleaver_impl(mode, length));
+                    (new time_deinterleaver_impl(mode, segments_A, length_A, segments_B, length_B, segments_C, length_C));
             }
 
         /*
          * The private constructor
          */
-        time_deinterleaver_impl::time_deinterleaver_impl(int mode, int length)
+        time_deinterleaver_impl::time_deinterleaver_impl(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int length_C)
             : gr::sync_block("time_deinterleaver",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
             //TODO the length of the interleaver may change from segment to segment. This should be corrected...
-            d_I = length; 
+            d_I_A = length_A; 
+            d_I_B = length_B; 
+            d_I_C = length_C; 
+            // I check if the total segments are what they should
+            assert(segments_A + segments_B + segments_C == d_total_segments);
+
+            d_nsegments_A = segments_A; 
+            d_nsegments_B = segments_B; 
+            d_nsegments_C = segments_C; 
+
             d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
             d_noutput = d_total_segments*d_carriers_per_segment; 
             int mi = 0;
 
-            for (int segment=0; segment<d_total_segments; segment++)
+            for (int segment=0; segment<d_nsegments_A; segment++)
             {
                 for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
                {
                     mi = (5*carrier) % d_data_carriers_mode1; 
-                    d_shift.push_back(new std::deque<gr_complex>(d_I*(d_data_carriers_mode1-1-mi),0)); 
+                    //d_shift.push_back(new std::deque<gr_complex>(d_I*(d_data_carriers_mode1-1-mi),0)); 
+                    d_shift.push_back(new boost::circular_buffer<gr_complex>(d_I_A*(d_data_carriers_mode1-1-mi)+1,0)); 
+                }
+            }
+            for (int segment=0; segment<d_nsegments_B; segment++)
+            {
+                for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
+               {
+                    mi = (5*carrier) % d_data_carriers_mode1; 
+                    //d_shift.push_back(new std::deque<gr_complex>(d_I*(d_data_carriers_mode1-1-mi),0)); 
+                    d_shift.push_back(new boost::circular_buffer<gr_complex>(d_I_B*(d_data_carriers_mode1-1-mi)+1,0)); 
+                }
+            }
+            for (int segment=0; segment<d_nsegments_C; segment++)
+            {
+                for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
+               {
+                    mi = (5*carrier) % d_data_carriers_mode1; 
+                    //d_shift.push_back(new std::deque<gr_complex>(d_I*(d_data_carriers_mode1-1-mi),0)); 
+                    d_shift.push_back(new boost::circular_buffer<gr_complex>(d_I_C*(d_data_carriers_mode1-1-mi)+1,0)); 
                 }
             }
         }
@@ -97,7 +126,7 @@ namespace gr {
                         // for each queue. 
                         d_shift[carrier]->push_back(in[i*d_noutput + carrier]);
                         out[i*d_noutput + carrier] = d_shift[carrier]->front();
-                        d_shift[carrier]->pop_front(); 
+                        //d_shift[carrier]->pop_front(); 
                     }
                 }
                 // Tell runtime system how many output items we produced.

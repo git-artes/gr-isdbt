@@ -3,21 +3,47 @@
   <key>isdbt_time_deinterleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.time_deinterleaver($mode, $length)</make>
+  <make>isdbt.time_deinterleaver($mode, $segments_A, $length_A, $segments_B, $length_B, $segments_C, $length_C)</make>
   <param>
       <name>Mode</name>
       <key>mode</key>
       <value>3</value>
       <type>int</type>
   </param>
+
   <param>
-    <name>Length</name>
-    <key>length</key>
+    <name>Layer A Segments</name>
+    <key>segments_A</key>
     <type>int</type>
   </param>
-  <check>$mode &gt; 0</check>
-  <check>$mode &lt; 4</check>
+  <param>
+    <name>Layer A Length</name>
+    <key>length_A</key>
+    <type>int</type>
+  </param>
   
+  <param>
+    <name>Layer B Segments</name>
+    <key>segments_B</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Layer B Length</name>
+    <key>length_B</key>
+    <type>int</type>
+</param>
+
+  <param>
+    <name>Layer C Segments</name>
+    <key>segments_C</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Layer C Length</name>
+    <key>length_C</key>
+    <type>int</type>
+</param>
+
   <sink>
     <name>in</name>
     <type>complex</type>
