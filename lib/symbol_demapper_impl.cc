@@ -53,7 +53,7 @@ namespace gr {
                     gr::io_signature::make(1, 1, 
                         sizeof(gr_complex) * d_total_segments *
                             d_data_carriers_mode1 * ((int)pow(2.0,mode-1))),
-                    gr::io_signature::make3(1, 3, sizeof(unsigned char) * segments_A * d_data_carriers_mode1 * ((int)pow(2.0,mode-1)), sizeof(unsigned char) * segments_B * d_data_carriers_mode1 * ((int)pow(2.0,mode-1)), sizeof(unsigned char) * segments_C * d_data_carriers_mode1 * ((int)pow(2.0,mode-1))))
+                    gr::io_signature::make3(1, 3, sizeof(unsigned char) * segments_A * d_data_carriers_mode1 * ((int)pow(2.0,mode-1)), sizeof(unsigned char) * (segments_B?segments_B:1) * d_data_carriers_mode1 * ((int)pow(2.0,mode-1)), sizeof(unsigned char) * (segments_C?segments_C:1) * d_data_carriers_mode1 * ((int)pow(2.0,mode-1))))
                         //sizeof(unsigned char) * d_total_segments * d_data_carriers_mode1 * ((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
@@ -61,6 +61,9 @@ namespace gr {
 		   	d_const_size_B = constellation_size_B;
 			d_const_size_C = constellation_size_C;	
             
+			// We check if the total segments are what the should
+			assert(segments_A + segments_B + segments_C == d_total_segments);
+
 			d_nsegments_A = segments_A;
 			d_nsegments_B = segments_B;
 			d_nsegments_C = segments_C;
@@ -97,8 +100,6 @@ namespace gr {
             d_carriers_per_segment = d_data_carriers_mode1 * 
                 ((int)pow(2.0,mode-1)); 
             
-            //It is not possible to declare an output signature with size=0. Thus, segments_* have to be
-            //bigger than zero. Thus, segments_A+segments_B+segments_C may be more than total_segments (13). 
             d_noutput = d_total_segments*d_carriers_per_segment;
 		   	d_noutput_A = segments_A*d_carriers_per_segment;
 		   	d_noutput_B = segments_B*d_carriers_per_segment;
@@ -156,10 +157,10 @@ namespace gr {
                     for (int carrier = 0; carrier<d_noutput_A; carrier++){
 						out_A[i*d_noutput_A+carrier] = (this->*find_constellation_value_lA)(in[i*d_noutput+carrier]);
 					}
-                    for (int carrier = d_noutput_A; carrier<d_noutput_A+d_noutput_B; carrier++){
+					if(out_B_connected) for (int carrier = d_noutput_A; carrier<d_noutput_A+d_noutput_B; carrier++){
 						out_B[i*d_noutput_B+carrier-d_noutput_A] = (this->*find_constellation_value_lB)(in[i*d_noutput+carrier]);
 					}
-                    for (int carrier = d_noutput_A+d_noutput_B; carrier<d_noutput; carrier++){
+                    if (out_C_connected) for (int carrier = d_noutput_A+d_noutput_B; carrier<d_noutput; carrier++){
 						out_C[i*d_noutput_C+carrier-(d_noutput_A+d_noutput_B)] = (this->*find_constellation_value_lC)(in[i*d_noutput+carrier]);
 					}
 

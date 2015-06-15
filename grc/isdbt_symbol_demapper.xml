@@ -78,8 +78,8 @@
 
   <param>
       <name>Layer C Segments</name>
-      <key>segments_C</key>
-      <value>0</value>
+	  <key>segments_C</key>
+	  <value>0</value>
       <type>int</type>
   </param>
   
