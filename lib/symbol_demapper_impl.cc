@@ -34,120 +34,8 @@ namespace gr {
         // TODO shouldn't these go somewhere else??
         const int symbol_demapper_impl::d_data_carriers_mode1 = 96; 
         const int symbol_demapper_impl::d_total_segments = 13; 
-
-        const gr_complex symbol_demapper_impl::d_constellation_qpsk[] = {
-            gr_complex(+1/sqrt(2),+1/sqrt(2)),
-            gr_complex(+1/sqrt(2),-1/sqrt(2)), 
-            gr_complex(-1/sqrt(2),+1/sqrt(2)),
-            gr_complex(-1/sqrt(2),-1/sqrt(2))
-        }; 
-        
-        const gr_complex symbol_demapper_impl::d_constellation_16qam[] = {
-            gr_complex(3/sqrt(10),3/sqrt(10)),
-            gr_complex(3/sqrt(10),1/sqrt(10)), 
-            gr_complex(1/sqrt(10),3/sqrt(10)),
-            gr_complex(1/sqrt(10),1/sqrt(10)),
-
-            gr_complex(3/sqrt(10),-3/sqrt(10)),
-            gr_complex(3/sqrt(10),-1/sqrt(10)), 
-            gr_complex(1/sqrt(10),-3/sqrt(10)),
-            gr_complex(1/sqrt(10),-1/sqrt(10)),
-
-            gr_complex(-3/sqrt(10),3/sqrt(10)),
-            gr_complex(-3/sqrt(10),1/sqrt(10)), 
-            gr_complex(-1/sqrt(10),3/sqrt(10)),
-            gr_complex(-1/sqrt(10),1/sqrt(10)),
-            
-            gr_complex(-3/sqrt(10),-3/sqrt(10)),
-            gr_complex(-3/sqrt(10),-1/sqrt(10)), 
-            gr_complex(-1/sqrt(10),-3/sqrt(10)),
-            gr_complex(-1/sqrt(10),-1/sqrt(10))
-        }; 
-        
-        const gr_complex symbol_demapper_impl::d_constellation_64qam[] = {
-            gr_complex(7/sqrt(42),7/sqrt(42)),
-            gr_complex(7/sqrt(42),5/sqrt(42)), 
-            gr_complex(5/sqrt(42),7/sqrt(42)),
-            gr_complex(5/sqrt(42),5/sqrt(42)),
-
-            gr_complex(7/sqrt(42),1/sqrt(42)),
-            gr_complex(7/sqrt(42),3/sqrt(42)), 
-            gr_complex(5/sqrt(42),1/sqrt(42)),
-            gr_complex(5/sqrt(42),3/sqrt(42)),
-
-            gr_complex(1/sqrt(42),7/sqrt(42)),
-            gr_complex(1/sqrt(42),5/sqrt(42)), 
-            gr_complex(3/sqrt(42),7/sqrt(42)),
-            gr_complex(3/sqrt(42),5/sqrt(42)),
-
-            gr_complex(1/sqrt(42),1/sqrt(42)),
-            gr_complex(1/sqrt(42),3/sqrt(42)), 
-            gr_complex(3/sqrt(42),1/sqrt(42)),
-            gr_complex(3/sqrt(42),3/sqrt(42)),
-
-            //////////////
-            gr_complex(7/sqrt(42),-7/sqrt(42)),
-            gr_complex(7/sqrt(42),-5/sqrt(42)), 
-            gr_complex(5/sqrt(42),-7/sqrt(42)),
-            gr_complex(5/sqrt(42),-5/sqrt(42)),
-
-            gr_complex(7/sqrt(42),-1/sqrt(42)),
-            gr_complex(7/sqrt(42),-3/sqrt(42)), 
-            gr_complex(5/sqrt(42),-1/sqrt(42)),
-            gr_complex(5/sqrt(42),-3/sqrt(42)),
-
-            gr_complex(1/sqrt(42),-7/sqrt(42)),
-            gr_complex(1/sqrt(42),-5/sqrt(42)), 
-            gr_complex(3/sqrt(42),-7/sqrt(42)),
-            gr_complex(3/sqrt(42),-5/sqrt(42)),
-
-            gr_complex(1/sqrt(42),-1/sqrt(42)),
-            gr_complex(1/sqrt(42),-3/sqrt(42)), 
-            gr_complex(3/sqrt(42),-1/sqrt(42)),
-            gr_complex(3/sqrt(42),-3/sqrt(42)),
-
-            //////////////
-            gr_complex(-7/sqrt(42),7/sqrt(42)),
-            gr_complex(-7/sqrt(42),5/sqrt(42)), 
-            gr_complex(-5/sqrt(42),7/sqrt(42)),
-            gr_complex(-5/sqrt(42),5/sqrt(42)),
-
-            gr_complex(-7/sqrt(42),1/sqrt(42)),
-            gr_complex(-7/sqrt(42),3/sqrt(42)), 
-            gr_complex(-5/sqrt(42),1/sqrt(42)),
-            gr_complex(-5/sqrt(42),3/sqrt(42)),
-
-            gr_complex(-1/sqrt(42),7/sqrt(42)),
-            gr_complex(-1/sqrt(42),5/sqrt(42)), 
-            gr_complex(-3/sqrt(42),7/sqrt(42)),
-            gr_complex(-3/sqrt(42),5/sqrt(42)),
-
-            gr_complex(-1/sqrt(42),1/sqrt(42)),
-            gr_complex(-1/sqrt(42),3/sqrt(42)), 
-            gr_complex(-3/sqrt(42),1/sqrt(42)),
-            gr_complex(-3/sqrt(42),3/sqrt(42)),
-
-            //////////////
-            gr_complex(-7/sqrt(42),-7/sqrt(42)),
-            gr_complex(-7/sqrt(42),-5/sqrt(42)), 
-            gr_complex(-5/sqrt(42),-7/sqrt(42)),
-            gr_complex(-5/sqrt(42),-5/sqrt(42)),
-
-            gr_complex(-7/sqrt(42),-1/sqrt(42)),
-            gr_complex(-7/sqrt(42),-3/sqrt(42)), 
-            gr_complex(-5/sqrt(42),-1/sqrt(42)),
-            gr_complex(-5/sqrt(42),-3/sqrt(42)),
-
-            gr_complex(-1/sqrt(42),-7/sqrt(42)),
-            gr_complex(-1/sqrt(42),-5/sqrt(42)), 
-            gr_complex(-3/sqrt(42),-7/sqrt(42)),
-            gr_complex(-3/sqrt(42),-5/sqrt(42)),
-
-            gr_complex(-1/sqrt(42),-1/sqrt(42)),
-            gr_complex(-1/sqrt(42),-3/sqrt(42)), 
-            gr_complex(-3/sqrt(42),-1/sqrt(42)),
-            gr_complex(-3/sqrt(42),-3/sqrt(42)),
-        }; 
+        const float symbol_demapper_impl::d_th_16qam = 2.0/sqrt(10.0); 
+        const float symbol_demapper_impl::d_th_64qam = 2.0/sqrt(42.0); 
 
         symbol_demapper::sptr
             symbol_demapper::make(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C)
@@ -177,41 +65,45 @@ namespace gr {
 			d_nsegments_B = segments_B;
 			d_nsegments_C = segments_C;
 			if (d_const_size_A==4) {
-                d_constellation_A = d_constellation_qpsk;
+                find_constellation_value_lA = &symbol_demapper_impl::find_constellation_value_qpsk; 
             } else if (d_const_size_A==16) {
-                d_constellation_A = d_constellation_16qam; 
+                find_constellation_value_lA = &symbol_demapper_impl::find_constellation_value_16qam; 
             } else if (d_const_size_A==64) {
-                d_constellation_A = d_constellation_64qam; 
+                find_constellation_value_lA = &symbol_demapper_impl::find_constellation_value_64qam; 
             } else {
             std::cout << "symbol_demapper: error in d_const_size_A\n"; 
             }
 
             if (d_const_size_B==4) {
-	            d_constellation_B = d_constellation_qpsk;
+                find_constellation_value_lB = &symbol_demapper_impl::find_constellation_value_qpsk; 
 	        } else if (d_const_size_B==16) {
-		        d_constellation_B = d_constellation_16qam;
+                find_constellation_value_lB = &symbol_demapper_impl::find_constellation_value_16qam; 
 		    } else if (d_const_size_B==64) {
-		    	d_constellation_B = d_constellation_64qam;
+                find_constellation_value_lB = &symbol_demapper_impl::find_constellation_value_64qam; 
 			} else {
 				std::cout << "symbol_demapper: error in d_const_size_B\n";
 			}
 
             if (d_const_size_C == 4) {
-		    	d_constellation_C = d_constellation_qpsk;
+                find_constellation_value_lC = &symbol_demapper_impl::find_constellation_value_qpsk; 
 			} else if (d_const_size_C == 16) {
-				d_constellation_C = d_constellation_16qam;
+                find_constellation_value_lC = &symbol_demapper_impl::find_constellation_value_16qam; 
 			} else if (d_const_size_C == 64) {
-				d_constellation_C = d_constellation_64qam;
+                find_constellation_value_lC = &symbol_demapper_impl::find_constellation_value_64qam; 
 			} else {
 				std::cout << "symbol_demapper: error in d_const_size_C\n";
 			}
 
             d_carriers_per_segment = d_data_carriers_mode1 * 
                 ((int)pow(2.0,mode-1)); 
+            
+            //It is not possible to declare an output signature with size=0. Thus, segments_* have to be
+            //bigger than zero. Thus, segments_A+segments_B+segments_C may be more than total_segments (13). 
             d_noutput = d_total_segments*d_carriers_per_segment;
 		   	d_noutput_A = segments_A*d_carriers_per_segment;
 		   	d_noutput_B = segments_B*d_carriers_per_segment;
 		   	d_noutput_C = segments_C*d_carriers_per_segment;
+
 	
             
         }
@@ -223,63 +115,25 @@ namespace gr {
         {
         }
 
-        int 
-            symbol_demapper_impl::find_constellation_value_A(gr_complex val)
+        unsigned int 
+            symbol_demapper_impl::find_constellation_value_qpsk(gr_complex val)
             {
-                float min_dist = std::norm(val - d_constellation_A[0]);
-                int min_index = 0;
-
-                for (int i = 0; i < d_const_size_A; i++)
-                {
-                    float dist = std::norm(val - d_constellation_A[i]);
-                    if (dist < min_dist)
-                    {
-                        min_dist = dist;
-                        min_index = i;
-                    }
-                }
-
-                return min_index;
+                return (val.real()<0)<<1 | (val.imag()<0); 
             }
 
+        unsigned int 
+            symbol_demapper_impl::find_constellation_value_16qam(gr_complex val)
+            {
+                return ((val.real()<0)<<3) | ((val.real()<d_th_16qam & val.real()>-d_th_16qam)<<1) | ((val.imag()<0)<<2) | ((val.imag()<d_th_16qam & val.imag()>-d_th_16qam)); 
 
+            }
 
-        int
-			symbol_demapper_impl::find_constellation_value_B(gr_complex val)
-			{
-				float min_dist = std::norm(val - d_constellation_B[0]);
-				int min_index = 0;
-
-				for (int i = 0; i < d_const_size_B; i++)
-				{
-					float dist = std::norm(val - d_constellation_B[i]);
-					if (dist < min_dist)
-					{
-						min_dist = dist;
-						min_index = i;
-					}
-				}
-			return min_index;
-			
-			}
-
-        int
-			symbol_demapper_impl::find_constellation_value_C(gr_complex val)
-			{
-				float min_dist = std::norm(val - d_constellation_C[0]);
-				int min_index = 0;
-
-				for (int i = 0; i < d_const_size_C; i++)
-				{
-					float dist = std::norm(val - d_constellation_C[i]);
-					if (dist < min_dist)
-					{
-							min_dist = dist;
-							min_index = i;
-					}
-				}
-			return min_index;				
-			}
+        unsigned int 
+            symbol_demapper_impl::find_constellation_value_64qam(gr_complex val)
+            {
+                return ((val.real()<0)<<5) | ((val.real()<2*d_th_64qam & val.real()>-2*d_th_64qam)<<3) | (( (val.real()>d_th_64qam & val.real()<3*d_th_64qam)|(val.real()<-d_th_64qam & val.real()>-3*d_th_64qam) )<<1) \
+                    | ((val.imag()<0)<<4) | ((val.imag()<2*d_th_64qam & val.imag()>-2*d_th_64qam)<<2) | (( (val.imag()>d_th_64qam & val.imag()<3*d_th_64qam)|(val.imag()<-d_th_64qam & val.imag()>-3*d_th_64qam) )) ; 
+            }
 
         int
             symbol_demapper_impl::work(int noutput_items,
@@ -287,7 +141,6 @@ namespace gr {
                     gr_vector_void_star &output_items)
             {
                 const gr_complex *in = (const gr_complex *) input_items[0];
-                //unsigned char *out = (unsigned char *) output_items[0];
 				unsigned char *out_A = (unsigned char *) output_items[0];
 				unsigned char *out_B = (unsigned char *) output_items[1];
 				unsigned char *out_C = (unsigned char *) output_items[2];
@@ -300,29 +153,16 @@ namespace gr {
 				//printf("---SYMBOL DEMAPPER-> noutput_items = %d\n",noutput_items);
 				for (int i = 0; i < noutput_items; i++)
                 {
-					a = 0;
-					b = 0;
-					c = 0;	
-                    for (int carrier = 0; carrier<d_noutput; carrier++){
-                        // leave it like this for now to easily accomodate the 
-                        // per-segment constellation possibility later on. 
-                        if (carrier< d_nsegments_A*d_carriers_per_segment){ 
-								out_A[i*d_noutput_A+a] = find_constellation_value_A(in[i*d_noutput+carrier]);
-								a++;
-								//printf("carrier A = %d\t value A = %d\n", carrier, find_constellation_value_A(in[i*d_noutput+carrier]));
-						}
-						else if ((carrier< (d_nsegments_A + d_nsegments_B)*d_carriers_per_segment)&&(out_B_connected)){
-                                out_B[i*d_noutput_B+b] = find_constellation_value_B(in[i*d_noutput+carrier]);
-								b++;
-								//printf("carrier B = %d\n", carrier);
-						}
-						else if ((carrier< (d_nsegments_A + d_nsegments_B + d_nsegments_C)*d_carriers_per_segment)&&(out_C_connected)){
-                                out_C[i*d_noutput_C+c] = find_constellation_value_C(in[i*d_noutput+carrier]);
-								c++;
-								//printf("carrier C = %d\n", carrier);
-						}
+                    for (int carrier = 0; carrier<d_noutput_A; carrier++){
+						out_A[i*d_noutput_A+carrier] = (this->*find_constellation_value_lA)(in[i*d_noutput+carrier]);
+					}
+                    for (int carrier = d_noutput_A; carrier<d_noutput_A+d_noutput_B; carrier++){
+						out_B[i*d_noutput_B+carrier-d_noutput_A] = (this->*find_constellation_value_lB)(in[i*d_noutput+carrier]);
+					}
+                    for (int carrier = d_noutput_A+d_noutput_B; carrier<d_noutput; carrier++){
+						out_C[i*d_noutput_C+carrier-(d_noutput_A+d_noutput_B)] = (this->*find_constellation_value_lC)(in[i*d_noutput+carrier]);
+					}
 
-                    }
                 }
 
                 // Tell runtime system how many output items we produced.

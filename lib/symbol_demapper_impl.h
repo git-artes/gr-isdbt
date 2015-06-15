@@ -33,9 +33,8 @@ namespace gr {
                 static const int d_data_carriers_mode1; 
                 static const int d_total_segments; 
 
-                static const gr_complex d_constellation_qpsk[]; 
-                static const gr_complex d_constellation_16qam[]; 
-                static const gr_complex d_constellation_64qam[]; 
+                static const float d_th_16qam; 
+                static const float d_th_64qam; 
 
                 int d_mode; 
                 int d_const_size_A;
@@ -44,18 +43,21 @@ namespace gr {
 				int d_nsegments_A;
 				int d_nsegments_B;
 				int d_nsegments_C;	
-                const gr_complex * d_constellation_A;
-			    const gr_complex * d_constellation_B;
-				const gr_complex * d_constellation_C;	
+
+                //Pointers to the functions that finds the bit-word given the complex symbol. 
+                unsigned int (symbol_demapper_impl::*find_constellation_value_lA)(gr_complex val); 
+                unsigned int (symbol_demapper_impl::*find_constellation_value_lB)(gr_complex val); 
+                unsigned int (symbol_demapper_impl::*find_constellation_value_lC)(gr_complex val); 
+
                 int d_carriers_per_segment; 
                 int d_noutput; 
                 int d_noutput_A; 
                 int d_noutput_B; 
                 int d_noutput_C; 
                 
-                int find_constellation_value_A(gr_complex val);
-			    int	find_constellation_value_B(gr_complex val);
-				int find_constellation_value_C(gr_complex val);
+                unsigned int find_constellation_value_qpsk(gr_complex val);
+				unsigned int find_constellation_value_16qam(gr_complex val);
+				unsigned int find_constellation_value_64qam(gr_complex val);
             public:
                 symbol_demapper_impl(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C);
                 ~symbol_demapper_impl();

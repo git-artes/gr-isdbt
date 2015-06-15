@@ -278,10 +278,11 @@ namespace gr {
                                         out[out_count] = c;
                                         //if (out[out_count]==0x47)
                                          //  printf("out[%i]: %x\n", out_count, out[out_count]);
-                                        if(ber_out_connected){
+                                        if(ber_out_connected)
+                                        {
                                                 ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
-                                                if(ber_out[out_count]<0)
-                                                    printf("correct_bits: %i\n", correct_bits); 
+                                                //printf("ber_out-pre=%f\n",ber_out[out_count]); 
+
                                         }
                                     }
 
