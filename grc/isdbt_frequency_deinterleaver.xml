@@ -19,13 +19,23 @@
       </option>
   </param>
   <param>
-      <name>Mode</name>
-      <key>mode</key>
-      <value>3</value>
-      <type>int</type>
+      <name>Transmission Mode</name>
+	  <key>mode</key>
+	  <value>3</value>
+	  <type>enum</type>
+      <option>
+	    <name>MODE1(2K)</name>
+	    <key>1</key>
+      </option>
+	  <option>
+	    <name>MODE2(4K)</name>
+	    <key>2</key>
+	  </option>
+	  <option>
+	    <name>MODE3(8K)</name>
+	    <key>3</key>
+	  </option>
   </param>
-  <check>$mode &gt; 0</check>
-  <check>$mode &lt; 4</check>
 
   <sink>
       <name>in</name>

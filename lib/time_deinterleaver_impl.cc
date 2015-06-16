@@ -25,7 +25,6 @@
 #include <gnuradio/io_signature.h>
 #include "time_deinterleaver_impl.h"
 #include <stdio.h>
-#include <assert.h>
 
 namespace gr {
     namespace isdbt {
@@ -51,12 +50,12 @@ namespace gr {
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
         {
             d_mode = mode; 
-            //TODO the length of the interleaver may change from segment to segment. This should be corrected...
             d_I_A = length_A; 
             d_I_B = length_B; 
             d_I_C = length_C; 
+
             // I check if the total segments are what they should
-            assert(segments_A + segments_B + segments_C == d_total_segments);
+            assert((segments_A + segments_B + segments_C) == d_total_segments);
 
             d_nsegments_A = segments_A; 
             d_nsegments_B = segments_B; 
