@@ -121,6 +121,7 @@ namespace gr {
                     {
                         // the reed-solomon decoder has given up on correcting the TS, and is outputting the input. 
                         // In order to generate a useable TS, we will not ouput these TSP.  
+                        printf("RS: impossible to correct\n");
                         consume_each(i+1); 
                         return i; 
                     }
@@ -140,7 +141,7 @@ namespace gr {
                                 //    printf("out: %x; in: %x; total_bit_errors: %i; error: %x\n", out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
                             }
                             ber_out[i] = total_bit_errors/(float)(out_bsize*8.0); 
-                            ber_out[i*noutput_items] = 0.5; 
+                            //ber_out[i*noutput_items] = 0.5; 
                         //printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 
                     }
 

@@ -117,8 +117,8 @@ namespace gr {
             set_relative_rate((d_k * d_m) / (8 * d_n));
 
             // block size in bits. See below
-            d_bsize = 204*8/d_k; 
-            //d_bsize = 204*8; 
+            //d_bsize = 204*8/d_k; 
+            d_bsize = 204*8; 
             assert ((d_bsize * d_n) % d_m == 0);
             // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
             // thus equivalent to d_bsize*d_k bits.  
