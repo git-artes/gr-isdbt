@@ -27,7 +27,6 @@
   <param>
       <name>Layer A Segments</name>
       <key>segments_A</key>
-      <value>1</value>
       <type>int</type>
   </param>
 
@@ -53,7 +52,6 @@
   <param>
       <name>Layer B Segments</name>
       <key>segments_B</key>
-      <value>12</value>
       <type>int</type>
   </param>
 
@@ -79,7 +77,6 @@
   <param>
       <name>Layer C Segments</name>
 	  <key>segments_C</key>
-	  <value>0</value>
       <type>int</type>
   </param>
   
@@ -101,6 +98,11 @@
 	    <key>64</key>
 	  </option>
   </param>
+  
+<check>$segments_A + $segments_B + $segments_C == 13</check>
+<check>$segments_A &gt; -1</check>
+<check>$segments_B &gt; -1</check>
+<check>$segments_C &gt; -1</check>
 
   <sink>
     <name>in</name>
