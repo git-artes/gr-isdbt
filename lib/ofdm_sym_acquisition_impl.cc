@@ -383,6 +383,7 @@ namespace gr {
 
       const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
+      set_output_multiple ( 4 );
 
       const int alignment = volk_get_alignment();
 
@@ -498,7 +499,7 @@ namespace gr {
             // TODO - make a FSM
             if (!d_initial_aquisition)
             {
-              d_initial_aquisition = ml_sync(&in[i*d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+              d_initial_aquisition = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                   &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
 
               d_extended_range = 0;
@@ -513,11 +514,11 @@ namespace gr {
             // It is also calle coarse frequency correction
             if (d_initial_aquisition)
             {
-              d_cp_found = ml_sync(&in[i*d_consumed], d_cp_start + 8, d_cp_start - 8, \
+              d_cp_found = ml_sync(&in[d_consumed], d_cp_start + 8, d_cp_start - 8, \
                   &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
               if ( !d_cp_found )
                {
-                    d_cp_found = ml_sync(&in[i*d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                    d_cp_found = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                         &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
                     d_extended_range++;
                     send_sync_start(); 
@@ -539,7 +540,7 @@ namespace gr {
 
                 // Derotate the signal and out
     #ifdef USE_VOLK
-                low = i * d_consumed + d_cp_start - d_fft_length + 1;
+                low = d_consumed + d_cp_start - d_fft_length + 1;
                 size = d_cp_start - (d_cp_start - d_fft_length + 1) + 1;
                 PRINTF( "derotate: low: %i, size: %i\n", low, size );
 
@@ -578,6 +579,16 @@ namespace gr {
                   // Restart wit a half number so that we'll not endup with the same situation
                   // This will prevent peak_detect to not detect anything
                   d_to_consume = d_to_consume / 2;
+
+                  // bye!
+                  d_consumed += d_to_consume;
+                  consume_each(d_consumed);
+
+                  PRINTF("restart! d_consumed: %i, d_out: %i\n", d_consumed, d_out);
+                  if ( d_out != 1 )
+                    PRINTF("restart! ------------------------------------------ d_to_out: %i\n", d_out);
+                  // Tell runtime system how many output items we produced.
+                  return (d_out);
                 }
               }
             }
