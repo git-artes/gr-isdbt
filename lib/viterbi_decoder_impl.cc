@@ -58,7 +58,7 @@ namespace gr {
         viterbi_decoder_impl::viterbi_decoder_impl(int constellation_size, int rate)
             : gr::block("viterbi_decoder",
                     gr::io_signature::make(1, 1, sizeof(unsigned char)),
-                    gr::io_signature::make(1, 1, sizeof(unsigned char)))
+                    gr::io_signature::make2(1, 2, sizeof(unsigned char), sizeof(float)))
         {
             
 			// d_k: the input of the encoder
@@ -117,7 +117,8 @@ namespace gr {
             set_relative_rate((d_k * d_m) / (8 * d_n));
 
             // block size in bits. See below
-            d_bsize = 204*8/d_k; 
+            //d_bsize = 204*8/d_k; 
+            d_bsize = 204*8; 
             assert ((d_bsize * d_n) % d_m == 0);
             // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
             // thus equivalent to d_bsize*d_k bits.  
@@ -187,7 +188,10 @@ namespace gr {
                 int nblocks = 8 * noutput_items / (d_bsize * d_k);
                 int out_count = 0;
                
-			   if (d_m==2) printf("d_m=%d\tnstreams = %d\tnoutput_items Viterbi =%d\n",d_m,nstreams,noutput_items);	
+                float *ber_out = (float *)output_items[1]; 
+                bool ber_out_connected = output_items.size()>=2; 
+			   
+                //if (d_m==2) printf("d_m=%d\tnstreams = %d\tnoutput_items Viterbi =%d\n",d_m,nstreams,noutput_items);	
 
                 //gettimeofday(&tvs, &tzs);
 
@@ -271,7 +275,7 @@ namespace gr {
                                 {
                                     unsigned char c;
 
-                                    d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
+                                    int correct_bits = d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
                                     //d_viterbi_get_output(state0, &c);
 
                                     if (d_init == 0)
@@ -280,6 +284,11 @@ namespace gr {
                                         {
                                             out[out_count - d_ntraceback] = c;
                                             //printf("out_init[%i]: %x\n", out_count - d_ntraceback, out[out_count - d_ntraceback]);
+                                            if(ber_out_connected){
+                                                ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                if(ber_out[out_count-d_ntraceback]<0)
+                                                    printf("correct_bits: %i\n", correct_bits); 
+                                            }
                                         }
                                     }
                                     else
@@ -287,6 +296,11 @@ namespace gr {
                                         out[out_count] = c;
                                         //if (out[out_count]==0x47)
                                          //  printf("out[%i]: %x\n", out_count, out[out_count]);
+                                        if(ber_out_connected)
+                                        {
+                                                ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                //printf("ber_out-pre=%f\n",ber_out[out_count]); 
+                                        }
                                     }
 
                                     out_count++;
