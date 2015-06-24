@@ -32,10 +32,10 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def test_001_t (self):
-        # set up fg
-        self.tb.run ()
-        # check data
+##    def test_001_t (self):
+##        # set up fg
+##        self.tb.run ()
+##        # check data
 
     def generate_random_symbol(self, symbol_length, cp_length):
         '''Generates a random OFDM symbol (a random complex vector of length symbol_length) and then 
@@ -50,10 +50,9 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
 
     def test_ofdm_symbol_aquisition_1 (self):
 
-
         mode = 3
         total_carriers = 2**(10+mode)
-        cp_len = 1/8.0
+        cp_len = 1/16.0
 
         sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))

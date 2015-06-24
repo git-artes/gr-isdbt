@@ -96,7 +96,7 @@ namespace gr {
         else
          {
             peak_pos_length = 0; 
-            printf("peak under/over average! peak %f, avg %f\n", datain[ peak_index ], d_avg );
+            PRINTF("peak under/over average! peak %f, avg %f\n", datain[ peak_index ], d_avg );
          }
                 
         //si el máximo está en un extremo, quiere decir que no estoy en el medio del pico y hay que hacer una búsqueda exhaustiva.           
@@ -105,7 +105,7 @@ namespace gr {
             if ( ( peak_index == 0 ) || ( peak_index == datain_length-1 ) )
             {
                 peak_pos_length = 0;
-                printf("peak_index border! %d, datain_length %d\n", peak_index, datain_length );
+                PRINTF("peak_index border! %i, datain_length %i\n", peak_index, datain_length );
 #if 0
                 // Print lambda
                 for (int i = 0; i < datain_length; i++)
@@ -137,6 +137,7 @@ namespace gr {
 
       int low, size;
 
+      PRINTF( "ml_sync: in: %p, start: %i, stop: %i, start-stop: %i\n", in, lookup_start, lookup_stop, lookup_start-lookup_stop );
       // Array to store peak positions
       int peak_pos[d_fft_length];
       float d_phi[d_fft_length];
@@ -376,9 +377,9 @@ namespace gr {
       d_snr = pow(10, d_snr / 10.0);
       d_rho = d_snr / (d_snr + 1.0);
 
-      printf("OFDM sym acq: fft_length: %i\n", fft_length);
+      PRINTF("OFDM sym acq: fft_length: %i\n", fft_length);
 //      printf("OFDM sym acq: occupied_tones: %i\n", occupied_tones);
-      printf("OFDM sym acq: SNR: %f\n", d_snr);
+      PRINTF("OFDM sym acq: SNR: %f\n", d_snr);
 
       const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
@@ -447,12 +448,14 @@ namespace gr {
       free(d_norm);
       free(d_corr);
 #else
+        PRINTF( "to delete...");
       delete [] d_gamma;
       delete [] d_lambda;
       delete [] d_derot;
       delete [] d_conj;
       delete [] d_norm;
       delete [] d_corr;
+        PRINTF( "done\n");
 #endif
     }
 
@@ -463,7 +466,8 @@ namespace gr {
 
       // make sure we receive at least (symbol_length + fft_length)
       for (int i = 0; i < ninputs; i++)
-        ninput_items_required[i] = (2 * d_fft_length + d_cp_length) * noutput_items;
+        // ninput_items_required[i] = (2 * d_fft_length + d_cp_length) * noutput_items;
+        ninput_items_required[i] = ( d_cp_length + d_fft_length ) * (noutput_items + 1) ;
     }
 
     /*
@@ -483,15 +487,18 @@ namespace gr {
         float *freq_error_out = (float *) output_items[1];
         bool freq_error_out_connected = output_items.size()>=2; 
 
-        //printf("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
+        PRINTF("OFDM_SYM: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
         int low, size;
 
-        for (int i = 0; i < noutput_items; i++) {
+        d_consumed = 0;
+        d_out = 0;
+
+        for (int i = 0; i < noutput_items ; i++) {
             // This is initial aquisition of symbol start
             // TODO - make a FSM
             if (!d_initial_aquisition)
             {
-              d_initial_aquisition = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+              d_initial_aquisition = ml_sync(&in[i*d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                   &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
 
               d_extended_range = 0;
@@ -506,45 +513,46 @@ namespace gr {
             // It is also calle coarse frequency correction
             if (d_initial_aquisition)
             {
-              d_cp_found = ml_sync(in, d_cp_start + 8, d_cp_start - 8, \
+              d_cp_found = ml_sync(&in[i*d_consumed], d_cp_start + 8, d_cp_start - 8, \
                   &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
               if ( !d_cp_found )
                {
-                    PRINTF("short_acq -1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
-                    d_cp_found = ml_sync(in, 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                    d_cp_found = ml_sync(&in[i*d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                         &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out );
-                    PRINTF("short_acq +1 : %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
                     d_extended_range++;
                     send_sync_start(); 
-
                }
               else{
                     d_extended_range = 0;
               }
 
-              // PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
+              PRINTF("short_acq: %i, d_cp_start: %i, d_to_consume: %i, d_to_out: %i\n", d_cp_found, d_cp_start, d_to_consume, d_to_out);
               if ( d_extended_range > 2 )
                 {
                     d_extended_range = 0;
                     d_cp_found = 0;
                 }
 
-              if (d_cp_found )
+              if ( d_cp_found )
               {
                 d_freq_correction_count = 0;
 
                 // Derotate the signal and out
     #ifdef USE_VOLK
-                low = d_cp_start - d_fft_length + 1;
+                low = i * d_consumed + d_cp_start - d_fft_length + 1;
                 size = d_cp_start - (d_cp_start - d_fft_length + 1) + 1;
+                PRINTF( "derotate: low: %i, size: %i\n", low, size );
 
                 if(is_unaligned())
-                  volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+                  //volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+                  volk_32fc_x2_multiply_32fc_u(&out[i*size], &d_derot[0], &in[low], size);
                 else
                   //volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
-                  volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+                  // volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
+                  volk_32fc_x2_multiply_32fc_u(&out[i*size], &d_derot[0], &in[low], size);
                   // TODO - fix the alignment
     #else
+    // BROKEN!! GG need to use noutput_items
                 int j = 0;
                 for (int i = (d_cp_start - d_fft_length + 1); i <= d_cp_start; i++)
                 {
@@ -565,7 +573,7 @@ namespace gr {
                   d_initial_aquisition = 0;
                   d_freq_correction_count = 0;
 
-                  printf("restart aquisition\n");
+                  PRINTF("restart aquisition\n");
 
                   // Restart wit a half number so that we'll not endup with the same situation
                   // This will prevent peak_detect to not detect anything
@@ -573,16 +581,19 @@ namespace gr {
                 }
               }
             }
+            d_consumed += d_to_consume;
+            d_out += d_to_out;
          }
 
         // Tell runtime system how many input items we consumed on
         // each input stream.
-        consume_each(d_to_consume);
+        consume_each(d_consumed);
 
-        if ( d_to_out != 1 )
-          printf("------------------------------------------ d_to_out: %i\n", d_to_out);
+        PRINTF("d_consumed: %i, d_out: %i\n", d_consumed, d_out);
+        if ( d_out != 1 )
+          PRINTF("------------------------------------------ d_to_out: %i\n", d_out);
         // Tell runtime system how many output items we produced.
-        return (d_to_out);
+        return (d_out);
     }
 
   } /* namespace isdbt */

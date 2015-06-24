@@ -71,6 +71,8 @@ namespace gr {
       gr_complex * d_derot;
       int d_to_consume;
       int d_to_out;
+      int d_consumed;
+      int d_out;
       int d_cp_start_tmp;
       gr_complex * d_derot_tmp;
       int d_to_consume_tmp;
