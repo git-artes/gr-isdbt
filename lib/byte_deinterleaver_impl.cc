@@ -106,14 +106,18 @@ namespace gr {
                 const uint64_t nread = this->nitems_read(0); //number of items read on port 0
                 this->get_tags_in_range(tags, 0, nread, nread + (noutput_items * d_TSP_SIZE), pmt::string_to_symbol("frame_begin"));
                 //printf("tags.size(): %i \n", tags.size()) ; 
+                
+                int d_to_out = noutput_items; 
+                int d_to_consume = d_TSP_SIZE*noutput_items; 
 
                 if (tags.size())
                 {
                     if (tags[0].offset - nread)
                     {
-                        //printf("salió del deinterleaver sin generar salidas: %i\n", tags[0].offset-nread); 
-                        consume_each(tags[0].offset - nread);
-                        return (0);
+                        //consume_each(tags[0].offset - nread);
+                        //return (0);
+                        d_to_consume = tags[0].offset - nread; 
+                        d_to_out = d_to_consume/d_TSP_SIZE;
                     }
                     else 
                     {
@@ -132,7 +136,7 @@ namespace gr {
                 //PRINTF("DEINTERLEAVER: noutput_items: %i\n", noutput_items);
 
                 int index_out = 0; 
-                for (int i = 0; i < noutput_items; i++)
+                for (int i = 0; i < d_to_out; i++)
                 {
                     for (int byte_index = 0; byte_index<d_TSP_SIZE; byte_index++)
                     {
@@ -150,10 +154,10 @@ namespace gr {
 
                 // Tell runtime system how many input items we consumed on
                 // each input stream.
-                consume_each(d_TSP_SIZE*noutput_items);
+                consume_each(d_to_consume);
 
                 // Tell runtime system how many output items we produced.
-                return (noutput_items);
+                return (d_to_out);
             }
 
     } /* namespace isdbt */

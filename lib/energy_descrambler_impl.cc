@@ -98,7 +98,8 @@ namespace gr {
                 const unsigned char *in = (const unsigned char *) input_items[0];
                 unsigned char *out = (unsigned char *) output_items[0];
 
-                int to_consume, to_out;
+                int to_consume = noutput_items; 
+                int to_out = noutput_items;
 
                 //printf("ENERGY: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
 
@@ -111,16 +112,21 @@ namespace gr {
                 if (tags.size())
                 {
                     //std::cout << "ENERGY DESCRAMBLER: "<< tags[0].value <<std::endl ; 
-                    init_prbs();
                     if (tags[0].offset - nread)
                     {
-                        consume_each(tags[0].offset - nread);
-                        return (0);
+                        //consume_each(tags[0].offset - nread);
+                        //return (0);
+                        to_consume = tags[0].offset - nread; 
+                        to_out = to_consume; 
+                    }
+                    else 
+                    {
+                        init_prbs();
                     }
                 }
 
 				//printf("--- ENERGY DESCRAMBLER-> noutput_items = %d\n",noutput_items);
-                for (int i = 0; i < noutput_items; i++)
+                for (int i = 0; i < to_out; i++)
                 {
                     
                     // The sync byte should be taken from the end and put in the beginning. 
@@ -142,10 +148,10 @@ namespace gr {
 
 
                 // Tell runtime how many input items we consumed
-                consume_each(noutput_items);
+                consume_each(to_consume);
 
                 // Tell runtime system how many output items we produced.
-                return (noutput_items);
+                return (to_out);
             }
 
     } /* namespace isdbt */
