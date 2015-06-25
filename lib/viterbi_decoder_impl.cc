@@ -118,13 +118,15 @@ namespace gr {
 
             // block size in bits. See below
             //d_bsize = 204*8/d_k; 
-            d_bsize = 204*8; 
-            assert ((d_bsize * d_n) % d_m == 0);
-            // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
+            d_bsize = 24;
+
+            assert((d_bsize * d_n) % d_m == 0);
+            assert((d_bsize * d_k) % 8 == 0);
+
+			// I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
             // thus equivalent to d_bsize*d_k bits.  
             set_output_multiple (d_bsize * d_k / 8);
             // in this case I output by chunks of 204 bytes. 
-
             /*
              * Calculate process variables:
              * Number of symbols (d_m bits) in all blocks
