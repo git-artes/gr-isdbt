@@ -277,43 +277,197 @@ namespace gr {
             }
 
         /*
-         * Basically a function that interprets the TMCC bits (in the form of a deque<char>)
+         * Basically a bunch of functions that interprets the TMCC bits (in the form of a deque<char>)
          * and prints its content. 
          */
+
+		void 
+			tmcc_decoder_impl::print_modulation_scheme(modulation_scheme_t modulation_scheme){
+               
+				printf("Carrier Modulation Scheme\t\t\t: ");
+				switch (modulation_scheme){
+				
+					case QPSK:
+						printf("QPSK\n");
+						break;
+					case QAM16:
+						printf("16QAM\n");
+						break;
+					case QAM64:
+						printf("64QAM\n");
+						break;
+					case M_UNUSED:
+						printf("UNUSED\n");
+						break;
+					default:
+						printf("--ERROR: something went wrong while decoding the Carrier Modulation Sheme.\n");
+				}
+			
+			}
+		void 
+			tmcc_decoder_impl::print_convolutional_code(convolutional_code_t convolutional_code){
+			
+				printf("Convolutional Code Rate\t\t\t: ");
+				switch(convolutional_code){
+				
+					case RATE_1_2:
+						printf("1/2\n");
+						break;
+					case RATE_2_3:
+						printf("2/3\n");
+						break;
+					case RATE_3_4:
+						printf("3/4\n");
+						break;
+					case RATE_5_6:
+						printf("5/6\n");
+						break;
+					case RATE_7_8:
+						printf("7/8\n");
+						break;
+					case C_UNUSED:
+						printf("UNUSED\n");
+						break;
+					default:
+						printf("--ERROR: something went wrong while decoding the Convolutioanl Code Rate\n");	
+				
+				}
+			
+			}
+		void 
+			tmcc_decoder_impl::print_interleaving_length(interleaving_length_t interleaving_length){
+			
+				printf("Time Interleaving Length\t\t\t: ");
+				switch(interleaving_length){
+				
+					case I_0_0_0:
+						printf("0(mode 1), 0(mode 2), 0(mode 3)\n");
+						break;
+					case I_4_2_1:
+						printf("4(mode 1), 2(mode 2), 1(mode 3)\n");
+						break;
+					case I_8_4_2:
+						printf("8(mode 1), 4(mode 2), 2(mode 3)\n");
+						break;
+					case I_16_8_4:
+						printf("16(mode 1), 8(mode 2), 4(mode 3)\n");
+						break;
+					case I_UNUSED:
+						printf("UNUSED\n");
+						break;
+					default:
+						printf("--ERROR: something went wrong while decoding the Time Interleaving Length\n");
+				}
+			
+			}
+
+		void 
+			tmcc_decoder_impl::print_number_segments(number_segments_t number_segments){
+			
+				printf("Number of segments for this layer\t: ");
+				switch(number_segments){
+				
+					case SEG_1:
+						printf("1\n");
+						break;
+					case SEG_2:
+						printf("2\n");
+						break;
+					case SEG_3:
+						printf("3\n");
+						break;
+					case SEG_4:
+						printf("4\n");
+						break;
+					case SEG_5:
+						printf("5\n");
+						break;
+					case SEG_6:
+						printf("6\n");
+						break;
+					case SEG_7:
+						printf("7\n");
+						break;
+					case SEG_8:
+						printf("8\n");
+						break;
+					case SEG_9:
+						printf("9\n");
+						break;
+					case SEG_10:
+						printf("10\n");
+						break;
+					case SEG_11:
+						printf("11\n");
+						break;
+					case SEG_12:
+						printf("12\n");
+						break;
+					case SEG_13:
+						printf("13\n");
+						break;
+					case S_UNUSED:
+						printf("UNUSED\n");
+						break;
+					default:
+						printf("--ERROR: something went wrong while decoding the Number of Segments for this layer\n");
+				}
+			
+			}
         int
             tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
+				               				
+				/*We get the modulation scheme information for each layer*/
+				modulation_scheme_t modulation_scheme_A, modulation_scheme_B, modulation_scheme_C;
 
-                printf("** TMCC ANALYSIS **\n\n");
-                printf("Partial recepcion			: %d\n\n", d_rcv_tmcc_data[27]);
-                printf(">> Layer A\n\n\
-                        Carrier Modulation Scheme	: %d%d%d\n\
-                        Convolutional Coding Rate	: %d%d%d\n\
-                        Interleaving Length			: %d%d%d\n\
-                        Number of Segments		: %d%d%d%d\n\n",\
-                        d_rcv_tmcc_data[28], d_rcv_tmcc_data[29],d_rcv_tmcc_data[30],\
-                        d_rcv_tmcc_data[31],d_rcv_tmcc_data[32],d_rcv_tmcc_data[33],\
-                        d_rcv_tmcc_data[34],d_rcv_tmcc_data[35],d_rcv_tmcc_data[36],\
-                        d_rcv_tmcc_data[37],d_rcv_tmcc_data[38],d_rcv_tmcc_data[39],d_rcv_tmcc_data[40]);
+				modulation_scheme_A = (modulation_scheme_t) ((d_rcv_tmcc_data[28]<<2) | (d_rcv_tmcc_data[29]<<1)| (d_rcv_tmcc_data[30]));
+				modulation_scheme_B = (modulation_scheme_t) ((d_rcv_tmcc_data[41]<<2) | (d_rcv_tmcc_data[42]<<1)| (d_rcv_tmcc_data[43]));
+				modulation_scheme_C = (modulation_scheme_t) ((d_rcv_tmcc_data[54]<<2) | (d_rcv_tmcc_data[55]<<1)| (d_rcv_tmcc_data[56]));
 
-                printf(">> Layer B\n\n\
-                        Carrier Modulation Scheme	: %d%d%d\n\
-                        Convolutional Coding Rate	: %d%d%d\n\
-                        Interleaving Length			: %d%d%d\n\
-                        Number of Segments		: %d%d%d%d\n\n",\
-                        d_rcv_tmcc_data[41], d_rcv_tmcc_data[42],d_rcv_tmcc_data[43],\
-                        d_rcv_tmcc_data[44],d_rcv_tmcc_data[45],d_rcv_tmcc_data[46], \
-                        d_rcv_tmcc_data[47],d_rcv_tmcc_data[48],d_rcv_tmcc_data[49],\
-                        d_rcv_tmcc_data[50],d_rcv_tmcc_data[51],d_rcv_tmcc_data[52],d_rcv_tmcc_data[53]);
+				/*We get the convolutional code rate information for each layer*/
+				convolutional_code_t convolutional_code_A, convolutional_code_B, convolutional_code_C;
 
-                printf(">> Layer C\n\n\
-                        Carrier Modulation Scheme	: %d%d%d\n\
-                        Convolutional Coding Rate	: %d%d%d\n\
-                        Interleaving Length			: %d%d%d\n\
-                        Number of Segments		: %d%d%d%d\n\n",\
-                        d_rcv_tmcc_data[54], d_rcv_tmcc_data[55],d_rcv_tmcc_data[56],\
-                        d_rcv_tmcc_data[57],d_rcv_tmcc_data[58],d_rcv_tmcc_data[59],\
-                        d_rcv_tmcc_data[60],d_rcv_tmcc_data[61],d_rcv_tmcc_data[62],\
-                        d_rcv_tmcc_data[63],d_rcv_tmcc_data[64],d_rcv_tmcc_data[65],d_rcv_tmcc_data[66]);
+				convolutional_code_A = (convolutional_code_t) ((d_rcv_tmcc_data[31]<<2) | (d_rcv_tmcc_data[32]<<1) | d_rcv_tmcc_data[33] );
+				convolutional_code_B = (convolutional_code_t) ((d_rcv_tmcc_data[44]<<2) | (d_rcv_tmcc_data[45]<<1) | d_rcv_tmcc_data[46] );
+				convolutional_code_C = (convolutional_code_t) ((d_rcv_tmcc_data[57]<<2) | (d_rcv_tmcc_data[58]<<1) | d_rcv_tmcc_data[59] );
+				
+				/*We get the time interleaving length information for each layer*/
+				interleaving_length_t interleaving_length_A, interleaving_length_B, interleaving_length_C;
+
+				interleaving_length_A = (interleaving_length_t) ((d_rcv_tmcc_data[34]<<2)|(d_rcv_tmcc_data[35]<<1)|d_rcv_tmcc_data[36]);
+				interleaving_length_B = (interleaving_length_t) ((d_rcv_tmcc_data[47]<<2)|(d_rcv_tmcc_data[48]<<1)|d_rcv_tmcc_data[49]);
+				interleaving_length_C = (interleaving_length_t) ((d_rcv_tmcc_data[60]<<2)|(d_rcv_tmcc_data[61]<<1)|d_rcv_tmcc_data[62]);
+		   		
+				/*We get the number of segments used in each layer*/
+				number_segments_t number_segments_A, number_segments_B, number_segments_C;
+
+				number_segments_A = (number_segments_t) ((d_rcv_tmcc_data[37]<<3)|(d_rcv_tmcc_data[38]<<2)|(d_rcv_tmcc_data[39]<<1)|d_rcv_tmcc_data[40]);
+				number_segments_B = (number_segments_t) ((d_rcv_tmcc_data[50]<<3)|(d_rcv_tmcc_data[51]<<2)|(d_rcv_tmcc_data[52]<<1)|d_rcv_tmcc_data[53]);
+				number_segments_C = (number_segments_t) ((d_rcv_tmcc_data[63]<<3)|(d_rcv_tmcc_data[64]<<2)|(d_rcv_tmcc_data[65]<<1)|d_rcv_tmcc_data[66]);
+
+				
+				printf("\n\t\t\t\t\t\t\tTMCC ANALYSIS\t\t\t\t\t\t\n---------------------------------------------------------------------------------------------------------\n");
+				printf("Layer\t\t\t\t\t\t\t\t: A\n");
+				print_modulation_scheme(modulation_scheme_A);
+				print_convolutional_code(convolutional_code_A);
+				print_interleaving_length(interleaving_length_A);
+				print_number_segments(number_segments_A);
+
+				printf("--------------------------------------------------------------------------------------------------------\n");
+				printf("Layer\t\t\t\t\t\t\t\t: B\n");
+				print_modulation_scheme(modulation_scheme_B);
+				print_convolutional_code(convolutional_code_B);
+				print_interleaving_length(interleaving_length_B);
+				print_number_segments(number_segments_B);
+
+				printf("--------------------------------------------------------------------------------------------------------\n");
+				printf("Layer\t\t\t\t\t\t\t\t: C\n");
+				print_modulation_scheme(modulation_scheme_C);
+				print_convolutional_code(convolutional_code_C);
+				print_interleaving_length(interleaving_length_C);
+				print_number_segments(number_segments_C);
+
+				printf("--------------------------------------------------------------------------------------------------------\n");
 
             }
 
@@ -393,7 +547,7 @@ namespace gr {
                                printf("\n");
 
 */
-                            //tmcc_print(d_rcv_tmcc_data);
+                            tmcc_print(d_rcv_tmcc_data);
                             printf("TMCC OK\n"); 
                         }
                     }

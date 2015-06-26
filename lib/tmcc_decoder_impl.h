@@ -30,6 +30,13 @@ namespace gr {
         class tmcc_decoder_impl : public tmcc_decoder
         {
             private:
+				/*TYPE DEFINITION*/
+				/*These types are using while decoding the TMCC carrier*/
+				typedef enum _modulation_scheme{QPSK = 1, QAM16, QAM64, M_UNUSED=7 } modulation_scheme_t;
+				typedef enum _convolutional_code{RATE_1_2, RATE_2_3, RATE_3_4, RATE_5_6, RATE_7_8, C_UNUSED=7 } convolutional_code_t;
+				typedef enum _interleaving_length{I_0_0_0, I_4_2_1, I_8_4_2, I_16_8_4, I_UNUSED=7} interleaving_length_t;
+				typedef enum _number_segments{SEG_1=1, SEG_2, SEG_3, SEG_4, SEG_5, SEG_6, SEG_7, SEG_8, SEG_9, SEG_10, SEG_11, SEG_12, SEG_13, S_UNUSED=15 } number_segments_t;
+
                 /*ATTRIBUTES*/
 
                 static const int tmcc_carriers_size_2k;
@@ -125,6 +132,10 @@ namespace gr {
 
 				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data);
 
+				void print_modulation_scheme(modulation_scheme_t modulation_scheme);
+				void print_convolutional_code(convolutional_code_t convolutional_code);
+				void print_interleaving_length(interleaving_length_t interleaving_length);
+				void print_number_segments(number_segments_t number_segments);
 				int tmcc_print(std::deque<char> d_rcv_tmcc_data);
                 
 				// TMCC data processing metod
