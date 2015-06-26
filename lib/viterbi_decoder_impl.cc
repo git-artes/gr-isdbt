@@ -60,44 +60,44 @@ namespace gr {
                     gr::io_signature::make(1, 1, sizeof(unsigned char)),
                     gr::io_signature::make2(1, 2, sizeof(unsigned char), sizeof(float)))
         {
-            
-			// d_k: the input of the encoder
-			// d_n: the output of the encoder
-			// d_puncture: depuncturing matrix
-			switch (rate){
-				case 0:
-					d_k = 1;
-					d_n = 2;
-					d_puncture = d_puncture_1_2;
-					d_ntraceback = 5;
-					break;
-				case 1:
-					d_k = 2;
-					d_n = 3;
-					d_puncture = d_puncture_2_3;
-					d_ntraceback = 9;
-					break;
-				case 2:
-					d_k = 3;
-					d_n = 4;
-					d_puncture = d_puncture_3_4;
-					d_ntraceback = 10;
-					break;
-				case 3:
-					d_k = 5;
-					d_n = 6;
-					d_puncture = d_puncture_5_6;
-					d_ntraceback = 15;
-					break;
-				case 4:
-					d_k = 7;
-					d_n = 8;
-					d_puncture = d_puncture_7_8;
-					d_ntraceback = 24;
-					break;
-			}
-					
-			// initial state
+
+            // d_k: the input of the encoder
+            // d_n: the output of the encoder
+            // d_puncture: depuncturing matrix
+            switch (rate){
+                case 0:
+                    d_k = 1;
+                    d_n = 2;
+                    d_puncture = d_puncture_1_2;
+                    d_ntraceback = 5;
+                    break;
+                case 1:
+                    d_k = 2;
+                    d_n = 3;
+                    d_puncture = d_puncture_2_3;
+                    d_ntraceback = 9;
+                    break;
+                case 2:
+                    d_k = 3;
+                    d_n = 4;
+                    d_puncture = d_puncture_3_4;
+                    d_ntraceback = 10;
+                    break;
+                case 3:
+                    d_k = 5;
+                    d_n = 6;
+                    d_puncture = d_puncture_5_6;
+                    d_ntraceback = 15;
+                    break;
+                case 4:
+                    d_k = 7;
+                    d_n = 8;
+                    d_puncture = d_puncture_7_8;
+                    d_ntraceback = 24;
+                    break;
+            }
+
+            // initial state
             d_init = 0; 
             // constellation size
             d_m = log2(constellation_size);
@@ -123,7 +123,7 @@ namespace gr {
             assert((d_bsize * d_n) % d_m == 0);
             assert((d_bsize * d_k) % 8 == 0);
 
-			// I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
+            // I will output by chunks of data (bytes), each chunk of size d_bsize*d_k/8, 
             // thus equivalent to d_bsize*d_k bits.  
             set_output_multiple (d_bsize * d_k / 8);
             // in this case I output by chunks of 204 bytes. 
@@ -189,10 +189,11 @@ namespace gr {
                 // the number of blocks i will process (output) this call
                 int nblocks = 8 * noutput_items / (d_bsize * d_k);
                 int out_count = 0;
-               
+
                 float *ber_out = (float *)output_items[1]; 
                 bool ber_out_connected = output_items.size()>=2; 
-			   
+                int correct_bits = 0; 
+
                 //if (d_m==2) printf("d_m=%d\tnstreams = %d\tnoutput_items Viterbi =%d\n",d_m,nstreams,noutput_items);	
 
                 //gettimeofday(&tvs, &tzs);
@@ -212,7 +213,7 @@ namespace gr {
                     std::vector<tag_t> tags_resync;
                     this->get_tags_in_range(tags_resync, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("resync"));
 
-                   if (tags_resync.size())
+                    if (tags_resync.size())
                     {
                         d_init = 0;
                         d_viterbi_chunks_init_sse2(metric0, path0);
@@ -277,7 +278,7 @@ namespace gr {
                                 {
                                     unsigned char c;
 
-                                    int correct_bits = d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
+                                    correct_bits = d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
                                     //d_viterbi_get_output(state0, &c);
 
                                     if (d_init == 0)
@@ -297,11 +298,11 @@ namespace gr {
                                     {
                                         out[out_count] = c;
                                         //if (out[out_count]==0x47)
-                                         //  printf("out[%i]: %x\n", out_count, out[out_count]);
+                                        //  printf("out[%i]: %x\n", out_count, out[out_count]);
                                         if(ber_out_connected)
                                         {
-                                                ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
-                                                //printf("ber_out-pre=%f\n",ber_out[out_count]); 
+                                            ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                            //printf("ber_out-pre=%f\n",ber_out[out_count]); 
                                         }
                                     }
 
@@ -323,22 +324,22 @@ namespace gr {
                     to_out = to_out - d_ntraceback;
                     d_init = 1;
                 }
-                    
-                    /*
-                     * Send frame_begin to signal frame_begin situation
-                     * downstream
-                     */
-                    std::vector<tag_t> tags;
-                    const uint64_t nread = this->nitems_read(0); //number of items read on port 0
-                    this->get_tags_in_range(tags, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("frame_begin"));
-                    if(tags.size()){
-                        const uint64_t offset = this->nitems_written(0) + d_ntraceback + (tags[0].offset- this->nitems_read(0))*d_m*d_k/(d_n*8.0);
-                        //std::cout << "offset: "<< offset-this->nitems_written(0) << " nitems_written: "<<this->nitems_written(0)<<std::endl; 
-                        //const uint64_t offset = tags[0].offset; 
-                        pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
-                        pmt::pmt_t value = pmt::string_to_symbol("generated by the viterbi decoder");
-                        this->add_item_tag(0, offset, key, value);
-                    }
+
+                /*
+                 * Send frame_begin to signal frame_begin situation
+                 * downstream
+                 */
+                std::vector<tag_t> tags;
+                const uint64_t nread = this->nitems_read(0); //number of items read on port 0
+                this->get_tags_in_range(tags, 0, nread, nread + (nblocks * d_nsymbols), pmt::string_to_symbol("frame_begin"));
+                if(tags.size()){
+                    const uint64_t offset = this->nitems_written(0) + d_ntraceback + (tags[0].offset- this->nitems_read(0))*d_m*d_k/(d_n*8.0);
+                    //std::cout << "offset: "<< offset-this->nitems_written(0) << " nitems_written: "<<this->nitems_written(0)<<std::endl; 
+                    //const uint64_t offset = tags[0].offset; 
+                    pmt::pmt_t key = pmt::string_to_symbol("frame_begin");
+                    pmt::pmt_t value = pmt::string_to_symbol("generated by the viterbi decoder");
+                    this->add_item_tag(0, offset, key, value);
+                }
 
                 //gettimeofday(&tve, &tze);
                 //PRINTF("VITERBI: nblocks: %i, out: %f Mbit/s\n", \

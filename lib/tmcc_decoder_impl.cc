@@ -547,7 +547,7 @@ namespace gr {
                                printf("\n");
 
 */
-                            tmcc_print(d_rcv_tmcc_data);
+                            //tmcc_print(d_rcv_tmcc_data);
                             printf("TMCC OK\n"); 
                         }
                     }

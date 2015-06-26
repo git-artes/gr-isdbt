@@ -64,6 +64,8 @@ namespace gr {
 
                 // PRPS generator data buffer
                 char * d_wk;
+                // the value of a hypothetical pilot for all possible carriers
+                gr_complex * d_pilot_values; 
 
                 float * d_known_phase_diff;
 
@@ -74,7 +76,7 @@ namespace gr {
 
                 // Variable to keep corrected OFDM symbol
                 // It will be initialized after process_tmcc_data function
-                gr_complex * derotated_in;
+                const gr_complex * derotated_in;
 
                 // indicates the symbol relative index calculated from the processing the SPs
                 int d_current_symbol;

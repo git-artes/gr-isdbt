@@ -383,7 +383,6 @@ namespace gr {
 
       const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
-      set_output_multiple ( 4 );
 
       const int alignment = volk_get_alignment();
 
@@ -554,10 +553,10 @@ namespace gr {
                   // TODO - fix the alignment
     #else
     // BROKEN!! GG need to use noutput_items
-                int j = 0;
-                for (int i = (d_cp_start - d_fft_length + 1); i <= d_cp_start; i++)
+                int j = i*size;
+                for (int k = d_consumed + (d_cp_start - d_fft_length + 1); k <= d_consumed + d_cp_start; k++)
                 {
-                  out[j] = d_derot[j] * in[i];
+                  out[j] = d_derot[j] * in[k];
                   j++;
                 }
     #endif

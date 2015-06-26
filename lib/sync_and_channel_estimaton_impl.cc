@@ -148,6 +148,7 @@ namespace gr {
                     d_wk[k] = (char)(reg_prbs & 0x01); // Get the LSB of the register as a character
                     int new_bit = ((reg_prbs >> 2) ^ (reg_prbs >> 0)) & 0x01; // This is the bit we will add to the register as MSB
                     reg_prbs = (reg_prbs >> 1) | (new_bit << 10); // We movo all the register to the right and add the new_bit as MSB
+                    d_pilot_values[k] = gr_complex((float)(4 * 2 * (0.5 - d_wk[k])) / 3, 0);
                 }
             }
         /*
@@ -181,6 +182,7 @@ namespace gr {
 
             // Get some memory
             d_wk = new char[active_carriers];
+            d_pilot_values = new gr_complex[active_carriers];
             d_known_phase_diff = new float[tmcc_carriers_size];
             d_corr_sp = new float[4];
             d_channel_gain = new gr_complex[active_carriers];
@@ -191,8 +193,8 @@ namespace gr {
             // Obtain phase diff for all tmcc pilots
             for (int i = 0; i < (tmcc_carriers_size - 1); i++)
             {
-                d_known_phase_diff[i] = \
-                                        std::norm(get_pilot_value(tmcc_carriers[i + 1]) - get_pilot_value(tmcc_carriers[i]));
+                //d_known_phase_diff[i] = std::norm(get_pilot_value(tmcc_carriers[i + 1]) - get_pilot_value(tmcc_carriers[i]));
+                d_known_phase_diff[i] = std::norm(d_pilot_values[tmcc_carriers[i + 1]] - d_pilot_values[tmcc_carriers[i]]);
             }
 
             // Allocate buffer for deroated input symbol
@@ -364,11 +366,13 @@ namespace gr {
                     current_sp_carrier = 12*i+3*d_current_symbol;
 
                     // channel gain = (sp carrier actual value)/(sp carrier expected value)
-                    d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/get_pilot_value(current_sp_carrier);
+                    //d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/get_pilot_value(current_sp_carrier);
+                    d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/d_pilot_values[current_sp_carrier];
 
                 }
                 //we then calculate the gain on the CP
-                d_channel_gain[active_carriers-1] = in[active_carriers-1]/get_pilot_value(active_carriers-1);
+                //d_channel_gain[active_carriers-1] = in[active_carriers-1]/get_pilot_value(active_carriers-1);
+                d_channel_gain[active_carriers-1] = in[active_carriers-1]/d_pilot_values[active_carriers-1];
 
                 // We then interpolate to obtain the channel gain on the rest of the carriers
                 // TODO interpolation is too simple, a new method(s) should be implemented
@@ -453,7 +457,9 @@ namespace gr {
                     //printf("d_freq_offset: %i\n", d_freq_offset); 
 
                     // Correct ofdm symbol integer frequency error
-                    frequency_correction(&in[i* d_ninput], derotated_in);
+                    //frequency_correction(&in[i* d_ninput], derotated_in);
+//                    memcpy(&derotated_in, &in[i*d_ninput+d_freq_offset], d_fft*sizeof(gr_complex));
+                    derotated_in = &in[i*d_ninput] + d_freq_offset;
 
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
                     process_sp_data(derotated_in);

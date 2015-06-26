@@ -121,9 +121,13 @@ namespace gr {
                     {
                         // the reed-solomon decoder has given up on correcting the TS, and is outputting the input. 
                         // In order to generate a useable TS, we will not ouput these TSP.  
-                        printf("RS: impossible to correct\n");
+                        //printf("RS: impossible to correct\n");
                         consume_each(i+1); 
                         return i; 
+                    }
+                    else 
+                    {
+                        //printf("RS: possible to correct\n");
                     }
 
                     memcpy(&out[i * out_bsize], &d_in[d_s], out_bsize);

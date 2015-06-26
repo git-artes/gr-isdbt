@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ASCII'?>
-<?grc format='1' created='3.7.7'?>
+<?grc format='1' created='3.7.5'?>
 <flow_graph>
-  <timestamp>Thu Jun 18 18:36:29 2015</timestamp>
+  <timestamp>Thu Jun 25 15:32:24 2015</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -53,206 +53,12 @@
       <value>1</value>
     </param>
     <param>
-      <key>thread_safe_setters</key>
-      <value></value>
-    </param>
-    <param>
       <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
       <value></value>
     </param>
     <param>
       <key>_coordinate</key>
       <value>(10, 10)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>total_carriers</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>2**(10+mode)</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(296, 11)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>inter</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>80</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(632, 11)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>decim</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>63</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(552, 11)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>samp_rate</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>6.4e6*80/63</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(8, 91)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>active_carriers</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>13*108*2**(mode-1)+1</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(184, 11)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>data_carriers</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>13*96*2**(mode-1)</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(224, 91)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -278,12 +84,170 @@
       <value></value>
     </param>
     <param>
-      <key>comment</key>
+      <key>_coordinate</key>
+      <value>(384, 91)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>data_carriers</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>13*96*2**(mode-1)</value>
+    </param>
+    <param>
+      <key>alias</key>
       <value></value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(384, 91)</value>
+      <value>(224, 91)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>active_carriers</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>13*108*2**(mode-1)+1</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(184, 11)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>samp_rate</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>6.4e6*80/63</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 91)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>decim</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>63</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(552, 11)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>inter</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>80</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(632, 11)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>total_carriers</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>2**(10+mode)</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(296, 11)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -323,10 +287,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -369,10 +329,6 @@
     </param>
     <param>
       <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
       <value></value>
     </param>
     <param>
@@ -427,10 +383,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(216, 187)</value>
     </param>
@@ -480,10 +432,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -583,14 +531,6 @@
     <param>
       <key>tr_tag</key>
       <value>""</value>
-    </param>
-    <param>
-      <key>ctrlpanel</key>
-      <value>False</value>
-    </param>
-    <param>
-      <key>legend</key>
-      <value>True</value>
     </param>
     <param>
       <key>label1</key>
@@ -841,55 +781,8 @@
       <value></value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(752, 555)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable_qtgui_entry</key>
-    <param>
-      <key>id</key>
-      <value>center_freq</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>label</key>
-      <value>frecuencia central</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>real</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>575143000</value>
-    </param>
-    <param>
-      <key>gui_hint</key>
-      <value></value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 11)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -933,10 +826,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1106,10 +995,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain0</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant0</key>
       <value></value>
     </param>
@@ -1124,10 +1009,6 @@
     <param>
       <key>gain1</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain1</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant1</key>
@@ -1146,10 +1027,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain2</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant2</key>
       <value></value>
     </param>
@@ -1164,10 +1041,6 @@
     <param>
       <key>gain3</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain3</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant3</key>
@@ -1186,10 +1059,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain4</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant4</key>
       <value></value>
     </param>
@@ -1204,10 +1073,6 @@
     <param>
       <key>gain5</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain5</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant5</key>
@@ -1226,10 +1091,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain6</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant6</key>
       <value></value>
     </param>
@@ -1244,10 +1105,6 @@
     <param>
       <key>gain7</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain7</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant7</key>
@@ -1266,10 +1123,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain8</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant8</key>
       <value></value>
     </param>
@@ -1284,10 +1137,6 @@
     <param>
       <key>gain9</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain9</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant9</key>
@@ -1306,10 +1155,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain10</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant10</key>
       <value></value>
     </param>
@@ -1324,10 +1169,6 @@
     <param>
       <key>gain11</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain11</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant11</key>
@@ -1346,10 +1187,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain12</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant12</key>
       <value></value>
     </param>
@@ -1364,10 +1201,6 @@
     <param>
       <key>gain13</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain13</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant13</key>
@@ -1386,10 +1219,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain14</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant14</key>
       <value></value>
     </param>
@@ -1404,10 +1233,6 @@
     <param>
       <key>gain15</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain15</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant15</key>
@@ -1426,10 +1251,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain16</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant16</key>
       <value></value>
     </param>
@@ -1444,10 +1265,6 @@
     <param>
       <key>gain17</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain17</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant17</key>
@@ -1466,10 +1283,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain18</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant18</key>
       <value></value>
     </param>
@@ -1484,10 +1297,6 @@
     <param>
       <key>gain19</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain19</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant19</key>
@@ -1506,10 +1315,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain20</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant20</key>
       <value></value>
     </param>
@@ -1524,10 +1329,6 @@
     <param>
       <key>gain21</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain21</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant21</key>
@@ -1546,10 +1347,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain22</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant22</key>
       <value></value>
     </param>
@@ -1564,10 +1361,6 @@
     <param>
       <key>gain23</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain23</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant23</key>
@@ -1586,10 +1379,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain24</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant24</key>
       <value></value>
     </param>
@@ -1604,10 +1393,6 @@
     <param>
       <key>gain25</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain25</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant25</key>
@@ -1626,10 +1411,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain26</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant26</key>
       <value></value>
     </param>
@@ -1644,10 +1425,6 @@
     <param>
       <key>gain27</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain27</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant27</key>
@@ -1666,10 +1443,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain28</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant28</key>
       <value></value>
     </param>
@@ -1684,10 +1457,6 @@
     <param>
       <key>gain29</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain29</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant29</key>
@@ -1706,10 +1475,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>norm_gain30</key>
-      <value>False</value>
-    </param>
-    <param>
       <key>ant30</key>
       <value></value>
     </param>
@@ -1724,10 +1489,6 @@
     <param>
       <key>gain31</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>norm_gain31</key>
-      <value>False</value>
     </param>
     <param>
       <key>ant31</key>
@@ -1752,10 +1513,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1813,10 +1570,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(240, 259)</value>
     </param>
@@ -1860,10 +1613,6 @@
       <value></value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(640, 363)</value>
     </param>
@@ -1901,10 +1650,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1948,10 +1693,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2013,10 +1754,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(1072, 139)</value>
     </param>
@@ -2062,10 +1799,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2139,10 +1872,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(472, 139)</value>
     </param>
@@ -2172,10 +1901,6 @@
     <param>
       <key>fftsize</key>
       <value>1024</value>
-    </param>
-    <param>
-      <key>freqhalf</key>
-      <value>True</value>
     </param>
     <param>
       <key>wintype</key>
@@ -2223,30 +1948,6 @@
     </param>
     <param>
       <key>showports</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>tr_mode</key>
-      <value>qtgui.TRIG_MODE_FREE</value>
-    </param>
-    <param>
-      <key>tr_level</key>
-      <value>0.0</value>
-    </param>
-    <param>
-      <key>tr_chan</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>tr_tag</key>
-      <value>""</value>
-    </param>
-    <param>
-      <key>ctrlpanel</key>
-      <value>False</value>
-    </param>
-    <param>
-      <key>legend</key>
       <value>True</value>
     </param>
     <param>
@@ -2426,10 +2127,6 @@
       <value>0</value>
     </param>
     <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
       <key>_coordinate</key>
       <value>(328, 579)</value>
     </param>
@@ -2475,10 +2172,6 @@
     <param>
       <key>maxoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2577,10 +2270,6 @@
     </param>
     <param>
       <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
       <value></value>
     </param>
     <param>
@@ -2683,12 +2372,47 @@
       <value></value>
     </param>
     <param>
-      <key>comment</key>
+      <key>_coordinate</key>
+      <value>(8, 443)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable_qtgui_entry</key>
+    <param>
+      <key>id</key>
+      <value>center_freq</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>frecuencia central</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>real</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>563143000</value>
+    </param>
+    <param>
+      <key>gui_hint</key>
+      <value></value>
+    </param>
+    <param>
+      <key>alias</key>
       <value></value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(8, 443)</value>
+      <value>(400, 11)</value>
     </param>
     <param>
       <key>_rotation</key>
