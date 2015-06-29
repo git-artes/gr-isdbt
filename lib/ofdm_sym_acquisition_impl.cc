@@ -148,12 +148,7 @@ namespace gr {
       size = lookup_start - (lookup_stop - (d_cp_length + d_fft_length - 1)) + 1;
       //printf("low: %i, size: %i\n", low, size);
 
-      if(is_unaligned())
-        volk_32fc_magnitude_squared_32f_u(&d_norm[low], &in[low], size);
-      else
-        volk_32fc_magnitude_squared_32f_u(&d_norm[low], &in[low], size);
-        //volk_32fc_magnitude_squared_32f_a(&d_norm[low], &in[low], size);
-        //TODO - fix the alignment
+      volk_32fc_magnitude_squared_32f(&d_norm[low], &in[low], size);
 #else
       for (int i = lookup_start; i >= (lookup_stop - (d_cp_length + d_fft_length - 1)); i--)
         d_norm[i] = std::norm(in[i]);
@@ -161,15 +156,13 @@ namespace gr {
       
       // Calculate gamma on each point
 #ifdef USE_VOLK
-      low = lookup_stop - d_cp_length - 1;
-      size = lookup_start - (lookup_stop - d_cp_length - 1) + 1;
+      //TODO check these boundaries!!!!!!!
+      low = lookup_stop - (d_cp_length - 1);
+      //low = lookup_stop - d_cp_length - 1;
+      //size = lookup_start - (lookup_stop - d_cp_length - 1) + 1;
+      size = lookup_start - low + 1;
 
-      if (is_unaligned())
-        volk_32fc_x2_multiply_conjugate_32fc_u(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
-      else
-        volk_32fc_x2_multiply_conjugate_32fc_u(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
-        //volk_32fc_x2_multiply_conjugate_32fc_a(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
-        // TODO fix the alignment
+      volk_32fc_x2_multiply_conjugate_32fc(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
 #else
       for (int i = lookup_start; i >= (lookup_stop - d_cp_length - 1); i--)
         d_corr[i - d_fft_length] = in[i] * std::conj(in[i - d_fft_length]);
@@ -199,12 +192,7 @@ namespace gr {
       low = 0;
       size = lookup_start - lookup_stop;
 
-      if (is_unaligned())  
-        volk_32fc_magnitude_32f_u(&d_lambda[low], &d_gamma[low], size);
-      else
-        volk_32fc_magnitude_32f_u(&d_lambda[low], &d_gamma[low], size);
-        //volk_32fc_magnitude_32f_a(&d_lambda[low], &d_gamma[low], size);
-        // TODO - fix alignment
+      volk_32fc_magnitude_32f(&d_lambda[low], &d_gamma[low], size);
 #else
       for (int i = 0; i < (lookup_start - lookup_stop); i++)
         d_lambda[i] = std::abs(d_gamma[i]);
@@ -215,19 +203,8 @@ namespace gr {
       low = 0;
       size = lookup_start - lookup_stop;
 
-      if (is_unaligned())  
-      {
-        volk_32f_s32f_multiply_32f_u(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
-        volk_32f_x2_subtract_32f_u(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
-      }
-      else
-      {
-        //volk_32f_s32f_multiply_32f_a(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
-        //volk_32f_x2_subtract_32f_a(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
-        volk_32f_s32f_multiply_32f_u(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
-        volk_32f_x2_subtract_32f_u(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
-        //TODO - fix the alignment
-      }
+      volk_32f_s32f_multiply_32f(&d_phi[low], &d_phi[low], d_rho / 2.0, size);
+      volk_32f_x2_subtract_32f(&d_lambda[low], &d_lambda[low], &d_phi[low], size);
 #else
       for (int i = 0; i < (lookup_start - lookup_stop); i++)
         d_lambda[i] -= (d_phi[i] * d_rho / 2.0);
@@ -381,6 +358,9 @@ namespace gr {
 //      printf("OFDM sym acq: occupied_tones: %i\n", occupied_tones);
       PRINTF("OFDM sym acq: SNR: %f\n", d_snr);
 
+      //VOLK alignment as recommended by GNU Radio's Manual. It has a similar effect 
+      //than set_output_multiple(), thus we will generally get multiples of this value
+      //as noutput_items. 
       const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
 
@@ -466,8 +446,10 @@ namespace gr {
 
       // make sure we receive at least (symbol_length + fft_length)
       for (int i = 0; i < ninputs; i++)
+      {
         // ninput_items_required[i] = (2 * d_fft_length + d_cp_length) * noutput_items;
         ninput_items_required[i] = ( d_cp_length + d_fft_length ) * (noutput_items + 1) ;
+      }
     }
 
     /*
@@ -492,6 +474,8 @@ namespace gr {
 
         d_consumed = 0;
         d_out = 0;
+
+        //printf("is_unaligned():%s\n",is_unaligned() ? "True":"False");
 
         for (int i = 0; i < noutput_items ; i++) {
             // This is initial aquisition of symbol start
@@ -543,14 +527,8 @@ namespace gr {
                 size = d_cp_start - (d_cp_start - d_fft_length + 1) + 1;
                 PRINTF( "derotate: low: %i, size: %i\n", low, size );
 
-                if(is_unaligned())
-                  //volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
-                  volk_32fc_x2_multiply_32fc_u(&out[i*size], &d_derot[0], &in[low], size);
-                else
-                  //volk_32fc_x2_multiply_32fc_a(&out[0], &d_derot[0], &in[low], size);
-                  // volk_32fc_x2_multiply_32fc_u(&out[0], &d_derot[0], &in[low], size);
-                  volk_32fc_x2_multiply_32fc_u(&out[i*size], &d_derot[0], &in[low], size);
-                  // TODO - fix the alignment
+                volk_32fc_x2_multiply_32fc(&out[i*size], &d_derot[0], &in[low], size);
+
     #else
     // BROKEN!! GG need to use noutput_items
                 int j = i*size;

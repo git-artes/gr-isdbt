@@ -57,14 +57,15 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
 
-        src_data =  sym1 + sym2 + sym3 + sym1 + sym2 + sym3
+        src_data =  sym1 + sym2 + sym3 + sym4
+        expected_result = sym1[int(total_carriers*cp_len):len(sym1)-1]+\
+                sym2[int(total_carriers*cp_len):len(sym2)-1]+\
+                sym3[int(total_carriers*cp_len):len(sym3)-1]
 
-        expected_result = \
-            (    0,       1,       3,       2,
-                 0,       2,       1,       3) * 48
 
-        src = blocks.vector_source_c(src_data)
+        src = blocks.vector_source_c(src_data*3)
         ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=10)
         dst = blocks.vector_sink_c(total_carriers)
 
@@ -73,10 +74,10 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.run()
 
         # check data
-        actual_result = dst.nitems_read(0)
-        print "actual result", actual_result
+        actual_result = dst.data()
+        #print "actual result", actual_result
         #print "expected result", expected_result
-        #self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
+        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
 
 if __name__ == '__main__':
     gr_unittest.run(qa_ofdm_sym_acquisition, "qa_ofdm_sym_acquisition.xml")

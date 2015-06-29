@@ -312,7 +312,7 @@ class qa_symbol_demapper (gr_unittest.TestCase):
         constellation_size_A = 4
         segments_B = 12
         constellation_size_B = 64
-        segments_C = 1
+        segments_C = 0
         constellation_size_C = 64
         
         demapper = isdbt.symbol_demapper(mode, segments_A, constellation_size_A, segments_B, constellation_size_B, segments_C, constellation_size_C)
