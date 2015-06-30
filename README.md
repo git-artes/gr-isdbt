@@ -17,15 +17,15 @@ For more information (papers, signal recording of ISDB-T signals, etc.) please v
 
 **Build instructions**
 
-git clone https://github.com/git-artes/gr-isdbt.git  
-cd gr-isdbt  
-mkdir build  
-cd build  
-cmake ../  
-make && sudo make install  
+    git clone https://github.com/git-artes/gr-isdbt.git  
+    cd gr-isdbt  
+    mkdir build  
+    cd build  
+    cmake ../  
+    make && sudo make install  
 
 If installed for the first time:   
-sudo ldconfig  
+    sudo ldconfig  
 
 IIE Instituto de Ingeniería Eléctrica  
 Facultad de Ingeniería  
