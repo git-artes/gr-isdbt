@@ -45,7 +45,7 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym_without_cp_imagpart = [random.random() for i in range(symbol_length)]
         
         sym_without_cp = [real + (1j)*imag for (real, imag) in zip(sym_without_cp_realpart, sym_without_cp_imagpart)]
-        sym_with_cp = sym_without_cp[len(sym_without_cp)-cp_length:len(sym_without_cp)-1] + sym_without_cp
+        sym_with_cp = sym_without_cp[len(sym_without_cp)-cp_length:len(sym_without_cp)] + sym_without_cp
         return sym_with_cp
 
     def test_ofdm_symbol_aquisition_1 (self):
@@ -58,14 +58,16 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
 
-        src_data =  sym1 + sym2 + sym3 + sym4
+        src_data =  sym1 + sym2 + sym3 + sym4 + sym5
         expected_result = sym1[int(total_carriers*cp_len):len(sym1)-1]+\
                 sym2[int(total_carriers*cp_len):len(sym2)-1]+\
-                sym3[int(total_carriers*cp_len):len(sym3)-1]
+                sym3[int(total_carriers*cp_len):len(sym3)-1]+\
+                sym4[int(total_carriers*cp_len):len(sym4)-1]
 
 
-        src = blocks.vector_source_c(src_data*3)
+        src = blocks.vector_source_c(src_data)
         ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=10)
         dst = blocks.vector_sink_c(total_carriers)
 
@@ -74,6 +76,7 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.run()
 
         # check data
+        print "len(src_data)", len(src_data)
         actual_result = dst.data()
         #print "actual result", actual_result
         #print "expected result", expected_result

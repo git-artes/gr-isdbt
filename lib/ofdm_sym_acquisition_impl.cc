@@ -133,6 +133,8 @@ namespace gr {
     {
 
       assert(lookup_start >= lookup_stop);
+
+      PRINTF("lookup_stop:%i; d_cp_length+d_fft_length-1:%i\n",lookup_stop, d_cp_length+d_fft_length-1);
       assert(lookup_stop >= (d_cp_length + d_fft_length - 1));
 
       int low, size;
@@ -443,12 +445,12 @@ namespace gr {
     ofdm_sym_acquisition_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       int ninputs = ninput_items_required.size ();
-
       // make sure we receive at least (symbol_length + fft_length)
       for (int i = 0; i < ninputs; i++)
       {
         // ninput_items_required[i] = (2 * d_fft_length + d_cp_length) * noutput_items;
         ninput_items_required[i] = ( d_cp_length + d_fft_length ) * (noutput_items + 1) ;
+        PRINTF("noutput_items=%i; ninput_items_required=%i\n",noutput_items, ninput_items_required[i]);
       }
     }
 
@@ -490,7 +492,7 @@ namespace gr {
               // Send sync_start downstream
               send_sync_start();
 
-              PRINTF("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
+              printf("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
             }
 
             // This is fractional frequency correction (pre FFT)
