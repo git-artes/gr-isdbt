@@ -23,7 +23,7 @@
 	</option>
   </param>
   <param>
-	<name>Transmission Mode</name>
+	<name>Rate</name>
 	<key>rate</key>
 	<value>0</value>
 	<type>enum</type>
