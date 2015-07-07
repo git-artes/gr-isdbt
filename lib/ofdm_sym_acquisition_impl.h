@@ -51,7 +51,8 @@ namespace gr {
       float d_threshold_factor_rise;
       float d_threshold_factor_fall;
       float d_avg_alpha;
-      float d_avg;
+      float d_avg_max;
+      float d_avg_min; 
       float d_phase;
       double d_phaseinc;
       int d_cp_found;
@@ -86,6 +87,8 @@ namespace gr {
       int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
 
       void send_sync_start();
+
+      void derotate(const gr_complex * in, gr_complex *out);
 
      public:
       ofdm_sym_acquisition_impl(int fft_length, int cp_length, float snr);

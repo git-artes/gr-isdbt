@@ -4,7 +4,7 @@
   <key>isdbt_tmcc_decoder</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.tmcc_decoder($transmission_mode)</make>
+  <make>isdbt.tmcc_decoder($transmission_mode, $print_params)</make>
   <param>
     <name>Transmission Mode</name>
     <key>transmission_mode</key>
@@ -21,6 +21,20 @@
       <name>MODE3(8K)</name>
       <key>3</key>
     </option>   
+</param>
+  <param>
+      <name>Print params.</name>
+      <key>print_params</key>
+      <value>False</value>
+      <type>enum</type>
+      <option>
+          <name>Yes</name>
+          <key>True</key>
+      </option>
+      <option>
+          <name>No</name>
+          <key>False</key>
+      </option>
   </param>
   <sink>
   	<name>in</name>

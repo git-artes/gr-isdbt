@@ -547,7 +547,10 @@ namespace gr {
                                printf("\n");
 
 */
-                            //tmcc_print(d_rcv_tmcc_data);
+                            if (d_print_params)
+                            {
+                                tmcc_print(d_rcv_tmcc_data);
+                            }
                             printf("TMCC OK\n"); 
                         }
                     }
@@ -563,10 +566,10 @@ namespace gr {
             }
 
         tmcc_decoder::sptr
-            tmcc_decoder::make(int mode)
+            tmcc_decoder::make(int mode, bool print_params)
             {
                 return gnuradio::get_initial_sptr
-                    (new tmcc_decoder_impl(mode));
+                    (new tmcc_decoder_impl(mode, print_params));
             }
 
         /*
@@ -578,7 +581,7 @@ namespace gr {
         //   32 were allocated.  If this isn't OK, consider padding
         //   your structure to a power-of-two bytes.
         //   On this platform, our allocation granularity is 4096 bytes.
-        tmcc_decoder_impl::tmcc_decoder_impl(int mode)
+        tmcc_decoder_impl::tmcc_decoder_impl(int mode, bool print_params)
             : gr::block("tmcc_decoder",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*(1+d_total_segments*d_carriers_per_segment_2k*((int)pow(2.0,mode-1)))),
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_per_segment_2k*((int)pow(2.0,mode-1))))
@@ -589,6 +592,7 @@ namespace gr {
 
             construct_data_carriers_list(); 
 
+            d_print_params = print_params; 
 
             // We allocate memory for d_prev_tmcc_symbol attribute
             d_prev_tmcc_symbol = new gr_complex[tmcc_carriers_size];

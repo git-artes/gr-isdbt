@@ -281,6 +281,7 @@ namespace gr {
                 }
                 // We get the integer frequency offset
                 d_freq_offset = start - d_zeros_on_left;
+                //printf("freq offset: %d\n",d_freq_offset);
 
             }
 

@@ -31,7 +31,7 @@ namespace gr {
         {
             private:
 				/*TYPE DEFINITION*/
-				/*These types are using while decoding the TMCC carrier*/
+				/*These types are used while decoding the TMCC carrier*/
 				typedef enum _modulation_scheme{QPSK = 1, QAM16, QAM64, M_UNUSED=7 } modulation_scheme_t;
 				typedef enum _convolutional_code{RATE_1_2, RATE_2_3, RATE_3_4, RATE_5_6, RATE_7_8, C_UNUSED=7 } convolutional_code_t;
 				typedef enum _interleaving_length{I_0_0_0, I_4_2_1, I_8_4_2, I_16_8_4, I_UNUSED=7} interleaving_length_t;
@@ -104,6 +104,9 @@ namespace gr {
 				// TMCC parity check matrix
 				static const char d_h[];
 
+                // whether or not the decoded TMCC parameters should be printed. 
+                bool d_print_params; 
+
                 // Keep TMCC carriers values from previous symbol
                 gr_complex * d_prev_tmcc_symbol;
 
@@ -149,7 +152,7 @@ namespace gr {
 
 
             public:
-                tmcc_decoder_impl(int mode);
+                tmcc_decoder_impl(int mode, bool print_params);
                 ~tmcc_decoder_impl();
 
                 // Where all the action really happens
