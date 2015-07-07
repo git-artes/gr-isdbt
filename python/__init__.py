@@ -31,4 +31,7 @@ except ImportError:
 	pass
 
 # import any pure python here
+from isdbt_rf_channel_decoding import isdbt_rf_channel_decoding
+from isdbt_channel_decoding import isdbt_channel_decoding
+
 #

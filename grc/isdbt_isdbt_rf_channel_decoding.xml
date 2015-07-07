@@ -1,0 +1,79 @@
+<block>
+  <name>ISDB-T RF Channel Decoding</name>
+  <key>isdbt_isdbt_rf_channel_decoding</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.isdbt_rf_channel_decoding(
+    max_freq_offset=$max_freq_offset,
+    guard=$guard,
+    mode=$mode,
+)</make>
+  <callback>set_max_freq_offset($max_freq_offset)</callback>
+  <callback>set_guard($guard)</callback>
+  <callback>set_mode($mode)</callback>
+  <param>
+    <name>Maximum Frequency Offset</name>
+    <key>max_freq_offset</key>
+    <value>200</value>
+    <type>raw</type>
+  </param>
+  <param>
+	<name>Guard Interval</name>
+	<key>guard</key>
+	<value>0.125</value>
+	<type>enum</type>
+	<option>
+		<name>1/4</name>
+		<key>0.250</key>
+	</option>
+	<option>
+		<name>1/8</name>
+		<key>0.125</key>
+	</option>
+	<option>
+		<name>1/16</name>
+		<key>0.0625</key>
+	</option>
+    <option>
+		<name>1/32</name>
+		<key>0.03125</key>
+	</option>
+  </param>
+
+  <param>
+      <name>Transmission Mode</name>
+	  <key>mode</key>
+	  <value>3</value>
+	  <type>enum</type>
+      <option>
+	    <name>MODE1(2K)</name>
+	    <key>1</key>
+      </option>
+	  <option>
+	    <name>MODE2(4K)</name>
+	    <key>2</key>
+	  </option>
+	  <option>
+	    <name>MODE3(8K)</name>
+	    <key>3</key>
+	  </option>
+  </param> 
+ 
+  <param>
+    <name>SNR</name>
+    <key>snr</key>
+    <value>10</value>
+    <type>raw</type>
+  </param>
+ 
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>13*96*2**($mode-1)</vlen>
+  </source>
+</block>
