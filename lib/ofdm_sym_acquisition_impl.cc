@@ -576,7 +576,6 @@ namespace gr {
                         // bye!
                         d_consumed += d_to_consume;
                         consume_each(d_consumed);
-
                         printf("OFDM_SYM_ACQ: restart! d_consumed: %i, d_out: %i\n", d_consumed, d_out);
                         // Tell runtime system how many output items we produced.
                         return (d_out);

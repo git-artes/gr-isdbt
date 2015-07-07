@@ -13,7 +13,7 @@ import isdbt
 
 class isdbt_rf_channel_decoding(gr.hier_block2):
 
-    def __init__(self, max_freq_offset=200, guard=0.125, mode=3, snr=10):
+    def __init__(self, max_freq_offset=10, guard=0.125, mode=3, snr=10, tmcc_print=False):
         gr.hier_block2.__init__(
            # self, "ISDB-T RF Channel Decoding",
             self, "isdbt_rf_channel_decoding",
@@ -28,6 +28,7 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
         self.guard = guard
         self.mode = mode
         self.snr = snr
+        self.tmcc_print = tmcc_print
 
         ##################################################
         # Variables
@@ -39,7 +40,7 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
         ##################################################
         # Blocks
         ##################################################
-        self.isdbt_tmcc_decoder_0 = isdbt.tmcc_decoder(mode)
+        self.isdbt_tmcc_decoder_0 = isdbt.tmcc_decoder(mode, tmcc_print)
         self.isdbt_sync_and_channel_estimaton_0 = isdbt.sync_and_channel_estimaton(total_carriers, active_carriers, max_freq_offset)
         self.isdbt_ofdm_sym_acquisition_0 = isdbt.ofdm_sym_acquisition(total_carriers, int(guard*total_carriers), snr)
         self.fft_vxx_0 = fft.fft_vcc(total_carriers, True, (window.rectangular(total_carriers)), True, 1)
@@ -53,6 +54,11 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
         self.connect((self.isdbt_tmcc_decoder_0, 0), (self, 0))    
         self.connect((self, 0), (self.isdbt_ofdm_sym_acquisition_0, 0))    
 
+    def get_tmcc_print(self):
+        return self.tmcc_print
+
+    def set_tmcc_print(self, tmcc_print):
+        self.tmcc_print = tmcc_print
 
     def get_max_freq_offset(self):
         return self.max_freq_offset

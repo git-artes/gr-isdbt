@@ -7,14 +7,17 @@
     max_freq_offset=$max_freq_offset,
     guard=$guard,
     mode=$mode,
+    snr=$snr,
+    tmcc_print=$tmcc_print,
 )</make>
   <callback>set_max_freq_offset($max_freq_offset)</callback>
   <callback>set_guard($guard)</callback>
   <callback>set_mode($mode)</callback>
+  <callback>set_tmcc_print($tmcc_print)</callback>
   <param>
     <name>Maximum Frequency Offset</name>
     <key>max_freq_offset</key>
-    <value>200</value>
+    <value>10</value>
     <type>raw</type>
   </param>
   <param>
@@ -65,7 +68,21 @@
     <value>10</value>
     <type>raw</type>
   </param>
- 
+
+  <param>
+      <name>Print TMCC</name>
+	  <key>tmcc_print</key>
+	  <value>False</value>
+      <option>
+	    <name>Yes</name>
+	    <key>True</key>
+      </option>
+	  <option>
+	    <name>No</name>
+	    <key>False</key>
+	  </option>
+  </param> 
+
   <sink>
     <name>in</name>
     <type>complex</type>
