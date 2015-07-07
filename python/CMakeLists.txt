@@ -31,7 +31,8 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/isdbt
+    isdbt_rf_channel_decoding.py
+    isdbt_channel_decoding.py DESTINATION ${GR_PYTHON_DIR}/isdbt
 )
 
 ########################################################################
@@ -58,3 +59,5 @@ GR_ADD_TEST(qa_time_deinterleaver_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOUR
 GR_ADD_TEST(qa_symbol_demapper_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper_1seg.py)
 GR_ADD_TEST(qa_bit_deinterleaver_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_deinterleaver_1seg.py)
 GR_ADD_TEST(qa_viterbi_decoder ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_viterbi_decoder.py)
+GR_ADD_TEST(qa_isdbt_rf_channel_decoding ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt_rf_channel_decoding.py)
+GR_ADD_TEST(qa_isdbt_channel_decoding ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt_channel_decoding.py)
