@@ -98,7 +98,7 @@ namespace gr {
                 //printf("DESCRAMBLER: noutput_items: %i, nitems_written: %li, nitems_read:%li\n", noutput_items, this->nitems_written(0), this->nitems_read(0));
 
                 /*
-                 * Look for a tag that signals superframe_start and consume all input items
+                 * Look for a tag that signals frame_start and process all input items
                  * that are in input buffer so far.
                  * This will actually reset the convolutional deinterleaver
                  */

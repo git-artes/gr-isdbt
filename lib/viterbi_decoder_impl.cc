@@ -279,6 +279,7 @@ namespace gr {
                                     unsigned char c;
 
                                     correct_bits = d_viterbi_get_output_sse2(metric0, path0, d_ntraceback, &c);
+                                    //printf("correct_bits: %i\n",correct_bits);
                                     //d_viterbi_get_output(state0, &c);
 
                                     if (d_init == 0)
@@ -288,9 +289,16 @@ namespace gr {
                                             out[out_count - d_ntraceback] = c;
                                             //printf("out_init[%i]: %x\n", out_count - d_ntraceback, out[out_count - d_ntraceback]);
                                             if(ber_out_connected){
-                                                ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(8.0*d_n/d_k); 
-                                                if(ber_out[out_count-d_ntraceback]<0)
-                                                    printf("correct_bits: %i\n", correct_bits); 
+                                                //ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(16.0*d_n/(2*d_k)); 
+                                                // the factorization above raises from considering how many bits 
+                                                // are actually used in the metric when depuncturing is performed. 
+                                                // Not all 16 bits are depunctured equally (the pattern may change from 
+                                                // code-word to code-word) so expect some negative bers, 
+                                                // which should even out as larger averages are used. 
+                                                
+                                                //if(ber_out[out_count-d_ntraceback]<0)
+                                                 //   printf("correct_bits: %i\n", correct_bits); 
                                             }
                                         }
                                     }
@@ -315,10 +323,13 @@ namespace gr {
                       printf("viterbi: found SYNC\n"); */
                 }
 
+                //printf("VITERBI: out_count=%i, noutput_items=%i\n", out_count, noutput_items);
+
                 int to_out = noutput_items;
 
                 if (d_init == 0)
                 {
+                    printf("VITERBI: d_init=True\n");
 
                     // Take in consideration the traceback length
                     to_out = to_out - d_ntraceback;

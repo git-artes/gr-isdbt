@@ -127,7 +127,7 @@ namespace gr {
                     }
                     else 
                     {
-                        //printf("RS: possible to correct\n");
+                        //printf("RS: possible to correct. RS_status: %i\n", rs_status);
                     }
 
                     memcpy(&out[i * out_bsize], &d_in[d_s], out_bsize);
@@ -146,7 +146,8 @@ namespace gr {
                             }
                             ber_out[i] = total_bit_errors/(float)(out_bsize*8.0); 
                             //ber_out[i*noutput_items] = 0.5; 
-                        //printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 
+                            //if (total_bit_errors>0)
+                             //   printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 
                     }
 
                     //printf("Reed-Solomon: out[0]=%x\n", out[0]); 

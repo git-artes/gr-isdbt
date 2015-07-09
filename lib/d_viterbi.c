@@ -746,7 +746,8 @@ d_viterbi_get_output_sse2(__m128i *mm0, __m128i *pp0, int ntraceback, unsigned c
   // and thus what I want. However, to avoid metric overflow, the min metric is always substracted from all the paths' cost 
   // (see the for-loop above). Thus, I will output the difference between the current and the previous best path (which, 
   // if this substraction would not be performed, it would output the correct bits from the total incoming bits, e.g. 3/2*8), 
-  // plus the previous minmetric to consider this substraction. 
+  // plus the previous minmetric to consider this substraction. Please note that depunctured bits are not considered in the metric. 
+  // This should be considered when calculating the ber. 
   return correct_bits; 
 }
 
