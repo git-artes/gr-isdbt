@@ -130,7 +130,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -188,7 +188,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode,False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -243,7 +243,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -296,7 +296,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -350,7 +350,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -403,7 +403,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -456,7 +456,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -509,7 +509,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -562,7 +562,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -615,7 +615,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -668,7 +668,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)
@@ -721,7 +721,7 @@ class qa_tmcc_decoder (gr_unittest.TestCase):
 
         total_data_carriers = total_segments*96*2**(mode-1)
         total_carriers = total_segments*108*2**(mode-1)+1
-        tmcc_decoder = isdbt.tmcc_decoder(mode)
+        tmcc_decoder = isdbt.tmcc_decoder(mode, False)
 
         # the input are the carrier index in each carrier. The
         # expected result in this case is easy to calculate (see below)

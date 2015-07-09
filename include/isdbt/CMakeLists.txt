@@ -30,7 +30,6 @@ install(FILES
     symbol_demapper.h
     tmcc_decoder.h
     bit_deinterleaver.h
-    viterbi_decoder_1seg.h
     energy_descrambler.h
     byte_deinterleaver.h
     #bit_deinterleaver_streamed.h
@@ -40,6 +39,5 @@ install(FILES
     frequency_deinterleaver_1seg.h
     time_deinterleaver_1seg.h
     symbol_demapper_1seg.h
-    bit_deinterleaver_1seg.h
     viterbi_decoder.h DESTINATION include/isdbt
 )
