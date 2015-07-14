@@ -71,7 +71,7 @@ namespace gr {
             sync_and_channel_estimaton_impl::tmcc_positions(int fft)
             {
                 /*
-                 * Assing to variables tmcc_carriers and tmcc_carriers_size
+                 * Assign to variables tmcc_carriers and tmcc_carriers_size
                  * the corresponding values according to the transmission mode
                  */
                 switch (fft)
@@ -251,6 +251,9 @@ namespace gr {
             {
                 // Look for maximum correlation for tmccs
                 // in order to obtain postFFT integer frequency correction
+                //
+                // TODO separate in two phases: acquisition and tracking. Acquisition would simply search a bigger range. 
+                // TODO use the channel taps in the correlation??
 
                 float max = 0;
                 gr_complex sum = 0;
@@ -286,7 +289,7 @@ namespace gr {
             }
 
 
-        gr_complex *
+/*        gr_complex *
             sync_and_channel_estimaton_impl::frequency_correction(const gr_complex * in, gr_complex * out)
             {
                 // We get the derotated carrier's sequence, i.e. the sequence without the frequency offset
@@ -295,7 +298,7 @@ namespace gr {
                     out[k] = in[k + d_freq_offset];
                 }
                 return (out);
-            }
+            }*/
 
         /*
          * process_sp_data function
@@ -352,7 +355,7 @@ namespace gr {
                     }
                 }
 
-
+                //TODO shouldn't this be performed in a separate function??
                 /*************************************************************/
                 // Keep data for channel estimator
                 // This method interpolates scattered measurements across one OFDM symbol

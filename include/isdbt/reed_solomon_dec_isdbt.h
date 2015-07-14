@@ -29,8 +29,12 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief It receives blocks of 204 bytes (corresponding to a TSP), 
+     * and performs a Reed-Solomon decoding as specified by the standard. 
+     *
      * \ingroup isdbt
+     *
+     * Optionally, bit-error rate (BER) is output. 
      *
      */
     class ISDBT_API reed_solomon_dec_isdbt : virtual public gr::block
@@ -41,10 +45,7 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::reed_solomon_dec_isdbt.
        *
-       * To avoid accidental use of raw pointers, isdbt::reed_solomon_dec_isdbt's
-       * constructor is in a private implementation
-       * class. isdbt::reed_solomon_dec_isdbt::make is the public interface for
-       * creating new instances.
+       * 
        */
       static sptr make();
     };

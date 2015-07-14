@@ -30,7 +30,7 @@ namespace gr {
 
     /*!
      * \brief A simple Forney byte de-interleaver, as specified in the standard. 
-     * Its only parameter is blocks, which controls how many bytes are output. 
+     * 
      * \ingroup isdbt
      *
      */
@@ -42,10 +42,6 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::byte_deinterleaver.
        *
-       * To avoid accidental use of raw pointers, isdbt::byte_deinterleaver's
-       * constructor is in a private implementation
-       * class. isdbt::byte_deinterleaver::make is the public interface for
-       * creating new instances.
        */
       static sptr make();
     };

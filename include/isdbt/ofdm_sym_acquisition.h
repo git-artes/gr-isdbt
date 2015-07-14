@@ -29,8 +29,14 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup isdbt
+     * \brief The block performs one-shot OFDM symbol and fractional frequency synchronization. 
+     * \ingroup isdbt 
+     *
+     * This block receives the stream of complex baseband samples corresponding to several 
+     * OFDM symbols (cyclic prefix included), and outputs a vector corresponding to the 
+     * useful part of the symbol. Furthermore, coarse (or fractional) frequency synchronization 
+     * is applied. Optionally, the frequency error estimate is output. 
+     *
      *
      */
     class ISDBT_API ofdm_sym_acquisition : virtual public gr::block
@@ -39,12 +45,14 @@ namespace gr {
       typedef boost::shared_ptr<ofdm_sym_acquisition> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition.
+       * Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition.
        *
-       * To avoid accidental use of raw pointers, isdbt::ofdm_sym_acquisition's
-       * constructor is in a private implementation
-       * class. isdbt::ofdm_sym_acquisition::make is the public interface for
-       * creating new instances.
+       * \param fft_length The number of samples in a useful OFDM symbol (typically, a power of 2). 
+       * \param cp_length The number of samples in the cyclic prefix. Typically, a fraction of fft_length (however, 
+       * the actual number of samples is the parameter here). 
+       * \param snr An estimated SNR required by the synchronization algorithm. Improvements to the implementation 
+       * should automatically calculate this. 
+       *
        */
       static sptr make(int fft_length, int cp_length, float snr);
     };

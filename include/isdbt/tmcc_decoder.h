@@ -29,7 +29,10 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Given the useful carriers, this block decodes the TMCC carriers, and outputs those carriers 
+     * corresponding to actual DTV data (i.e. not including pilots nor AC). Plus, it re-orders the segments 
+     * so as to provide them in the ascending (and correct in terms of nomenclature) order. 
+     *
      * \ingroup isdbt
      *
      */
@@ -41,10 +44,11 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::tmcc_decoder.
        *
-       * To avoid accidental use of raw pointers, isdbt::tmcc_decoder's
-       * constructor is in a private implementation
-       * class. isdbt::tmcc_decoder::make is the public interface for
-       * creating new instances.
+       * \param mode The transmission mode (either 1, 2 or 3). 
+       * \param print_params Whether or not to print the decoded TMCC parameters. 
+       * This is useful when first watching a channel, since several parameters in the 
+       * receiver have to be found first. 
+       *
        */
       static sptr make(int mode, bool print_params);
     };

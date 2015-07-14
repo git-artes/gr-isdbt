@@ -61,11 +61,10 @@ namespace gr {
     namespace isdbt {
 
         int 
-            ofdm_sym_acquisition_impl::peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha)
+            ofdm_sym_acquisition_impl::peak_detect_init(float threshold_factor_rise, float alpha)
             {
                 d_avg_alpha = alpha;
                 d_threshold_factor_rise = threshold_factor_rise;
-                d_threshold_factor_fall = threshold_factor_fall;
                 // d_avg = 0;
                 d_avg_max = - (float)INFINITY;
                 d_avg_min =   (float)INFINITY;
@@ -350,13 +349,8 @@ namespace gr {
                 this->add_item_tag(0, offset, key, value);
             }
 
-        int
-            ofdm_sym_acquisition_impl::cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out)
-            {
-                return (0);
-            }
 
-        // Derotates the signal and out
+        // Derotates the signal 
         void ofdm_sym_acquisition_impl::derotate(const gr_complex * in, gr_complex * out)
         {
 #ifdef USE_VOLK
@@ -456,7 +450,7 @@ namespace gr {
 
             //peak_detect_init(0.2, 0.25, 30, 0.0005);
             // peak_detect_init(0.8, 0.9, 30, 0.9);
-            peak_detect_init(0.3, 0.9, 30, 0.9);
+            peak_detect_init(0.3, 0.9);
         }
 
         /*

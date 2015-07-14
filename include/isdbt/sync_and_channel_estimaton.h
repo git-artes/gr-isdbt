@@ -29,8 +29,12 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief This block performs the integer frequency estimation (and correction),
+     * estimates the channel taps and equalizes the output with this estimation. 
+     *
      * \ingroup isdbt
+     *
+     * Optionally, it outputs the estimation of the channel taps. 
      *
      */
     class ISDBT_API sync_and_channel_estimaton : virtual public gr::block
@@ -41,10 +45,13 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::sync_and_channel_estimaton.
        *
-       * To avoid accidental use of raw pointers, isdbt::sync_and_channel_estimaton's
-       * constructor is in a private implementation
-       * class. isdbt::sync_and_channel_estimaton::make is the public interface for
-       * creating new instances.
+       * \param fft_length The samples per OFDM symbol (or the FFT size). Typically a power of 2. In 
+       * the case of isdb-t it may be derived from the transmission mode. 
+       * \param payload_length The number of carrier that actually have data. In the case of ISDB-T
+       * it may be derived from the transmission mode. 
+       * \param offset_max The algorithm implemented will assume that the frequency offset is no 
+       * bigger than offset_max. 
+       *
        */
       static sptr make(int fft_length, int payload_length, int offset_max);
     };
