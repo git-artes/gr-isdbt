@@ -24,7 +24,8 @@ For more information (papers, signal recording of ISDB-T signals, etc.) please v
     cmake ../  
     make && sudo make install  
 
-If installed for the first time:   
+If installed for the first time: 
+
     sudo ldconfig  
 
 IIE Instituto de Ingeniería Eléctrica  
