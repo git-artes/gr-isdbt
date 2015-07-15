@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Fullseg Receiver And Measurements
-# Generated: Wed Jul 15 18:38:59 2015
+# Generated: Wed Jul 15 19:27:19 2015
 ##################################################
 
 if __name__ == '__main__':
@@ -120,7 +120,7 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         	ref_level=0,
         	sample_rate=samp_rate/(204*8.0),
         	number_rate=15,
-        	average=True,
+        	average=False,
         	avg_alpha=0.03,
         	label="BER - Reed Solomon",
         	peak_hold=False,
@@ -137,7 +137,7 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         	ref_level=0,
         	sample_rate=samp_rate,
         	number_rate=15,
-        	average=True,
+        	average=False,
         	avg_alpha=0.03,
         	label="BER - Viterbi",
         	peak_hold=False,
@@ -184,7 +184,7 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         	1, samp_rate, 5.6e6/2.0, 0.5e6, firdes.WIN_HAMMING, 6.76))
         self.isdbt_time_deinterleaver_0 = isdbt.time_deinterleaver(3, 1, 4, 12, 4, 0, 0)
         self.isdbt_symbol_demapper_0 = isdbt.symbol_demapper(3, 1, 4, 12, 64, 0, 64)
-        self.isdbt_subset_of_carriers_0 = isdbt.subset_of_carriers(96*4*13, 96*4, 3*96*4-1)
+        self.isdbt_subset_of_carriers_0 = isdbt.subset_of_carriers(96*4*13, 96*4, 13*96*4-1)
         self.isdbt_isdbt_rf_channel_decoding_0 = isdbt.isdbt_rf_channel_decoding(
             max_freq_offset=200,
             guard=0.125,
@@ -207,11 +207,12 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         	converter=forms.float_converter(),
         )
         self.Add(self._center_freq_text_box)
-        self.blocks_vector_to_stream_0_2 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, 96*4*2)
+        self.blocks_vector_to_stream_0_2 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, 96*4*12)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_null_sink_1_1 = blocks.null_sink(gr.sizeof_char*384)
         self.blocks_nlog10_ff_0_0 = blocks.nlog10_ff(1, 1, 0)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(1, 1, 0)
+        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 14)
         self.blocks_file_source_1_0 = blocks.file_source(gr.sizeof_gr_complex*1, "/home/pablofloresguridi/Artes/grabacion_casa_montecarlo2", True)
         self.blocks_file_sink_0_1 = blocks.file_sink(gr.sizeof_char*1, "/home/pablofloresguridi/Artes/test_out_HD.ts", False)
         self.blocks_file_sink_0_1.set_unbuffered(False)
@@ -220,12 +221,13 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_1_0, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.mer_probe_mer_c_0_0, 0))    
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.mer_probe_ste_cf_0_0, 0))    
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.wxgui_scopesink2_0_1_0, 0))    
         self.connect((self.blocks_nlog10_ff_0, 0), (self.wxgui_numbersink2_1_0_0_0_0, 0))    
         self.connect((self.blocks_nlog10_ff_0_0, 0), (self.wxgui_numbersink2_1_0_0_0, 0))    
         self.connect((self.blocks_throttle_0, 0), (self.low_pass_filter_0, 0))    
-        self.connect((self.blocks_vector_to_stream_0_2, 0), (self.mer_probe_mer_c_0_0, 0))    
-        self.connect((self.blocks_vector_to_stream_0_2, 0), (self.mer_probe_ste_cf_0_0, 0))    
-        self.connect((self.blocks_vector_to_stream_0_2, 0), (self.wxgui_scopesink2_0_1_0, 0))    
+        self.connect((self.blocks_vector_to_stream_0_2, 0), (self.blocks_keep_one_in_n_0, 0))    
         self.connect((self.isdbt_channel_decoding_0, 0), (self.blocks_file_sink_0_1, 0))    
         self.connect((self.isdbt_channel_decoding_0, 1), (self.blocks_nlog10_ff_0, 0))    
         self.connect((self.isdbt_channel_decoding_0, 2), (self.blocks_nlog10_ff_0_0, 0))    
