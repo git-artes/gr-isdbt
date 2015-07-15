@@ -36,7 +36,8 @@ namespace gr {
      * It receives unpacked bytes (in the case of for instance QPSK
      * of every 8 bits in each byte, 2 would be useful) and outputs 
      * decoded packed bytes (all bits are useful). Optionally, the 
-     * bit-error rate (BER) is output.  
+     * bit-error rate (BER) is output (the output is already averaged
+     * with a single-pole filter).   
      *
      */
     class ISDBT_API viterbi_decoder : virtual public gr::block

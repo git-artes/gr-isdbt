@@ -102,6 +102,10 @@ namespace gr {
             // constellation size
             d_m = log2(constellation_size);
 
+            d_last_ber_out = 0.5;
+            d_alpha_avg = 0.001; 
+
+
             /*
              * We input n bytes, each carrying m bits => nm bits
              * The result after decoding is km bits, therefore km/8 bytes.
@@ -289,8 +293,11 @@ namespace gr {
                                             out[out_count - d_ntraceback] = c;
                                             //printf("out_init[%i]: %x\n", out_count - d_ntraceback, out[out_count - d_ntraceback]);
                                             if(ber_out_connected){
+                                                //d_new_ber = 1.0-correct_bits/(16.0*d_n/(2*d_k)); 
+                                                d_new_ber = 1.0-correct_bits/(8.0*d_n/d_k); 
                                                 //ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(8.0*d_n/d_k); 
-                                                ber_out[out_count-d_ntraceback] = 1.0-correct_bits/(16.0*d_n/(2*d_k)); 
+                                                ber_out[out_count-d_ntraceback] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
+                                                d_last_ber_out = ber_out[out_count-d_ntraceback]; 
                                                 // the factorization above raises from considering how many bits 
                                                 // are actually used in the metric when depuncturing is performed. 
                                                 // Not all 16 bits are depunctured equally (the pattern may change from 
@@ -309,8 +316,12 @@ namespace gr {
                                         //  printf("out[%i]: %x\n", out_count, out[out_count]);
                                         if(ber_out_connected)
                                         {
-                                            ber_out[out_count] = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                                
+                                            //d_new_ber = 1.0-correct_bits/(16.0*d_n/(2*d_k)); 
+                                            d_new_ber = 1.0-correct_bits/(8.0*d_n/d_k); 
+                                            ber_out[out_count] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
                                             //printf("ber_out-pre=%f\n",ber_out[out_count]); 
+                                            d_last_ber_out = ber_out[out_count]; 
                                         }
                                     }
 
