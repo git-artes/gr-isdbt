@@ -29,10 +29,12 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief It demaps the symbol in each carrier. TODO Different 
-     * constellations may be used in different carriers. Not implemented 
-     * so far. 
+     * \brief It demaps the symbol in each carrier and then outputs each code-word
+     * serially. 
+     *
      * \ingroup isdbt
+     *
+     * The implementation is optimized for the constellation used in ISDB-T. 
      *
      */
     class ISDBT_API symbol_demapper : virtual public gr::sync_block
@@ -43,10 +45,17 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::symbol_demapper.
        *
-       * To avoid accidental use of raw pointers, isdbt::symbol_demapper's
-       * constructor is in a private implementation
-       * class. isdbt::symbol_demapper::make is the public interface for
-       * creating new instances.
+       * \param mode The transmission mode (either 1, 2 or 3). 
+       * \param segments_A The number of segments in layer A. 
+       * \param constellation_size_A The constellation used in layer A (4 for QPSK, 16 for 16QAM 
+       * and 64 for 64QAM). 
+       * \param segments_B The number of segments in layer B. 
+       * \param constellation_size_B The constellation used in layer B (4 for QPSK, 16 for 16QAM 
+       * and 64 for 64QAM). 
+       * \param segments_C The number of segments in layer C. 
+       * \param constellation_size_C The constellation used in layer C (4 for QPSK, 16 for 16QAM 
+       * and 64 for 64QAM). 
+       *
        */
       static sptr make(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C);
     };

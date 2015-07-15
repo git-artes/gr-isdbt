@@ -32,6 +32,10 @@ namespace gr {
      * \brief This block outputs the subset of "carriers" indicated by 
      * first and last. It is mostly used for debugging purposes, specially 
      * when we want to check a certain segment. 
+     *
+     * However, it may also be used to obtain certain segments in a ISDB-T
+     * transmission. 
+     *
      * \ingroup isdbt
      *
      */
@@ -43,10 +47,12 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::subset_of_carriers.
        *
-       * To avoid accidental use of raw pointers, isdbt::subset_of_carriers's
-       * constructor is in a private implementation
-       * class. isdbt::subset_of_carriers::make is the public interface for
-       * creating new instances.
+       * \param total The total number of carriers in the input vector (0 is the first one). 
+       * \param first The output will correspond to a vector beginning with this 
+       * index
+       * \param last The output will correspond to a vector ending with this index (last is 
+       * thus included in the output). 
+       *
        */
       static sptr make(int total, int first, int last);
     };

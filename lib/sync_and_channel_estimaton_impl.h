@@ -82,21 +82,41 @@ namespace gr {
                 int d_current_symbol;
                 int d_previous_symbol; 
 
-                int is_sync_start(int nitems);
-
+                /*!
+                 * Given a carrier index, this method returns the value that a pilot would have in 
+                 * such position. 
+                 */
                 gr_complex get_pilot_value(int index);
 
-                // Generate PRBS
+                /*!
+                 * This method constructs the pseudo-random sequence wk used by the standard. 
+                 */
                 void generate_prbs();
 
+                /*!
+                 * Given a fft_size (i.e. a mode), this method assigns an array where the position 
+                 * of the tmcc pilots are indicated. 
+                 */
                 void tmcc_positions(int fft);
 
+                /*!
+                 * \brief This method is responsible for the integer frequency correction. 
+                 *
+                 * To achieve this, for every possible value of frequency offset it will calculate a certain correlation 
+                 * function, and calculate its maximum (see our webpage for further info on the algorithm). The estimated 
+                 * frequency offset is stored in d_freq_offset. The correction is left to a separate function. 
+                 */
                 void process_tmcc_data(const gr_complex * in);
 
-                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
+//                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
 
                 /*
-                 * Returns the relative symbol index based on where are the SPs
+                 * \brief Calculates the relative symbol index based on where are the SPs and then 
+                 * equalizes the channel. 
+                 *
+                 * Similarly to the TMCC case, this method considers the four possible scattered pilot dispositions 
+                 * and calculates a certain correlation (see our webpage for further info on the algorithm). Once the 
+                 * SP are located, channel taps are estimated and equalization applied. 
                  */
                 void process_sp_data(const gr_complex * in);
 

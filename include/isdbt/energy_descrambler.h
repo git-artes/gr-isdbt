@@ -29,7 +29,8 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief An implementation of the energy descrambler block as specified by 
+     * the standard. 
      * \ingroup isdbt
      *
      */

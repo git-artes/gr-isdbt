@@ -29,11 +29,13 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief Performs frequency de-interleaver: de-randomization, de-rotation and
-     * block de-interleaving. TODO: this block does not currently support differential 
-     * modulation, which requires a separate treatment in the block de-interleaver. It will
-     * assume all segments are coherently modulated. 
+     * \brief Performs frequency de-interleaving, but is intended to be used
+     * only for the 1-seg receiver (mostly to avoid unnecessary processing). 
+     *
      * \ingroup isdbt
+     *
+     * This block thus only performs de-randomization. For a full-seg receiver 
+     * please use the block frequency_deinterleaver. 
      *
      */
     class ISDBT_API frequency_deinterleaver_1seg : virtual public gr::sync_block
@@ -44,10 +46,7 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::frequency_deinterleaver_1seg.
        *
-       * To avoid accidental use of raw pointers, isdbt::frequency_deinterleaver_1seg's
-       * constructor is in a private implementation
-       * class. isdbt::frequency_deinterleaver_1seg::make is the public interface for
-       * creating new instances.
+       * \param mode The transmission mode (either 1, 2 or 3). 
        */
       static sptr make(int mode);
     };

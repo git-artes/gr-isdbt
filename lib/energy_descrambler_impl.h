@@ -42,7 +42,15 @@ namespace gr {
 
       int d_offset;
 
+
+      /*! 
+       * Initialize the PRBS (pseudo-random bit-sequence) generator. 
+       */
       void init_prbs(); 
+
+      /*!
+       * Advance the PRBS (pseudo-random bit-sequence) generator clock steps. 
+       */
       int clock_prbs(int clocks);
 
      public:

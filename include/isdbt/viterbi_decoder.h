@@ -29,8 +29,14 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief A very fast implementation of a Viterbi decoder.     
+     *
      * \ingroup isdbt
+     *
+     * It receives unpacked bytes (in the case of for instance QPSK
+     * of every 8 bits in each byte, 2 would be useful) and outputs 
+     * decoded packed bytes (all bits are useful). Optionally, the 
+     * bit-error rate (BER) is output.  
      *
      */
     class ISDBT_API viterbi_decoder : virtual public gr::block
@@ -41,10 +47,9 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::viterbi_decoder.
        *
-       * To avoid accidental use of raw pointers, isdbt::viterbi_decoder's
-       * constructor is in a private implementation
-       * class. isdbt::viterbi_decoder::make is the public interface for
-       * creating new instances.
+       * \param constellation_size The modulation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM). 
+       * \param rate The coding rate (0 for 1/2, 1 for 2/3, 2 for 3/4, 3 for 5/6 and 4 for 7/8). 
+       *
        */
       static sptr make(int constellation_size, int rate);
     };

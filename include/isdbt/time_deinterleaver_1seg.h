@@ -29,8 +29,12 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief This a Forney interleaver as specified by the standard. However, this block 
+     * is intended to be used in a 1-seg receiver (mainly to avoid unnecessary processing). 
      * \ingroup isdbt
+     *
+     * In other words, this block is simply one of the 13 sub-blocks that conform the 
+     * time_deinterleaver block, which should be used for a full-seg receiver. 
      *
      */
     class ISDBT_API time_deinterleaver_1seg : virtual public gr::sync_block
@@ -41,10 +45,8 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::time_deinterleaver_1seg.
        *
-       * To avoid accidental use of raw pointers, isdbt::time_deinterleaver_1seg's
-       * constructor is in a private implementation
-       * class. isdbt::time_deinterleaver_1seg::make is the public interface for
-       * creating new instances.
+       * \param mode The transmission mode (either 1, 2 or 3). 
+       * \param length The interleaver's length. 
        */
       static sptr make(int mode, int length);
     };

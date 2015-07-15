@@ -55,9 +55,30 @@ namespace gr {
                 int d_noutput_B; 
                 int d_noutput_C; 
                 
+                /*!
+                 * \brief Given an incoming complex symbol, it outputs the corresponding bit-word assuming a 
+                 * QPSK modulation. 
+                 *
+                 * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
+                 */
                 unsigned int find_constellation_value_qpsk(gr_complex val);
+            
+                /*!
+                 * \brief Given an incoming complex symbol, it outputs the corresponding bit-word assuming a 
+                 * 16QAM modulation. 
+                 *
+                 * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
+                 */
 				unsigned int find_constellation_value_16qam(gr_complex val);
-				unsigned int find_constellation_value_64qam(gr_complex val);
+
+				 /*!
+                 * \brief Given an incoming complex symbol, it outputs the corresponding bit-word assuming a 
+                 * 64QAM modulation. 
+                 *
+                 * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
+                 */
+                unsigned int find_constellation_value_64qam(gr_complex val);
+
             public:
                 symbol_demapper_impl(int mode, int segments_A, int constellation_size_A, int segments_B, int constellation_size_B, int segments_C, int constellation_size_C);
                 ~symbol_demapper_impl();

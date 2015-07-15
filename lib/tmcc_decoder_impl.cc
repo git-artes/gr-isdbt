@@ -248,10 +248,10 @@ namespace gr {
         }
 
         /*
-         * Given a set of bits in the form of a deque<char>, it checks whether or not its BCH code is correct. 
+         * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
          */
         int 
-            tmcc_decoder_impl::tmcc_parity_check(std::deque<char> d_rcv_tmcc_data)
+            tmcc_decoder_impl::tmcc_parity_check( std::deque<char> d_rcv_tmcc_data )
             {
 
                 int n = 273,
@@ -553,6 +553,10 @@ namespace gr {
                             }
                             printf("TMCC OK\n"); 
                         }
+                        else
+                        {
+                            printf("TMCC NOT OK\n");
+                        }
                     }
                 }
                 if(!end_frame)
@@ -710,43 +714,6 @@ namespace gr {
                         out[i*d_total_data_carriers + data_carrier] = in[i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]]; 
                     }
 
-                    /*
-                    // Declare and initialize to zero the number of data carrier, spilot, acpilot and tmcc pilot found
-                    int carrier_out = 0;
-                    int spilot_index = 0;
-                    int acpilot_index = 0;
-                    int tmccpilot_index = 0;
-
-                    // We will determinate which kind of carrier is each. If we find a data carrier, we let it out
-                    for (int carrier = 0; carrier < (d_active_carriers - 1);carrier++) {
-
-                    // We see if the current carrier is an scattered pilot
-                    if (carrier == (12 * spilot_index + 3 * (d_symbol_index % 4))) {
-                    spilot_index++;
-
-                    } else {
-                    // We see if the current carrier is an AC pilot
-                    if ((carrier == d_ac_carriers[acpilot_index]))
-                    {
-                    acpilot_index++;
-
-                    } else {
-                    // We see if the current carrier is a tmcc pilot
-                    if ((carrier == tmcc_carriers[tmccpilot_index])) {
-                    tmccpilot_index++;
-
-                    } else {
-                    // If is none of then we let the carrier out in the proper order
-                    //out[carrier_out] = in[i * d_active_carriers + carrier];
-                    gr_complex salida = in[i*d_active_carriers + carrier]; 
-                    out[i*d_data_carriers_per_segment*d_total_segments + (d_segments_positions[carrier_out/d_data_carriers_per_segment]*d_data_carriers_per_segment) + (carrier_out % d_data_carriers_per_segment) ] = salida;
-                    carrier_out++;
-                    }
-                    }
-                    }
-                    }
-                    //printf("data carriers: %d\n",carrier_out);
-                    */
 
 
                 }

@@ -42,10 +42,10 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::bit_deinterleaver.
        *
-       * To avoid accidental use of raw pointers, isdbt::bit_deinterleaver's
-       * constructor is in a private implementation
-       * class. isdbt::bit_deinterleaver::make is the public interface for
-       * creating new instances.
+       * \param mode Transmission mode (either 1, 2 or 3). 
+       * \param segments The number of segments to be de-interleaved. 
+       * \param constellation_size The constellation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM). 
+       *
        */
       static sptr make(int mode, int segments, int constellation_size);
     };

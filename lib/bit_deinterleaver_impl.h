@@ -34,9 +34,6 @@ namespace gr {
          static const int d_total_segments; 
          static const int d_total_layers; 
 		 static const int d_layer;
-		 //static const int d_layer_A;
-		 //static const int d_layer_B;
-		 //static const int d_layer_C;
 
          static const int d_delay_qpsk[]; 
          static const int d_delay_16qam[]; 
@@ -47,20 +44,8 @@ namespace gr {
          int d_num_bits;
 		 int d_nsegments;
          const int* d_delay;
-         //int d_const_size_A;
-		 //int d_const_size_B;
-		 //int d_const_size_C; 
-         //int d_num_bits_A;
-		 //int d_num_bits_B;
-		 //int d_num_bits_C;
-		 //int d_nsegments_A;
-	 	 //int d_nsegments_B;
-		 //int d_nsegments_C; 
          int d_carriers_per_segment; 
          int d_noutput; 
-         //const int* d_delay_A;
-		 //const int* d_delay_B;
-		 //const int* d_delay_C; 
 
          //Here are the symbols. To create an output I have to check
          //several symbols back. Where and how many depends on the 

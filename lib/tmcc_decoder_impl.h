@@ -133,21 +133,40 @@ namespace gr {
 
                 /*METHODS*/
 
-				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data);
+                /*!
+                * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
+                */
+				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data );
 
 				void print_modulation_scheme(modulation_scheme_t modulation_scheme);
 				void print_convolutional_code(convolutional_code_t convolutional_code);
 				void print_interleaving_length(interleaving_length_t interleaving_length);
 				void print_number_segments(number_segments_t number_segments);
+
+                /*! 
+                 * Prints the decoded TMCC in a somewhat nice and human-readable format. 
+                 */
 				int tmcc_print(std::deque<char> d_rcv_tmcc_data);
                 
-				// TMCC data processing metod
+                /*!
+                 * \brief The method decodes the TMCC carriers of a given symbol, thus appending a new bit 
+                 * to those received so far. If 203 were received since the last complete tmcc, we check whether 
+                 * the sync word if present at the beginning, and if it passes the BCH parity code. 
+                 *
+                 * Our present implementation simply performs the differential demodulation (TMCC is transmitted in 
+                 * DBPSK) for every carrier, and then performs a majority vote between all carriers to verify which
+                 * bit was sent. 
+                 */
                 int process_tmcc_data(const gr_complex * in);
 
-                // ...
+                /*!
+                 * Sets several parameters used throughout the rest of the methods
+                 */
                 void set_carriers_parameters(int payload);
 
-                // it constructs the d_data_carriers_symX arrays. 
+                /*!
+                 *  it constructs the d_data_carriers list, which contains the list of carriers that have actual DTV data. 
+                 */
                 void construct_data_carriers_list();
 
 

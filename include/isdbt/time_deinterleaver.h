@@ -29,7 +29,10 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief This is simply a Forney interleaver as specified by the standard. 
+     *
+     * There are a total of 13 identical interleaving sub-blocks, one for each segment. 
+     *
      * \ingroup isdbt
      *
      */
@@ -41,13 +44,20 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::time_deinterleaver.
        *
-       * To avoid accidental use of raw pointers, isdbt::time_deinterleaver's
-       * constructor is in a private implementation
-       * class. isdbt::time_deinterleaver::make is the public interface for
-       * creating new instances.
+       * Since each layer may have its own interleaving length, we require the number of 
+       * segments of each layer, and its associated parmeters. 
+       *
+       * \param mode The transmission mode (either 1, 2 or 3). 
+       * \param segments_A The number of segments in layer A. 
+       * \param length_A The interleaver's length configured in layer A. 
+       * \param segments_B The number of segments in layer B. 
+       * \param length_B The interleaver's length configured in layer B. 
+       * \param segments_C The number of segments in layer C. 
+       * \param length_C The interleaver's length configured in layer C. 
+       *
        */
       //static sptr make(int mode, int length);
-      static sptr make(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int lenght_C); 
+      static sptr make(int mode, int segments_A, int length_A, int segments_B, int length_B, int segments_C, int length_C); 
     };
 
   } // namespace isdbt

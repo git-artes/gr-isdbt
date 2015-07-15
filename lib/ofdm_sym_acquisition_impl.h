@@ -26,10 +26,28 @@
 namespace gr {
   namespace isdbt {
 
+     /*!
+     * \brief The block performs one-shot OFDM symbol and fractional frequency synchronization 
+     * based on the classical method described by Jan-Jaap van de Beek et al. 
+     * in "ML Estimation of Time and Frequency Offset in OFDM Systems" (IEEE Transactions on Signal 
+     * Processing, vol. 45, no. 7, July 1997). 
+     * 
+     * \ingroup isdbt 
+     *
+     * This block receives the stream of complex baseband samples corresponding to several 
+     * OFDM symbols (cyclic prefix included), and outputs a vector corresponding to the 
+     * useful part of the symbol. Furthermore, coarse (or fractional) frequency synchronization 
+     * is applied. Optionally, the frequency error estimate is output. 
+     *
+     * To improve performance, operation is separated into two stages: acquisition and tracking. In 
+     * acquisition, the likelihood function is calculated for the complete symbol and CP. In tracking
+     * (used after acquisition was acquired), likelihood is only calculated in a small interval around 
+     * the last symbol-begin index. 
+     *
+     */
     class ofdm_sym_acquisition_impl : public ofdm_sym_acquisition
     {
      private:
-      // Nothing to declare in this block.
       int d_fft_length;
       int d_cp_length;
       int d_extended_range;
@@ -49,7 +67,6 @@ namespace gr {
 
       // For peak detector
       float d_threshold_factor_rise;
-      float d_threshold_factor_fall;
       float d_avg_alpha;
       float d_avg_max;
       float d_avg_min; 
@@ -79,15 +96,43 @@ namespace gr {
       int d_to_consume_tmp;
       int d_to_out_tmp;
 
+      /*!
+       * \brief Calculates the likelihood function, and outputs the position of its maximum. 
+       *
+       * Given the input, it calculates the resulting likelihood function between indices lookup_stop and lookup_start. 
+       * It returns the beginning of the CP (in cp_pos), and an exponential modulated with minus the estimated frequency error (in 
+       * the pointer derot). to_consume and to_out was used as indicators of whether the peak was correctly found or not. Now 
+       * the return value is used (either true or false). 
+       *
+       */
       int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
-      int cp_sync(const gr_complex * in, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
-      
-      int peak_detect_init(float threshold_factor_rise, float threshold_factor_fall, int look_ahead, float alpha);
-      
+     
+     /*!
+      * \brief Initializes the parameters used in the peak_detect_process. 
+      *
+      * \param threshold_factor_rise The algorithm keeps an average of minimum and maximum value. A peak is considered valid
+      * when it's bigger than avg_max - threshold_factor_rise(avg_max-avg_min). 
+      * \param alpha The parameter used to update both the average maximum and minimum (exponential filter, or single-root iir). 
+      *
+      */ 
+      int peak_detect_init(float threshold_factor_rise, float alpha);
+     
+      /*!
+       * \brief Given datain and its length, the method return the peak position and its value in the form of an array (for 
+       * "historical" reasons, since it's always a single value). 
+       */ 
       int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
 
+      /*!
+       * \brief Sends a tag downstream that signals that acquisition was successfully performed (or that we lost synchronization 
+       * and we have regained it). 
+       */
       void send_sync_start();
 
+      /*!
+       * \brief Using the vector derot calculated by ml_sync (an exponential modulated with minus the estimated frequency error), 
+       * this method simply multiplies it by the input and saves it in the output. 
+       */
       void derotate(const gr_complex * in, gr_complex *out);
 
      public:

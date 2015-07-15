@@ -48,18 +48,23 @@ namespace gr {
          /*The current random permutation matrix*/
          const int * d_random_perm; 
 
-         /*
-          * It simply derandomizes the carriers of each segment as specified by the standard. 
+         /*!
+          * It simply derandomizes the carriers of each segment as specified by the standard. More 
+          * details are commented in the cc code. 
           */
          gr_complex * derandomize(const gr_complex * random, gr_complex * not_random); 
          
-         /*
-          * It simply derotates the carriers of each segment as specified by the standard. 
+         /*!
+          * It simply derotates the carriers of each segment as specified by the standard. More 
+          * details are commented in the cc code. 
+          
           */
          gr_complex * derotate(const gr_complex * rotated, gr_complex * derotated); 
          
-         /*
-          * It performs the block inter-segment interleaving as specified in the standard. TODO It currently 
+         /*!
+          * It performs the inter-segment interleaving as specified in the standard. More 
+          * details are commented in the cc code. 
+          TODO It currently 
           * does not support differential modulation schemes, which would require a separate interleaving. 
           */
          gr_complex * intersegment_deinterleave(const gr_complex * interleaved, gr_complex * deinterleaved); 

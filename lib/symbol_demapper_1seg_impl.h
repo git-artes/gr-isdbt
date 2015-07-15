@@ -42,7 +42,11 @@ namespace gr {
                 const gr_complex * d_constellation; 
                 int d_carriers_per_segment; 
                 int d_noutput; 
-                
+
+                /*!
+                 * TODO This function is currently not optimized and is somewhat slow. 
+                 * Copy the implementation of the full-seg version. 
+                 */
                 int find_constellation_value(gr_complex val); 
             public:
                 symbol_demapper_1seg_impl(int mode, int constellation_size);
