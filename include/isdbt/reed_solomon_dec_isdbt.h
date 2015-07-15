@@ -34,7 +34,8 @@ namespace gr {
      *
      * \ingroup isdbt
      *
-     * Optionally, bit-error rate (BER) is output. 
+     * Optionally, bit-error rate (BER) is output (which is already averaged 
+     * by a single-root filter).
      *
      */
     class ISDBT_API reed_solomon_dec_isdbt : virtual public gr::block

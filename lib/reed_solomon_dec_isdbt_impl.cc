@@ -64,6 +64,9 @@ namespace gr {
             }
             memset(&d_in[0], 0, d_n);
 
+            d_last_ber_out = 0.5;
+            d_alpha_avg = 0.001; 
+
         }
 
         /*
@@ -122,6 +125,9 @@ namespace gr {
                         // the reed-solomon decoder has given up on correcting the TS, and is outputting the input. 
                         // In order to generate a useable TS, we will not ouput these TSP.  
                         //printf("RS: impossible to correct\n");
+                        // We also reset the BER average. 
+                        d_last_ber_out = 0.5; 
+
                         consume_each(i+1); 
                         return i; 
                     }
@@ -144,7 +150,9 @@ namespace gr {
                                 //if (total_bit_errors>0)
                                 //    printf("out: %x; in: %x; total_bit_errors: %i; error: %x\n", out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
                             }
-                            ber_out[i] = total_bit_errors/(float)(out_bsize*8.0); 
+                            d_new_ber = total_bit_errors/(float)(out_bsize*8.0); 
+                            ber_out[i] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
+                            d_last_ber_out = ber_out[i]; 
                             //ber_out[i*noutput_items] = 0.5; 
                             //if (total_bit_errors>0)
                              //   printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 

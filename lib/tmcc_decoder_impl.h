@@ -136,7 +136,7 @@ namespace gr {
                 /*!
                 * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
                 */
-				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data );
+				int tmcc_parity_check();
 
 				void print_modulation_scheme(modulation_scheme_t modulation_scheme);
 				void print_convolutional_code(convolutional_code_t convolutional_code);
@@ -144,9 +144,9 @@ namespace gr {
 				void print_number_segments(number_segments_t number_segments);
 
                 /*! 
-                 * Prints the decoded TMCC in a somewhat nice and human-readable format. 
+                 * Prints the decoded TMCC in d_rcv_tmcc_data in a somewhat nice and human-readable format. 
                  */
-				int tmcc_print(std::deque<char> d_rcv_tmcc_data);
+				int tmcc_print();
                 
                 /*!
                  * \brief The method decodes the TMCC carriers of a given symbol, thus appending a new bit 

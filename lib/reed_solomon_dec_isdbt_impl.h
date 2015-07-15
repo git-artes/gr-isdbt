@@ -58,6 +58,14 @@ namespace gr {
 
       reed_solomon d_rs;
 
+      // Used to average the BER
+      float d_alpha_avg;
+      // the last ber_out, used to average
+      float d_last_ber_out; 
+      // the new ber_out, used to average
+      float d_new_ber; 
+
+
      public:
       reed_solomon_dec_isdbt_impl();
       ~reed_solomon_dec_isdbt_impl();

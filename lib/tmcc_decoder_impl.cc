@@ -251,7 +251,7 @@ namespace gr {
          * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
          */
         int 
-            tmcc_decoder_impl::tmcc_parity_check( std::deque<char> d_rcv_tmcc_data )
+            tmcc_decoder_impl::tmcc_parity_check( )
             {
 
                 int n = 273,
@@ -260,10 +260,13 @@ namespace gr {
                     i, j, s;
 
                 char syndrome[r];
-                unsigned char tmcc_large[n];
+                //unsigned char tmcc_large[n];
 
-                memset(&tmcc_large[0], 0, 89);
-                memcpy(&tmcc_large[89], &d_rcv_tmcc_data[20], 184);
+                std::deque<char> tmcc_large(89, 0);
+                tmcc_large.insert(tmcc_large.end(), d_rcv_tmcc_data.begin()+20,d_rcv_tmcc_data.end()); 
+
+                //memset(&tmcc_large[0], 0, 89);
+                //memcpy(&tmcc_large[89], &d_rcv_tmcc_data[20], 184);
 
                 s = 0;
                 for (j=0;j<r;j++){
@@ -415,7 +418,7 @@ namespace gr {
 			
 			}
         int
-            tmcc_decoder_impl::tmcc_print(std::deque<char> d_rcv_tmcc_data){
+            tmcc_decoder_impl::tmcc_print(){
 				               				
 				/*We get the modulation scheme information for each layer*/
 				modulation_scheme_t modulation_scheme_A, modulation_scheme_B, modulation_scheme_C;
@@ -533,7 +536,7 @@ namespace gr {
                     if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin())
                             || std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) )
                     {
-                        if (!tmcc_parity_check(d_rcv_tmcc_data))
+                        if (!tmcc_parity_check())
                         {
                             // Then we recognize the end of an ISDB-T frame
                             end_frame = 1;
@@ -549,7 +552,7 @@ namespace gr {
 */
                             if (d_print_params)
                             {
-                                tmcc_print(d_rcv_tmcc_data);
+                                tmcc_print();
                             }
                             printf("TMCC OK\n"); 
                         }

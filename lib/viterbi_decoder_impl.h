@@ -81,6 +81,13 @@ namespace gr {
       // This is used to get rid of traceback on the first frame
       int d_init;
 
+      // Used to average the BER
+      float d_alpha_avg;
+      // the last ber_out, used to average
+      float d_last_ber_out; 
+      // the new ber_out, used to average
+      float d_new_ber; 
+
      public:
       viterbi_decoder_impl(int constellation_size, int rate);
       ~viterbi_decoder_impl();
