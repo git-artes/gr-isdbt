@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Fullseg Receiver And Measurements
-# Generated: Wed Jul 15 16:44:39 2015
+# Generated: Wed Jul 15 18:38:59 2015
 ##################################################
 
 if __name__ == '__main__':
@@ -110,6 +110,40 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         	show_gauge=True,
         )
         self.n_0.GetPage(0).GridAdd(self.wxgui_numbersink2_1_0_1.win, 1, 0, 1, 1)
+        self.wxgui_numbersink2_1_0_0_0_0 = numbersink2.number_sink_f(
+        	self.n_0.GetPage(0).GetWin(),
+        	unit="error probability",
+        	minval=-20,
+        	maxval=0,
+        	factor=1.0,
+        	decimal_places=7,
+        	ref_level=0,
+        	sample_rate=samp_rate/(204*8.0),
+        	number_rate=15,
+        	average=True,
+        	avg_alpha=0.03,
+        	label="BER - Reed Solomon",
+        	peak_hold=False,
+        	show_gauge=True,
+        )
+        self.n_0.GetPage(0).GridAdd(self.wxgui_numbersink2_1_0_0_0_0.win, 2, 1, 1, 1)
+        self.wxgui_numbersink2_1_0_0_0 = numbersink2.number_sink_f(
+        	self.n_0.GetPage(0).GetWin(),
+        	unit="error probability",
+        	minval=-10,
+        	maxval=0,
+        	factor=1.0,
+        	decimal_places=7,
+        	ref_level=0,
+        	sample_rate=samp_rate,
+        	number_rate=15,
+        	average=True,
+        	avg_alpha=0.03,
+        	label="BER - Viterbi",
+        	peak_hold=False,
+        	show_gauge=True,
+        )
+        self.n_0.GetPage(0).GridAdd(self.wxgui_numbersink2_1_0_0_0.win, 2, 0, 1, 1)
         self.wxgui_numbersink2_1_0_0 = numbersink2.number_sink_f(
         	self.n_0.GetPage(0).GetWin(),
         	unit="normalized to tx power",
@@ -129,7 +163,7 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         self.n_0.GetPage(0).GridAdd(self.wxgui_numbersink2_1_0_0.win, 1, 1, 1, 1)
         self.wxgui_numbersink2_1_0 = numbersink2.number_sink_f(
         	self.n_0.GetPage(0).GetWin(),
-        	unit="db",
+        	unit="dB",
         	minval=0,
         	maxval=100,
         	factor=1.0,
@@ -176,6 +210,8 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         self.blocks_vector_to_stream_0_2 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, 96*4*2)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_null_sink_1_1 = blocks.null_sink(gr.sizeof_char*384)
+        self.blocks_nlog10_ff_0_0 = blocks.nlog10_ff(1, 1, 0)
+        self.blocks_nlog10_ff_0 = blocks.nlog10_ff(1, 1, 0)
         self.blocks_file_source_1_0 = blocks.file_source(gr.sizeof_gr_complex*1, "/home/pablofloresguridi/Artes/grabacion_casa_montecarlo2", True)
         self.blocks_file_sink_0_1 = blocks.file_sink(gr.sizeof_char*1, "/home/pablofloresguridi/Artes/test_out_HD.ts", False)
         self.blocks_file_sink_0_1.set_unbuffered(False)
@@ -184,11 +220,15 @@ class fullseg_receiver_and_measurements(grc_wxgui.top_block_gui):
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_1_0, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.blocks_nlog10_ff_0, 0), (self.wxgui_numbersink2_1_0_0_0_0, 0))    
+        self.connect((self.blocks_nlog10_ff_0_0, 0), (self.wxgui_numbersink2_1_0_0_0, 0))    
         self.connect((self.blocks_throttle_0, 0), (self.low_pass_filter_0, 0))    
         self.connect((self.blocks_vector_to_stream_0_2, 0), (self.mer_probe_mer_c_0_0, 0))    
         self.connect((self.blocks_vector_to_stream_0_2, 0), (self.mer_probe_ste_cf_0_0, 0))    
         self.connect((self.blocks_vector_to_stream_0_2, 0), (self.wxgui_scopesink2_0_1_0, 0))    
         self.connect((self.isdbt_channel_decoding_0, 0), (self.blocks_file_sink_0_1, 0))    
+        self.connect((self.isdbt_channel_decoding_0, 1), (self.blocks_nlog10_ff_0, 0))    
+        self.connect((self.isdbt_channel_decoding_0, 2), (self.blocks_nlog10_ff_0_0, 0))    
         self.connect((self.isdbt_frequency_deinterleaver_0, 0), (self.isdbt_time_deinterleaver_0, 0))    
         self.connect((self.isdbt_isdbt_rf_channel_decoding_0, 0), (self.isdbt_frequency_deinterleaver_0, 0))    
         self.connect((self.isdbt_isdbt_rf_channel_decoding_0, 0), (self.isdbt_subset_of_carriers_0, 0))    

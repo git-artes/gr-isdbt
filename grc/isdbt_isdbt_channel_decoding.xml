@@ -97,4 +97,14 @@
     <type>byte</type>
     <vlen>1</vlen>
   </source>
+  <source>
+    <name>BER - RS</name>
+    <type>float</type>
+    <optional>1</optional>
+  </source>   
+  <source>
+    <name>BER - Viterbi</name>
+    <type>float</type>
+    <optional>1</optional>
+  </source>
 </block>

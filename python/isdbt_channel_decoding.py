@@ -16,7 +16,8 @@ class isdbt_channel_decoding(gr.hier_block2):
         gr.hier_block2.__init__(
             self, "isdbt_channel_decoding",
             gr.io_signature(1, 1, gr.sizeof_char*layer_segments*96*2**(mode-1)),
-            gr.io_signature(1, 1, gr.sizeof_char*1),
+            gr.io_signaturev(3, 3, [gr.sizeof_char*1, gr.sizeof_float*1, gr.sizeof_float*1]),
+            
         )
 
         ##################################################
@@ -51,9 +52,12 @@ class isdbt_channel_decoding(gr.hier_block2):
         self.connect((self.isdbt_bit_deinterleaver_0_0, 0), (self.isdbt_viterbi_decoder_0, 0))    
         self.connect((self.isdbt_byte_deinterleaver_0_0, 0), (self.isdbt_energy_descrambler_0_0, 0))    
         self.connect((self.isdbt_energy_descrambler_0_0, 0), (self.isdbt_reed_solomon_dec_isdbt_0_0, 0))    
-        self.connect((self.isdbt_reed_solomon_dec_isdbt_0_0, 0), (self.blocks_vector_to_stream_0_0, 0))    
+        self.connect((self.isdbt_reed_solomon_dec_isdbt_0_0, 0), (self.blocks_vector_to_stream_0_0, 0))         
+        self.connect((self.isdbt_reed_solomon_dec_isdbt_0_0, 1), (self, 1))    
         self.connect((self.isdbt_viterbi_decoder_0, 0), (self.isdbt_byte_deinterleaver_0_0, 0))    
+        self.connect((self.isdbt_viterbi_decoder_0, 1), (self, 2))    
         self.connect((self, 0), (self.isdbt_bit_deinterleaver_0_0, 0))    
+            
 
 
     def get_layer_segments(self):
