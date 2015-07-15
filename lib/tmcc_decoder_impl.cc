@@ -251,7 +251,7 @@ namespace gr {
          * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
          */
         int 
-            tmcc_decoder_impl::tmcc_parity_check()
+            tmcc_decoder_impl::tmcc_parity_check( std::deque<char> d_rcv_tmcc_data )
             {
 
                 int n = 273,
@@ -533,7 +533,7 @@ namespace gr {
                     if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin())
                             || std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) )
                     {
-                        if (!tmcc_parity_check())
+                        if (!tmcc_parity_check(d_rcv_tmcc_data))
                         {
                             // Then we recognize the end of an ISDB-T frame
                             end_frame = 1;
@@ -552,6 +552,10 @@ namespace gr {
                                 tmcc_print(d_rcv_tmcc_data);
                             }
                             printf("TMCC OK\n"); 
+                        }
+                        else
+                        {
+                            printf("TMCC NOT OK\n");
                         }
                     }
                 }
@@ -709,6 +713,7 @@ namespace gr {
                         //printf("indice_out=%i, indice_in=%i\n",i*d_total_data_carriers + data_carrier, i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]); 
                         out[i*d_total_data_carriers + data_carrier] = in[i*d_active_carriers + d_data_carriers[d_total_data_carriers*d_symbol_index + data_carrier]]; 
                     }
+
 
 
                 }

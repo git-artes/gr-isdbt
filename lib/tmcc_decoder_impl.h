@@ -136,7 +136,7 @@ namespace gr {
                 /*!
                 * This method checks whether or not the BCH code in d_rcv_tmcc_data is correct. 
                 */
-				int tmcc_parity_check();
+				int tmcc_parity_check(std::deque<char> d_rcv_tmcc_data );
 
 				void print_modulation_scheme(modulation_scheme_t modulation_scheme);
 				void print_convolutional_code(convolutional_code_t convolutional_code);

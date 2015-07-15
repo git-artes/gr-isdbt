@@ -44,8 +44,8 @@ add_custom_command(
     OUTPUT ${BUILT_DIRS}
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating documentation with doxygen"
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 add_custom_target(doxygen_target ALL DEPENDS ${BUILT_DIRS})
