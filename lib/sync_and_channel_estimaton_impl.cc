@@ -355,12 +355,8 @@ namespace gr {
                     }
                 }
 
-                //TODO shouldn't this be performed in a separate function??
                 /*************************************************************/
                 // Keep data for channel estimator
-                // This method interpolates scattered measurements across one OFDM symbol
-                // It does not use measurements from the previous OFDM symnbols (does not use history)
-                // as it may have encountered a phase change for the current phase only
                 /*************************************************************/
 
                 // We first calculate the channel gain on the SP carriers.
@@ -377,10 +373,18 @@ namespace gr {
                 //we then calculate the gain on the CP
                 //d_channel_gain[active_carriers-1] = in[active_carriers-1]/get_pilot_value(active_carriers-1);
                 d_channel_gain[active_carriers-1] = in[active_carriers-1]/d_pilot_values[active_carriers-1];
+            }
 
-                // We then interpolate to obtain the channel gain on the rest of the carriers
+        void 
+            sync_and_channel_estimaton_impl::linearly_estimate_channel_taps()
+            {
+                // This method interpolates scattered measurements across one OFDM symbol
+                // It does not use measurements from the previous OFDM symnbols (does not use history)
+                // as it may have encountered a phase change for the current phase only
                 // TODO interpolation is too simple, a new method(s) should be implemented
                 gr_complex tg_alpha;
+                int current_sp_carrier = 0; 
+                int next_sp_carrier = 0; 
                 for (int i = 0; i < sp_carriers_size-1; i++)
                 {
                     // Current sp carrier
@@ -467,6 +471,7 @@ namespace gr {
 
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
                     process_sp_data(derotated_in);
+                    linearly_estimate_channel_taps();
                     //printf("current_symbol: %i\n", d_current_symbol); 
 
                     // Assign the output and equalize the channel

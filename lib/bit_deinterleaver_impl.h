@@ -50,6 +50,8 @@ namespace gr {
          //Here are the symbols. To create an output I have to check
          //several symbols back. Where and how many depends on the 
          //constellation size. 
+         //TODO deques are worse than circular_buffers. We should eventually migrate
+         //them all to this structure. 
          std::vector<std::deque<unsigned char> *> d_shift; 
 
 

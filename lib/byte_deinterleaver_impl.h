@@ -35,6 +35,8 @@ namespace gr {
       static const int d_M;
       
       int d_noutput; 
+      //TODO circular_buffers are superior to deques. 
+      //We should eventually migrate to them. 
       std::vector< std::deque<unsigned char> * > d_shift;
 
      public:

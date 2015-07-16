@@ -93,6 +93,8 @@ namespace gr {
                 static const int d_tmcc_sync_size;
 
                 // Keeps the rcv TMCC data, is a FIFO
+                // TODO circular_buffers are superior to deques. 
+                // We should migrate them all. 
                 std::deque<char> d_rcv_tmcc_data;
                 // Keeps the TMCC sync sequence
                 std::deque<char> d_tmcc_sync_evenv;

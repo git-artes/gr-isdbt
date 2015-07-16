@@ -110,15 +110,20 @@ namespace gr {
 
 //                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
 
-                /*
+                /*!
                  * \brief Calculates the relative symbol index based on where are the SPs and then 
-                 * equalizes the channel. 
+                 * estimates the channel taps for the current symbol in the SPs positions. 
                  *
                  * Similarly to the TMCC case, this method considers the four possible scattered pilot dispositions 
                  * and calculates a certain correlation (see our webpage for further info on the algorithm). Once the 
-                 * SP are located, channel taps are estimated and equalization applied. 
+                 * SP are located channel taps are calculated for the current scattered pilots.  
                  */
                 void process_sp_data(const gr_complex * in);
+                
+                /*!
+                 * \brief Calculates the channel taps no all the carriers based. This is the linear very simple implementation. 
+                 */
+                void linearly_estimate_channel_taps();
 
             public:
                 sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);

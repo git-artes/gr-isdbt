@@ -1,0 +1,14 @@
+This is a non-exhaustive list of things that should be done in the near-far future. These are in addition to specific changes in the code (such as performance improvements or alternative implementations), some of which are mentioned as comments in the code. 
+
+* Better channel estimation
+    The current implementation is extremely simple and not robust at all. Channel taps at the scattered pilots are calculated as a division and are assumed as true (i.e. no noise considerations). Plus, in the rest of the carriers, the estimation is simply a linear interpolation. A more robust (i.e. ML or MMSE, using time-frequency information) should be implemented since a huge performance improvements is expected with this relatively simple extension. 
+
+* Better synchronization
+    Again, the current implementation is based on a classic method from 1997. It does not include any form of feedback, nor a timing synchronization block. This is a more complex addition (it requires integrating several blocks into one), but the improvements should be important too. 
+
+* Integer frequency correction
+    Most OFDM systems use CPs for integer frequency correction. ISDB-T does not have such pilots, and we developed an heuristic method that uses the TMCC carriers, but that has little theoretical backup. Some formal analysis of the problem is needed, and the corresponding implementation included. Maybe simply using the channel taps is enough?
+    In a more specific note, the implementation should be separated into acquisition and tracking phases, so as to accelerate the whole process without compromising robustness.  
+
+* Differential modulation is not implemented. 
+    This is not a very serious matter, since differential modulation is rarely used (if at all). Moreover, it requires several changes in the implementation (interleaving, pilot positions, etc. are all changed). Eventually, it should be implemented, but it is clearly low priority. 
