@@ -54,13 +54,13 @@ namespace gr {
                 static const int tmcc_carriers_size_8k;
                 static const int tmcc_carriers_8k[];
 
-                int tmcc_carriers_size;
-                const int * tmcc_carriers;
+                int d_tmcc_carriers_size;
+                const int * d_tmcc_carriers;
 
                 // Number of sp pilots
-                int sp_carriers_size;
+                int d_sp_carriers_size;
 
-                int active_carriers;
+                int d_active_carriers;
 
                 // PRPS generator data buffer
                 char * d_wk;
@@ -76,7 +76,7 @@ namespace gr {
 
                 // Variable to keep corrected OFDM symbol
                 // It will be initialized after process_tmcc_data function
-                const gr_complex * derotated_in;
+                const gr_complex * d_derotated_in;
 
                 // indicates the symbol relative index calculated from the processing the SPs
                 int d_current_symbol;

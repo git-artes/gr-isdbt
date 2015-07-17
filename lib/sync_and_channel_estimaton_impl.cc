@@ -78,20 +78,20 @@ namespace gr {
                 {
                     case 2048:
                         {
-                            tmcc_carriers = tmcc_carriers_2k;
-                            tmcc_carriers_size = tmcc_carriers_size_2k;
+                            d_tmcc_carriers = tmcc_carriers_2k;
+                            d_tmcc_carriers_size = tmcc_carriers_size_2k;
                         }
                         break;
                     case 4096:
                         {
-                            tmcc_carriers = tmcc_carriers_4k;
-                            tmcc_carriers_size = tmcc_carriers_size_4k;
+                            d_tmcc_carriers = tmcc_carriers_4k;
+                            d_tmcc_carriers_size = tmcc_carriers_size_4k;
                         }
                         break;
                     case 8192:
                         {
-                            tmcc_carriers = tmcc_carriers_8k;
-                            tmcc_carriers_size = tmcc_carriers_size_8k;
+                            d_tmcc_carriers = tmcc_carriers_8k;
+                            d_tmcc_carriers_size = tmcc_carriers_size_8k;
                         }
                         break;
                     default:
@@ -143,7 +143,7 @@ namespace gr {
                 // Init PRBS register with 1s (reg_prbs = 111111111111)
                 unsigned int reg_prbs = (1 << 11) - 1;
 
-                for (int k = 0; k < (active_carriers); k++)
+                for (int k = 0; k < (d_active_carriers); k++)
                 {
                     d_wk[k] = (char)(reg_prbs & 0x01); // Get the LSB of the register as a character
                     int new_bit = ((reg_prbs >> 2) ^ (reg_prbs >> 0)) & 0x01; // This is the bit we will add to the register as MSB
@@ -164,44 +164,44 @@ namespace gr {
             : gr::block("sync_and_channel_estimaton",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*fft_length),
                     gr::io_signature::make(1, 2, sizeof(gr_complex)*payload_length)),
-            d_fft_length(fft_length), active_carriers(payload_length), d_freq_offset_max(offset_max)
+            d_fft_length(fft_length), d_active_carriers(payload_length), d_freq_offset_max(offset_max)
 
         {
 
             d_ninput = d_fft_length;
-            d_noutput = active_carriers;
+            d_noutput = d_active_carriers;
 
             // Number of zeros on the left of the IFFT
-            d_zeros_on_left = int(ceil((d_fft_length - (active_carriers)) / 2.0));
+            d_zeros_on_left = int(ceil((d_fft_length - (d_active_carriers)) / 2.0));
 
             // Number of sp pilots
-            sp_carriers_size = (active_carriers - 1)/12;
+            d_sp_carriers_size = (d_active_carriers - 1)/12;
 
             // Set TMCC parameters in mode 1, 2 or 3
             tmcc_positions(d_fft_length);
 
             // Get some memory
-            d_wk = new char[active_carriers];
-            d_pilot_values = new gr_complex[active_carriers];
-            d_known_phase_diff = new float[tmcc_carriers_size];
+            d_wk = new char[d_active_carriers];
+            d_pilot_values = new gr_complex[d_active_carriers];
+            d_known_phase_diff = new float[d_tmcc_carriers_size];
             d_corr_sp = new float[4];
-            d_channel_gain = new gr_complex[active_carriers];
+            d_channel_gain = new gr_complex[d_active_carriers];
 
             // Generate PRBS
             generate_prbs();
 
             // Obtain phase diff for all tmcc pilots
-            for (int i = 0; i < (tmcc_carriers_size - 1); i++)
+            for (int i = 0; i < (d_tmcc_carriers_size - 1); i++)
             {
                 //d_known_phase_diff[i] = std::norm(get_pilot_value(tmcc_carriers[i + 1]) - get_pilot_value(tmcc_carriers[i]));
-                d_known_phase_diff[i] = std::norm(d_pilot_values[tmcc_carriers[i + 1]] - d_pilot_values[tmcc_carriers[i]]);
+                d_known_phase_diff[i] = std::norm(d_pilot_values[d_tmcc_carriers[i + 1]] - d_pilot_values[d_tmcc_carriers[i]]);
             }
 
             // Allocate buffer for deroated input symbol
-            derotated_in = new gr_complex[d_fft_length];
-            if (derotated_in == NULL)
+            d_derotated_in = new gr_complex[d_fft_length];
+            if (d_derotated_in == NULL)
             {
-                std::cout << "error allocating derotated_in" << std::endl;
+                std::cout << "error allocating d_derotated_in" << std::endl;
                 return;
             }
         }
@@ -264,15 +264,15 @@ namespace gr {
                 for (int i = d_zeros_on_left - d_freq_offset_max; i < d_zeros_on_left + d_freq_offset_max; i++)
                 {
                     sum = 0;
-                    for (int j = 0; j < (tmcc_carriers_size - 1); j++)
+                    for (int j = 0; j < (d_tmcc_carriers_size - 1); j++)
                     {
 
                         if (d_known_phase_diff[j] == 0)
                             // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is zero, is because we expect both to be always in phase
-                            phase = in[i + tmcc_carriers[j + 1]]*conj(in[i + tmcc_carriers[j]]);
+                            phase = in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
                         else
                             // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is not zero, is because we expect both to be always out of phase (180 degrees)
-                            phase = -in[i + tmcc_carriers[j + 1]]*conj(in[i + tmcc_carriers[j]]);
+                            phase = -in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
                         sum +=phase;
                     }
                     if (abs(sum) > max)
@@ -331,7 +331,7 @@ namespace gr {
                 {
                     sum = 0;
                     // For every scattered pilot but the last one...
-                    for (int i=0; i < sp_carriers_size-1; i++)
+                    for (int i=0; i < d_sp_carriers_size-1; i++)
                     {
                         next_sp_carrier = 12*(i+1)+3*sym_count; // Get the position of the next sp carrier based on the value of sym_count
                         current_sp_carrier = 12*i+3*sym_count; // Get the position of the current sp carrier based on the value of sym_count
@@ -360,7 +360,7 @@ namespace gr {
                 /*************************************************************/
 
                 // We first calculate the channel gain on the SP carriers.
-                for (int i = 0; i < sp_carriers_size; i++)
+                for (int i = 0; i < d_sp_carriers_size; i++)
                 {
                     // We get each sp carrier position. We now know which is the current symbol (0, 1, 2 or 3)
                     current_sp_carrier = 12*i+3*d_current_symbol;
@@ -371,8 +371,8 @@ namespace gr {
 
                 }
                 //we then calculate the gain on the CP
-                //d_channel_gain[active_carriers-1] = in[active_carriers-1]/get_pilot_value(active_carriers-1);
-                d_channel_gain[active_carriers-1] = in[active_carriers-1]/d_pilot_values[active_carriers-1];
+                //d_channel_gain[d_active_carriers-1] = in[d_active_carriers-1]/get_pilot_value(d_active_carriers-1);
+                d_channel_gain[d_active_carriers-1] = in[d_active_carriers-1+d_zeros_on_left]/d_pilot_values[d_active_carriers-1];
             }
 
         void 
@@ -382,23 +382,19 @@ namespace gr {
                 // It does not use measurements from the previous OFDM symnbols (does not use history)
                 // as it may have encountered a phase change for the current phase only
                 // TODO interpolation is too simple, a new method(s) should be implemented
-                gr_complex tg_alpha;
                 int current_sp_carrier = 0; 
                 int next_sp_carrier = 0; 
-                for (int i = 0; i < sp_carriers_size-1; i++)
+                for (int i = 0; i < d_sp_carriers_size-1; i++)
                 {
                     // Current sp carrier
                     current_sp_carrier = 12*i+3*d_current_symbol;
                     // Next sp carrier
                     next_sp_carrier = 12*(i+1)+3*d_current_symbol;
-                    // Calculate tg(alpha) due to linear interpolation
-                    tg_alpha = (d_channel_gain[next_sp_carrier] - d_channel_gain[current_sp_carrier]) / gr_complex(12.0, 0.0);
-
 
                     // Calculate interpolation for all intermediate values
                     for (int j = 1; j < next_sp_carrier-current_sp_carrier; j++)
                     {
-                        d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier] + tg_alpha * gr_complex(j, 0.0);
+                        d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier]*gr_complex(1.0-j/12.0,0.0) +  d_channel_gain[next_sp_carrier]*gr_complex(j/12.0,0.0) ;
                     }
 
                 }
@@ -406,6 +402,7 @@ namespace gr {
                 /////////////////////////////////////////////////////////////
                 //take care of extreme cases: first carriers and last carriers
                 /////////////////////////////////////////////////////////////
+                gr_complex tg_alpha; 
                 if (d_current_symbol>0){
                     //we have not updated the gain on the first carriers
                     //we now do this with a very simple linear interpolator 
@@ -422,15 +419,17 @@ namespace gr {
 
                 // now the other extreme case: the last carriers. 
                 // we will use the last SP and the CP
-                current_sp_carrier = 12*(sp_carriers_size-1)+3*d_current_symbol;
-                next_sp_carrier = active_carriers-1;
+                current_sp_carrier = 12*(d_sp_carriers_size-1)+3*d_current_symbol;
+                next_sp_carrier = d_active_carriers-1;
+                float delta_carriers =(float) next_sp_carrier-current_sp_carrier;
+                //printf("delta_carriers: %f, current_sp_carriers: %i, next_sp_carriers: %i\n",delta_carriers, current_sp_carrier, next_sp_carrier);
+                //printf("ch_taps[%i]: %f+j%f, ch_taps[%i]: %f+j%f\n", current_sp_carrier, d_channel_gain[current_sp_carrier].real(),d_channel_gain[current_sp_carrier].imag(),next_sp_carrier, d_channel_gain[next_sp_carrier].real(),d_channel_gain[next_sp_carrier].imag());
                 tg_alpha = (d_channel_gain[next_sp_carrier] - d_channel_gain[current_sp_carrier]) / gr_complex(next_sp_carrier-current_sp_carrier, 0.0);
-                for (int j = 1; j < next_sp_carrier-current_sp_carrier; j++)
+                for (int j = 1; j < delta_carriers; j++)
                 {
-                    d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier] + tg_alpha * gr_complex(j, 0.0);
+                    d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier]*gr_complex(1.0-j/delta_carriers,0.0) +  d_channel_gain[next_sp_carrier]*gr_complex(j/delta_carriers,0.0) ;
+                    //d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier] + tg_alpha * gr_complex(j, 0.0);
                 }
-
-
 
             }
 
@@ -465,22 +464,19 @@ namespace gr {
                     //printf("d_freq_offset: %i\n", d_freq_offset); 
 
                     // Correct ofdm symbol integer frequency error
-                    //frequency_correction(&in[i* d_ninput], derotated_in);
-//                    memcpy(&derotated_in, &in[i*d_ninput+d_freq_offset], d_fft*sizeof(gr_complex));
-                    derotated_in = &in[i*d_ninput] + d_freq_offset;
+                    //frequency_correction(&in[i* d_ninput], d_derotated_in);
+//                    memcpy(&d_derotated_in, &in[i*d_ninput+d_freq_offset], d_fft*sizeof(gr_complex));
+                    d_derotated_in = &in[i*d_ninput] + d_freq_offset;
 
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
-                    process_sp_data(derotated_in);
+                    process_sp_data(d_derotated_in);
                     linearly_estimate_channel_taps();
                     //printf("current_symbol: %i\n", d_current_symbol); 
 
                     // Assign the output and equalize the channel
-                    for (int carrier = 0; carrier < active_carriers; carrier++)
+                    for (int carrier = 0; carrier < d_active_carriers; carrier++)
                     {
-                        out[i*d_noutput +carrier] = derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
-                        gr_complex salida = out[i*d_noutput+carrier];
-                        if(isinf(out[i*d_noutput + carrier].real()))
-                            printf("CUIDADO: noutput_items: %d, out[%d]=%f+j%f: gain=%f+j%f\n",noutput_items, i*d_noutput+carrier,salida.real(),salida.imag(),d_channel_gain[carrier].real(),d_channel_gain[carrier].imag());
+                        out[i*d_noutput +carrier] = d_derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
 
                         if (ch_output_connected){
                             // the channel taps output is connected
@@ -494,7 +490,7 @@ namespace gr {
                     if ((diff != 1) && (diff !=-3)){
                         printf("previous_symbol: %i, \n current_symbol: %i\n", d_previous_symbol, d_current_symbol);
                         printf("d_corr_sp = {%f, %f, %f, %f}\n",d_corr_sp[0], d_corr_sp[1], d_corr_sp[2], d_corr_sp[3]); 
-                        for (int carrier = 0; carrier < active_carriers; carrier++)
+                        for (int carrier = 0; carrier < d_active_carriers; carrier++)
                         {
                             //printf("out(%d)=%f+j*(%f); \n",i*d_noutput+carrier+1,out[i*d_noutput+carrier].real(),out[i*d_noutput+carrier].imag());
                         }

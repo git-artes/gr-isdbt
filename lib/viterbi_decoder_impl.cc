@@ -103,7 +103,7 @@ namespace gr {
             d_m = log2(constellation_size);
 
             d_last_ber_out = 0.5;
-            d_alpha_avg = 0.001; 
+            d_alpha_avg = 1e-5; 
 
 
             /*
