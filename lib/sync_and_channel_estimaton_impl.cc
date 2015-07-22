@@ -433,6 +433,75 @@ namespace gr {
 
             }
 
+        void 
+            sync_and_channel_estimaton_impl::quadratically_estimate_channel_taps()
+            {
+                // This method interpolates scattered measurements across one OFDM symbol
+                // It does not use measurements from the previous OFDM symnbols (does not use history)
+                // as it may have encountered a phase change for the current phase only
+                gr_complex y0 = 0; 
+                gr_complex y1 = 0; 
+                gr_complex y2 = 0; 
+                int current_sp_carrier; 
+                for (int i = 0; i < d_sp_carriers_size-2; i++)
+                {
+                    current_sp_carrier = 12*i+3*d_current_symbol; 
+                    y0 = d_channel_gain[current_sp_carrier];
+                    y1 = d_channel_gain[current_sp_carrier+12];
+                    y2 = d_channel_gain[current_sp_carrier+24];
+
+                    // Calculate interpolation for all intermediate values
+                    for (int j = 1; j < 12; j++)
+                    {
+                        d_channel_gain[current_sp_carrier+j] = y0*gr_complex((j-12.0)*(j-24.0)/288.0,0.0) + \
+                                                               -y1*gr_complex(j*(j-24.0)/144.0 , 0.0) + \
+                                                               y2*gr_complex(j*(j-12.0)/288.0 , 0.0); 
+                    }
+
+                }
+
+                /////////////////////////////////////////////////////////////
+                //take care of extreme cases: first carriers and last carriers
+                /////////////////////////////////////////////////////////////
+                if (d_current_symbol>0){
+                    //we have not updated the gain on the first carriers
+                    current_sp_carrier = 3*d_current_symbol; 
+                    y0 = d_channel_gain[current_sp_carrier];
+                    y1 = d_channel_gain[current_sp_carrier+12];
+                    y2 = d_channel_gain[current_sp_carrier+24];
+
+                    // Calculate interpolation for all intermediate values
+                    for (int j = -current_sp_carrier; j < 0; j++)
+                    {
+                        d_channel_gain[current_sp_carrier+j] = y0*gr_complex((j-12.0)*(j-24.0)/288.0,0.0) + \
+                                                               -y1*gr_complex(j*(j-24.0)/144.0 , 0.0) + \
+                                                               y2*gr_complex(j*(j-12.0)/288.0 , 0.0); 
+                    }
+                }
+
+                // now the other extreme case: the last carriers. 
+                // we will use the two last SP and the CP
+                current_sp_carrier = 12*(d_sp_carriers_size-2)+3*d_current_symbol;
+                int next_sp_carrier = d_active_carriers-1;
+                y0 = d_channel_gain[current_sp_carrier];
+                y1 = d_channel_gain[current_sp_carrier+12];
+                y2 = d_channel_gain[d_active_carriers-1];
+                float delta_carriers =(float) next_sp_carrier-current_sp_carrier-12;
+                    // Calculate interpolation for all intermediate values
+                    for (int j = 1; j < 12+delta_carriers; j++)
+                    {
+                        d_channel_gain[current_sp_carrier+j] = y0*gr_complex((j-12.0)*(j-(12.0+delta_carriers))/(12.0*(12.0+delta_carriers)),0.0) + \
+                                                               -y1*gr_complex(j*(j-(12.0+delta_carriers))/(12.0*delta_carriers) , 0.0) + \
+                                                               y2*gr_complex(j*(j-12.0)/((12.0+delta_carriers)*(delta_carriers)) , 0.0); 
+                    }
+                
+
+                //printf("delta_carriers: %f, current_sp_carriers: %i, next_sp_carriers: %i\n",delta_carriers, current_sp_carrier, next_sp_carrier);
+                //printf("ch_taps[%i]: %f+j%f, ch_taps[%i]: %f+j%f\n", current_sp_carrier, d_channel_gain[current_sp_carrier].real(),d_channel_gain[current_sp_carrier].imag(),next_sp_carrier, d_channel_gain[next_sp_carrier].real(),d_channel_gain[next_sp_carrier].imag());
+
+            }
+
+
         /*
          *
          * general_work function
@@ -471,6 +540,7 @@ namespace gr {
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
                     process_sp_data(d_derotated_in);
                     linearly_estimate_channel_taps();
+                    //quadratically_estimate_channel_taps();
                     //printf("current_symbol: %i\n", d_current_symbol); 
 
                     // Assign the output and equalize the channel

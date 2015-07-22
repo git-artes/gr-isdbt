@@ -121,9 +121,15 @@ namespace gr {
                 void process_sp_data(const gr_complex * in);
                 
                 /*!
-                 * \brief Calculates the channel taps no all the carriers based. This is the linear very simple implementation. 
+                 * \brief Calculates the channel taps based on pilots. This is the linear very simple implementation. 
                  */
                 void linearly_estimate_channel_taps();
+
+                /*!
+                 * \brief Calculates the channel taps based on pilots. This is the quadratic simple implementation. 
+                 */
+                void quadratically_estimate_channel_taps();
+
 
             public:
                 sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
