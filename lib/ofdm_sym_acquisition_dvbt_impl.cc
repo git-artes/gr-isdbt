@@ -1,6 +1,7 @@
 /* -*- c++ -*- */
 /*  
- * Copyright 2015
+ * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
+ * Copyright 2015, minor modifications
  *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
  *   Pablo Belzarena 
  *   Gabriel Gomez Sena 
