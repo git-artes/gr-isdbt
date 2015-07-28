@@ -50,10 +50,6 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition_dvbt.
        *
-       * To avoid accidental use of raw pointers, isdbt::ofdm_sym_acquisition_dvbt's
-       * constructor is in a private implementation
-       * class. isdbt::ofdm_sym_acquisition_dvbt::make is the public interface for
-       * creating new instances.
        */
       static sptr make(int fft_length, int cp_length, float snr);
     };
