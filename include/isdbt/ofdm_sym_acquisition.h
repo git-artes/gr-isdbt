@@ -56,8 +56,6 @@ namespace gr {
       /*!
        \brief Constructor description: The block performs one-shot OFDM symbol and fractional frequency synchronization. 
 
-       Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition.
-       
        \param fft_length The number of samples in a useful OFDM symbol (typically, a power of 2). 
        \param cp_length The number of samples in the cyclic prefix. Typically, a fraction of fft_length (however, 
        the actual number of samples is the parameter here). 

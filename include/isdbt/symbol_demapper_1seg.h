@@ -52,7 +52,7 @@ namespace gr {
       typedef boost::shared_ptr<symbol_demapper_1seg> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::symbol_demapper.
+       * \brief It demaps the symbol in each carrier and then output each code-word serially. 
        *
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param constellation_size The constellation used (4 for QPSK, 16 for 16QAM 

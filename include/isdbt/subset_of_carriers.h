@@ -53,7 +53,9 @@ namespace gr {
       typedef boost::shared_ptr<subset_of_carriers> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::subset_of_carriers.
+       * \brief This block outputs the subset of "carriers" indicated by 
+       * first and last. It is mostly used for debugging purposes, specially 
+       * when we want to check a certain segment. 
        *
        * \param total The total number of carriers in the input vector (0 is the first one). 
        * \param first The output will correspond to a vector beginning with this 

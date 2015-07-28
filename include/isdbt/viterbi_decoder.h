@@ -56,7 +56,7 @@ namespace gr {
       typedef boost::shared_ptr<viterbi_decoder> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::viterbi_decoder.
+       * \brief A very fast implementation of a Viterbi decoder.     
        *
        * \param constellation_size The modulation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM). 
        * \param rate The coding rate (0 for 1/2, 1 for 2/3, 2 for 3/4, 3 for 5/6 and 4 for 7/8). 

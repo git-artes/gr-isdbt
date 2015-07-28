@@ -50,7 +50,7 @@ namespace gr {
       typedef boost::shared_ptr<time_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::time_deinterleaver.
+       * \brief This is simply a Forney interleaver as specified by the standard. 
        *
        * Since each layer may have its own interleaving length, we require the number of 
        * segments of each layer, and its associated parmeters. 

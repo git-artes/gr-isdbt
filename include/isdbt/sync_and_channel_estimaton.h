@@ -52,7 +52,8 @@ namespace gr {
       typedef boost::shared_ptr<sync_and_channel_estimaton> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::sync_and_channel_estimaton.
+       * \brief This block performs the integer frequency estimation (and correction),
+       * estimates the channel taps and equalizes the output with this estimation. 
        *
        * \param fft_length The samples per OFDM symbol (or the FFT size). Typically a power of 2. In 
        * the case of isdb-t it may be derived from the transmission mode. 

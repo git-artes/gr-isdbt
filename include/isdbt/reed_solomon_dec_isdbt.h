@@ -53,9 +53,8 @@ namespace gr {
       typedef boost::shared_ptr<reed_solomon_dec_isdbt> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::reed_solomon_dec_isdbt.
-       *
-       * 
+       * \brief It receives blocks of 204 bytes (corresponding to a TSP), 
+       * and performs a Reed-Solomon decoding as specified by the standard. 
        */
       static sptr make();
     };

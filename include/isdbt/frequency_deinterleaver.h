@@ -52,7 +52,8 @@ namespace gr {
       typedef boost::shared_ptr<frequency_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::frequency_deinterleaver.
+       * \brief Performs frequency de-interleaver: intra-segment 
+       * (de-randomization and de-rotation) and inter-segment de-interleaving. 
        *
        * \param oneseg It indicates whether a 1-seg transmission is present in the transmission. 
        * \param mode It indicates the transmission mode (either 1, 2 or 3). 

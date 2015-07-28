@@ -52,7 +52,8 @@ namespace gr {
       typedef boost::shared_ptr<symbol_demapper> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::symbol_demapper.
+       * \brief It demaps the symbol in each carrier and then outputs each 
+       * code-word serially. 
        *
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param segments_A The number of segments in layer A. 

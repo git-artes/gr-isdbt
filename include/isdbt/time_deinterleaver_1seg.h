@@ -51,7 +51,8 @@ namespace gr {
       typedef boost::shared_ptr<time_deinterleaver_1seg> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::time_deinterleaver_1seg.
+       * \brief This a Forney interleaver as specified by the standard. However, this block 
+       * is intended to be used in a 1-seg receiver (mainly to avoid unnecessary processing). 
        *
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param length The interleaver's length. 

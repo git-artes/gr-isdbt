@@ -48,8 +48,7 @@ namespace gr {
       typedef boost::shared_ptr<byte_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::byte_deinterleaver.
-       *
+       * \brief A simple Forney byte de-interleaver, as specified in the standard. 
        */
       static sptr make();
     };
