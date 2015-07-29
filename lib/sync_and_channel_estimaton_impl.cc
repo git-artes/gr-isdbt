@@ -161,15 +161,23 @@ namespace gr {
         //TODO the parameters in this constructor are counter-intuitive and may lead to segmentation faults if not carefully 
         //assigned. Correct to a more intuitive one where we only indicate the mode. 
         sync_and_channel_estimaton_impl::sync_and_channel_estimaton_impl(int fft_length,int payload_length, int offset_max)
-            : gr::block("sync_and_channel_estimaton",
+            : gr::sync_block("sync_and_channel_estimaton",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)*fft_length),
                     gr::io_signature::make(1, 2, sizeof(gr_complex)*payload_length)),
             d_fft_length(fft_length), d_active_carriers(payload_length), d_freq_offset_max(offset_max)
 
         {
 
+            // a test to check if we can use time-interpolation for channel estimation
+            set_history(5); 
+
             d_ninput = d_fft_length;
             d_noutput = d_active_carriers;
+            d_freq_offset = 0; 
+            d_freq_offset1 = 0; 
+            d_freq_offset2 = 0; 
+            d_freq_offset3 = 0; 
+            d_freq_offset4 = 0; 
 
             // Number of zeros on the left of the IFFT
             d_zeros_on_left = int(ceil((d_fft_length - (d_active_carriers)) / 2.0));
@@ -197,6 +205,11 @@ namespace gr {
                 d_known_phase_diff[i] = std::norm(d_pilot_values[d_tmcc_carriers[i + 1]] - d_pilot_values[d_tmcc_carriers[i]]);
             }
 
+            d_channel_gain1 = new gr_complex[d_active_carriers]; 
+            d_channel_gain2 = new gr_complex[d_active_carriers]; 
+            d_channel_gain3 = new gr_complex[d_active_carriers]; 
+            d_channel_gain4 = new gr_complex[d_active_carriers]; 
+
             // Allocate buffer for deroated input symbol
             d_derotated_in = new gr_complex[d_fft_length];
             if (d_derotated_in == NULL)
@@ -209,44 +222,16 @@ namespace gr {
          * ---------------------------------------------------------------------
          */
 
-        /*
-         * Our virtual destructor.
-         */
         sync_and_channel_estimaton_impl::~sync_and_channel_estimaton_impl()
         {
         }
-        /*
-         * ---------------------------------------------------------------------
-         */
-
-        /*
-         * ---------------------------------------------------------------------
-         */
-        void
-            sync_and_channel_estimaton_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-            {
-                /*
-                 * Default implementation is:
-                 *
-                 *	unsigned ninputs = ninput_items_required.size ();
-                 *	for(unsigned i = 0; i < ninputs; i++)
-                 *	ninput_items_required[i] = noutput_items;
-                 */
-                int ninputs = ninput_items_required.size();
-                for (int i = 0; i < ninputs; i++)
-                    //ninput_items_required[i] = 2*noutput_items;
-                    ninput_items_required[i] = noutput_items;
-            }
-        /*
-         * ---------------------------------------------------------------------
-         */
 
         /*
          * process_tmcc_data function
          * post-fft frequency offset estimation
          * -----------------------------------------------------------------------------------------
          */
-        void
+        int
             sync_and_channel_estimaton_impl::process_tmcc_data(const gr_complex * in)
             {
                 // Look for maximum correlation for tmccs
@@ -283,7 +268,7 @@ namespace gr {
                     }
                 }
                 // We get the integer frequency offset
-                d_freq_offset = start - d_zeros_on_left;
+                return  (start - d_zeros_on_left);
                 //printf("freq offset: %d\n",d_freq_offset);
 
             }
@@ -306,7 +291,7 @@ namespace gr {
          * -----------------------------------------------------------------------------------------
          */
 
-        void
+        int 
             sync_and_channel_estimaton_impl::process_sp_data(const gr_complex * in)
             {
                 /* First thing is to locate the scattered pilots
@@ -319,9 +304,8 @@ namespace gr {
                 /*************************************************************/
                 float max = 0;
                 gr_complex sum;
-                //int current_symbol = 0;
-                d_previous_symbol = d_current_symbol;
-
+                int current_symbol = 0;
+                //d_previous_symbol = d_current_symbol;
 
                 int next_sp_carrier; // The next sp carrier
                 int current_sp_carrier; // The current sp carrier
@@ -351,29 +335,34 @@ namespace gr {
                     {
                         // When sum is maximum is because the current symbol is of type sym_count (0, 1, 2 or 3)
                         max = abs(sum);
-                        d_current_symbol = sym_count;
+                        current_symbol = sym_count;
                     }
                 }
+                return current_symbol; 
 
-                /*************************************************************/
-                // Keep data for channel estimator
-                /*************************************************************/
-
-                // We first calculate the channel gain on the SP carriers.
-                for (int i = 0; i < d_sp_carriers_size; i++)
-                {
-                    // We get each sp carrier position. We now know which is the current symbol (0, 1, 2 or 3)
-                    current_sp_carrier = 12*i+3*d_current_symbol;
-
-                    // channel gain = (sp carrier actual value)/(sp carrier expected value)
-                    //d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/get_pilot_value(current_sp_carrier);
-                    d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/d_pilot_values[current_sp_carrier];
-
-                }
-                //we then calculate the gain on the CP
-                //d_channel_gain[d_active_carriers-1] = in[d_active_carriers-1]/get_pilot_value(d_active_carriers-1);
-                d_channel_gain[d_active_carriers-1] = in[d_active_carriers-1+d_zeros_on_left]/d_pilot_values[d_active_carriers-1];
             }
+
+        void sync_and_channel_estimaton_impl::calculate_channel_taps_sp(const gr_complex * in, int current_symbol){
+            int current_sp_carrier = 0; 
+            // We first calculate the channel gain on the SP carriers.
+            for (int i = 0; i < d_sp_carriers_size; i++)
+            {
+                // We get each sp carrier position. We now know which is the current symbol (0, 1, 2 or 3)
+                current_sp_carrier = 12*i+3*current_symbol;
+
+                // channel gain = (sp carrier actual value)/(sp carrier expected value)
+
+                d_channel_gain[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/d_pilot_values[current_sp_carrier];
+
+            }
+            //we then calculate the gain on the CP
+            d_channel_gain[d_active_carriers-1] = in[d_active_carriers-1+d_zeros_on_left]/d_pilot_values[d_active_carriers-1];
+            /*printf("CP chann_gain = %f+j%f; arg|CP chann_gain|= %f, CP in=%f+j%f\n",d_channel_gain[d_active_carriers-1].real(), d_channel_gain[d_active_carriers-1].imag(), \
+                    std::arg(d_channel_gain[d_active_carriers-1]), \
+                    in[d_active_carriers-1+d_zeros_on_left].real(),\
+                    in[d_active_carriers-1+d_zeros_on_left].imag()\
+                    );*/
+        }
 
         void 
             sync_and_channel_estimaton_impl::linearly_estimate_channel_taps()
@@ -422,16 +411,118 @@ namespace gr {
                 current_sp_carrier = 12*(d_sp_carriers_size-1)+3*d_current_symbol;
                 next_sp_carrier = d_active_carriers-1;
                 float delta_carriers =(float) next_sp_carrier-current_sp_carrier;
-                //printf("delta_carriers: %f, current_sp_carriers: %i, next_sp_carriers: %i\n",delta_carriers, current_sp_carrier, next_sp_carrier);
-                //printf("ch_taps[%i]: %f+j%f, ch_taps[%i]: %f+j%f\n", current_sp_carrier, d_channel_gain[current_sp_carrier].real(),d_channel_gain[current_sp_carrier].imag(),next_sp_carrier, d_channel_gain[next_sp_carrier].real(),d_channel_gain[next_sp_carrier].imag());
-                tg_alpha = (d_channel_gain[next_sp_carrier] - d_channel_gain[current_sp_carrier]) / gr_complex(next_sp_carrier-current_sp_carrier, 0.0);
                 for (int j = 1; j < delta_carriers; j++)
                 {
                     d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier]*gr_complex(1.0-j/delta_carriers,0.0) +  d_channel_gain[next_sp_carrier]*gr_complex(j/delta_carriers,0.0) ;
-                    //d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier] + tg_alpha * gr_complex(j, 0.0);
                 }
 
             }
+
+        void 
+            sync_and_channel_estimaton_impl::linear_frequency_interpolation()
+            {
+                // This method interpolates scattered measurements across one OFDM symbol
+                int current_sp_carrier = 0; 
+                int next_sp_carrier = 0; 
+                for (int i = 0; i < d_sp_carriers_size*4-1; i++)
+                {
+                    // Current sp carrier
+                    current_sp_carrier = 3*i;
+                    // Next sp carrier
+                    next_sp_carrier = 3*(i+1);
+                    
+                    float delta_phase = std::arg(d_channel_gain[next_sp_carrier]*std::conj(d_channel_gain[current_sp_carrier])); 
+                    float base_phase = std::arg(d_channel_gain[current_sp_carrier]); 
+                    float abs_current = std::abs(d_channel_gain[current_sp_carrier]); 
+                    float abs_next = std::abs(d_channel_gain[next_sp_carrier]); 
+
+
+                    // Calculate interpolation for all intermediate values
+                    for (int j = 1; j < 3 ; j++)
+                    {
+                        d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier]*gr_complex(1.0-j/3.0,0.0) +  d_channel_gain[next_sp_carrier]*gr_complex(j/3.0,0.0) ;
+                        //std::complex<double> aux = std::polar((1.0-j/3.0)*abs_current+(j/3.0)*abs_next,base_phase+(1.0-j/3.0)*delta_phase); 
+                        //d_channel_gain[current_sp_carrier+j] = gr_complex(aux.real(), aux.imag()); 
+
+                        /*if (i<10)
+                        printf("len = %i; chan_gain[%i+%i]=%f+j%f, chan_gain[current]=%f+j%f, chan_gain[next]=%f+j%f\n",\
+                                d_active_carriers, current_sp_carrier, j,\
+                                d_channel_gain[current_sp_carrier+j].real(),d_channel_gain[current_sp_carrier+j].imag(),\
+                                d_channel_gain[current_sp_carrier].real(),d_channel_gain[current_sp_carrier].imag(),\
+                                d_channel_gain[next_sp_carrier].real(),d_channel_gain[next_sp_carrier].imag());*/
+                               
+                    }
+
+                }
+
+
+                // now the extreme case: the last carrier. 
+                // we will use the last SP and the CP
+                current_sp_carrier = 12*(d_sp_carriers_size-1)+3*3;
+                next_sp_carrier = d_active_carriers-1;
+                float delta_carriers =(float) next_sp_carrier-current_sp_carrier;
+                for (int j = 1; j < delta_carriers+1; j++)
+                {
+                    d_channel_gain[current_sp_carrier+j] = d_channel_gain[current_sp_carrier]*gr_complex(1.0-j/delta_carriers,0.0) +  d_channel_gain[next_sp_carrier]*gr_complex(j/delta_carriers,0.0) ;
+                }
+
+            }
+
+        void sync_and_channel_estimaton_impl::linear_time_interpolation(const gr_complex * in, int current_symbol){
+            int current_sp_carrier = 0; 
+            // We first calculate the channel gain on the SP carriers.
+            for (int i = 0; i < d_sp_carriers_size; i++)
+            {
+                // We get each sp carrier position.
+                current_sp_carrier = 12*i+3*current_symbol;
+
+                // channel gain = (sp carrier actual value)/(sp carrier expected value)
+                d_channel_gain4[current_sp_carrier] = in[current_sp_carrier+d_zeros_on_left]/d_pilot_values[current_sp_carrier];
+
+                //I now interpolate in-between
+                /*d_channel_gain3[current_sp_carrier] = gr_complex(0.25,0)*d_channel_gain[current_sp_carrier] \
+                                                      + gr_complex(0.75,0)*d_channel_gain4[current_sp_carrier]; 
+                d_channel_gain2[current_sp_carrier] = gr_complex(0.5,0)*d_channel_gain[current_sp_carrier] \
+                                                      + gr_complex(0.5,0)*d_channel_gain4[current_sp_carrier]; 
+                d_channel_gain1[current_sp_carrier] = gr_complex(0.75,0)*d_channel_gain[current_sp_carrier] \
+                                                      + gr_complex(0.25,0)*d_channel_gain4[current_sp_carrier]; */
+                
+                float delta_phase = std::arg(d_channel_gain4[current_sp_carrier]*std::conj(d_channel_gain[current_sp_carrier])); 
+                float base_phase = std::arg(d_channel_gain[current_sp_carrier]); 
+                float abs = std::abs(d_channel_gain[current_sp_carrier]); 
+                float abs4 = std::abs(d_channel_gain4[current_sp_carrier]); 
+
+                std::complex<double> aux = std::polar(0.25*abs+0.75*abs4,base_phase+0.25*delta_phase); 
+                d_channel_gain3[current_sp_carrier] = gr_complex(aux.real(), aux.imag()); 
+                aux = std::polar(0.5*abs+0.5*abs4,base_phase+0.5*delta_phase); 
+                d_channel_gain2[current_sp_carrier] = aux; 
+                aux = std::polar(0.75*abs+0.25*abs4,base_phase+0.75*delta_phase); 
+                d_channel_gain1[current_sp_carrier] = aux; 
+ 
+
+
+                        /*printf("chan_gain2[%i]=%f+j%f, chan_gain[%i]=%f+j%f, chan_gain4[%i]=%f+j%f\n",\
+                                current_sp_carrier, d_channel_gain2[current_sp_carrier].real(),d_channel_gain2[current_sp_carrier].imag(),\
+                                current_sp_carrier, d_channel_gain[current_sp_carrier].real(),d_channel_gain[current_sp_carrier].imag(),\
+                                current_sp_carrier, d_channel_gain4[current_sp_carrier].real(),d_channel_gain4[current_sp_carrier].imag()); */
+
+            }
+            //we then calculate the gain on the CP
+            d_channel_gain4[d_active_carriers-1] = in[d_active_carriers-1+d_zeros_on_left]/d_pilot_values[d_active_carriers-1];
+/*
+            memcpy(d_channel_gain, d_channel_gain1,(d_active_carriers)*sizeof(gr_complex)); 
+            memcpy(d_channel_gain1, d_channel_gain2,(d_active_carriers)*sizeof(gr_complex)); 
+            memcpy(d_channel_gain2, d_channel_gain3,(d_active_carriers)*sizeof(gr_complex)); 
+            memcpy(d_channel_gain3, d_channel_gain4,(d_active_carriers)*sizeof(gr_complex)); 
+            */
+            // an auxiliary variable to perform the swap between gains. 
+            gr_complex * aux = d_channel_gain; 
+            d_channel_gain = d_channel_gain1; 
+            d_channel_gain1 = d_channel_gain2; 
+            d_channel_gain2 = d_channel_gain3; 
+            d_channel_gain3 = d_channel_gain4; 
+            d_channel_gain4 = aux; 
+        }
 
         void 
             sync_and_channel_estimaton_impl::quadratically_estimate_channel_taps()
@@ -510,8 +601,7 @@ namespace gr {
          */
 
         int
-            sync_and_channel_estimaton_impl::general_work (int noutput_items,
-                    gr_vector_int &ninput_items,
+            sync_and_channel_estimaton_impl::work (int noutput_items,
                     gr_vector_const_void_star &input_items,
                     gr_vector_void_star &output_items)
             {
@@ -528,33 +618,55 @@ namespace gr {
 
                 for (int i = 0; i < noutput_items; i++)
                 {
+                    
                     // Process tmcc data
-                    process_tmcc_data(&in[i* d_ninput]);
+                    d_freq_offset = process_tmcc_data(&in[i* d_ninput]);
                     //printf("d_freq_offset: %i\n", d_freq_offset); 
-
                     // Correct ofdm symbol integer frequency error
-                    //frequency_correction(&in[i* d_ninput], d_derotated_in);
-//                    memcpy(&d_derotated_in, &in[i*d_ninput+d_freq_offset], d_fft*sizeof(gr_complex));
                     d_derotated_in = &in[i*d_ninput] + d_freq_offset;
-
                     // Find out the OFDM symbol index and get the d_channel_gain vector values in order to equalize the channel
-                    process_sp_data(d_derotated_in);
+                    d_previous_symbol = d_current_symbol; 
+                    d_current_symbol = process_sp_data(d_derotated_in);
+                    calculate_channel_taps_sp(d_derotated_in, d_current_symbol);
                     linearly_estimate_channel_taps();
                     //quadratically_estimate_channel_taps();
                     //printf("current_symbol: %i\n", d_current_symbol); 
-
-                    // Assign the output and equalize the channel
                     for (int carrier = 0; carrier < d_active_carriers; carrier++)
                     {
                         out[i*d_noutput +carrier] = d_derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
-
                         if (ch_output_connected){
                             // the channel taps output is connected
                             out_channel_gain[i*d_noutput + carrier] = d_channel_gain[carrier]; 
                         }
                     }
+   
 
+                    /*printf("%i ******************************************************************\n",i); 
+                    linear_frequency_interpolation(); 
+                    d_derotated_in = &in[i*d_ninput] + d_freq_offset;
+                    // Assign the output and equalize the channel
+                    for (int carrier = 0; carrier < d_active_carriers; carrier++)
+                    {
+                        out[i*d_noutput +carrier] = d_derotated_in[carrier+d_zeros_on_left]/d_channel_gain[carrier];
+                        if (ch_output_connected){
+                            // the channel taps output is connected
+                            out_channel_gain[i*d_noutput + carrier] = d_channel_gain[carrier]; 
+                        }
+                    }
+                    
+                    // I have processed the oldest symbol. Now I process the new one. 
+                    d_freq_offset4 = process_tmcc_data(&in[i*d_ninput+4*d_ninput]); 
+                    d_derotated_in = &in[i*d_ninput+4*d_ninput]+d_freq_offset4; 
+                    d_previous_symbol = d_current_symbol; 
+                    d_current_symbol = process_sp_data(d_derotated_in);
 
+                    d_freq_offset = d_freq_offset1; 
+                    d_freq_offset1 = d_freq_offset2; 
+                    d_freq_offset2 = d_freq_offset3; 
+                    d_freq_offset3 = d_freq_offset4; 
+
+                    linear_time_interpolation(d_derotated_in,d_current_symbol);
+*/
                     int diff = d_current_symbol-d_previous_symbol;
                     // If there is any symbol lost print stuff
                     if ((diff != 1) && (diff !=-3)){
@@ -591,9 +703,6 @@ namespace gr {
                  * Here ends the signal processing
                  */
 
-                // Tell runtime system how many input items we consumed on
-                // each input stream.
-                consume_each (noutput_items);
 
                 // Tell runtime system how many output items we produced.
                 return noutput_items;

@@ -27,6 +27,6 @@
   <source>
     <name>out</name>
     <type>complex</type>
-    <vlen>($last-$first+1)</vlen>
+    <vlen>int(1+$last-$first)</vlen>
   </source>
 </block>

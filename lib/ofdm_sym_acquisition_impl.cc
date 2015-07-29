@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <volk/volk.h>
 #include <gnuradio/fxpt.h>
+#include <math.h>
 
 // #define DEBUG 1
 
@@ -526,6 +527,7 @@ namespace gr {
                         d_initial_aquisition = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                                 &d_cp_start, &d_derot[0], &d_to_consume, &d_to_out);
                         d_cp_found = d_initial_aquisition; 
+                        
 
                         PRINTF("initial_acq: %i, d_cp_start: %i, d_to_consume,: %i, d_to_out: %i\n", d_initial_aquisition, d_cp_start, d_to_consume, d_to_out);
                     }
@@ -549,7 +551,7 @@ namespace gr {
 
                     if ( d_cp_found )
                     {
-                        low = d_consumed + d_cp_start - d_fft_length + 1;
+                        low = d_consumed + d_cp_start - d_fft_length + 1 ;
                         PRINTF("low: %i\n",low);
                         derotate(&in[low], &out[i*d_fft_length]);
 

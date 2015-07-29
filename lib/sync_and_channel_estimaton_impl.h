@@ -23,6 +23,7 @@
 
 #include <isdbt/sync_and_channel_estimaton.h>
 #include <deque>
+#include <boost/circular_buffer.hpp>
 
 namespace gr {
     namespace isdbt {
@@ -73,10 +74,20 @@ namespace gr {
 
                 // It will be initialized after process_tmcc_data function
                 int d_freq_offset;
+                int d_freq_offset1;
+                int d_freq_offset2;
+                int d_freq_offset3;
+                int d_freq_offset4;
 
                 // Variable to keep corrected OFDM symbol
                 // It will be initialized after process_tmcc_data function
                 const gr_complex * d_derotated_in;
+
+                // Past channel taps at the SPs. Used for interpolation (bigger means newer).
+                gr_complex * d_channel_gain1; 
+                gr_complex * d_channel_gain2; 
+                gr_complex * d_channel_gain3; 
+                gr_complex * d_channel_gain4; 
 
                 // indicates the symbol relative index calculated from the processing the SPs
                 int d_current_symbol;
@@ -100,25 +111,29 @@ namespace gr {
                 void tmcc_positions(int fft);
 
                 /*!
-                 * \brief This method is responsible for the integer frequency correction. 
+                 * \brief This method is responsible for the integer frequency error estimation. 
                  *
                  * To achieve this, for every possible value of frequency offset it will calculate a certain correlation 
-                 * function, and calculate its maximum (see our webpage for further info on the algorithm). The estimated 
-                 * frequency offset is stored in d_freq_offset. The correction is left to a separate function. 
+                 * function, and calculate its maximum (see our webpage for further info on the algorithm). The correction 
+                 * is left to a separate function. 
                  */
-                void process_tmcc_data(const gr_complex * in);
+                int process_tmcc_data(const gr_complex * in);
 
 //                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
 
                 /*!
-                 * \brief Calculates the relative symbol index based on where are the SPs and then 
-                 * estimates the channel taps for the current symbol in the SPs positions. 
+                 * \brief Calculates the relative symbol index based on where are the SPs. 
                  *
                  * Similarly to the TMCC case, this method considers the four possible scattered pilot dispositions 
-                 * and calculates a certain correlation (see our webpage for further info on the algorithm). Once the 
-                 * SP are located channel taps are calculated for the current scattered pilots.  
+                 * and calculates a certain correlation (see our webpage for further info on the algorithm). 
                  */
-                void process_sp_data(const gr_complex * in);
+                int process_sp_data(const gr_complex * in);
+
+                /*!
+                 * \brief Calculates the channel taps at the SPs, given the input complex baseband signal and a symbol number 
+                 * (between 0 and 3). The method that integer frequency offset has been corrected.  
+                 */
+                void calculate_channel_taps_sp(const gr_complex * in, int current_symbol);
                 
                 /*!
                  * \brief Calculates the channel taps based on pilots. This is the linear very simple implementation. 
@@ -130,16 +145,16 @@ namespace gr {
                  */
                 void quadratically_estimate_channel_taps();
 
+                void linear_frequency_interpolation(); 
+                
+                void linear_time_interpolation(const gr_complex * in, int current_symbol); 
+
 
             public:
                 sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
                 ~sync_and_channel_estimaton_impl();
 
-                // Where all the action really happens
-                void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-                int general_work(int noutput_items,
-                        gr_vector_int &ninput_items,
+                int work(int noutput_items,
                         gr_vector_const_void_star &input_items,
                         gr_vector_void_star &output_items);
         };

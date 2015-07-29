@@ -23,7 +23,7 @@
 #define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_H
 
 #include <isdbt/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
@@ -37,7 +37,7 @@ namespace gr {
      * Optionally, it outputs the estimation of the channel taps. 
      *
      */
-    class ISDBT_API sync_and_channel_estimaton : virtual public gr::block
+    class ISDBT_API sync_and_channel_estimaton : virtual public gr::sync_block
     {
      public:
       typedef boost::shared_ptr<sync_and_channel_estimaton> sptr;
