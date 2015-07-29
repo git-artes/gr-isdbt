@@ -1,5 +1,7 @@
 /*
  * Copyright 2008 Free Software Foundation, Inc.
+ * Copyright 2015, minor modifications,
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
  *
  * This file is part of GNU Radio
  *

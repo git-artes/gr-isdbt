@@ -1,6 +1,15 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
+ * Copyright 2015, minor modifications
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +38,7 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Class, ofdm_sym_acquisition_dvbt.
      * \ingroup isdbt
      *
      */
@@ -39,12 +48,8 @@ namespace gr {
       typedef boost::shared_ptr<ofdm_sym_acquisition_dvbt> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition_dvbt.
+       * \brief Constructor, ofdm_sym_acquisition_dvbt.
        *
-       * To avoid accidental use of raw pointers, isdbt::ofdm_sym_acquisition_dvbt's
-       * constructor is in a private implementation
-       * class. isdbt::ofdm_sym_acquisition_dvbt::make is the public interface for
-       * creating new instances.
        */
       static sptr make(int fft_length, int cp_length, float snr);
     };

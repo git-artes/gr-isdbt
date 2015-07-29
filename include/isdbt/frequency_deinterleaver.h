@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +52,8 @@ namespace gr {
       typedef boost::shared_ptr<frequency_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::frequency_deinterleaver.
+       * \brief Performs frequency de-interleaver: intra-segment 
+       * (de-randomization and de-rotation) and inter-segment de-interleaving. 
        *
        * \param oneseg It indicates whether a 1-seg transmission is present in the transmission. 
        * \param mode It indicates the transmission mode (either 1, 2 or 3). 

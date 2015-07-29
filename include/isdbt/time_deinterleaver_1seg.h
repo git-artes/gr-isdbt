@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +51,8 @@ namespace gr {
       typedef boost::shared_ptr<time_deinterleaver_1seg> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::time_deinterleaver_1seg.
+       * \brief This a Forney interleaver as specified by the standard. However, this block 
+       * is intended to be used in a 1-seg receiver (mainly to avoid unnecessary processing). 
        *
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param length The interleaver's length. 

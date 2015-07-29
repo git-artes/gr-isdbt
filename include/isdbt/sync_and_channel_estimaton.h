@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2014 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +25,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+
 
 
 #ifndef INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_H
@@ -43,7 +52,8 @@ namespace gr {
       typedef boost::shared_ptr<sync_and_channel_estimaton> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::sync_and_channel_estimaton.
+       * \brief This block performs the integer frequency estimation (and correction),
+       * estimates the channel taps and equalizes the output with this estimation. 
        *
        * \param fft_length The samples per OFDM symbol (or the FFT size). Typically a power of 2. In 
        * the case of isdb-t it may be derived from the transmission mode. 

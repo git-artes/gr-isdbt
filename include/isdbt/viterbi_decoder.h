@@ -1,6 +1,15 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
+ * Copyright 2015, minor modifications
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +26,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+
 
 
 #ifndef INCLUDED_ISDBT_VITERBI_DECODER_H
@@ -46,7 +56,7 @@ namespace gr {
       typedef boost::shared_ptr<viterbi_decoder> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::viterbi_decoder.
+       * \brief A very fast implementation of a Viterbi decoder.     
        *
        * \param constellation_size The modulation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM). 
        * \param rate The coding rate (0 for 1/2, 1 for 2/3, 2 for 3/4, 3 for 5/6 and 4 for 7/8). 

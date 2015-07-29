@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +25,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+
 
 
 #ifndef INCLUDED_ISDBT_SYMBOL_DEMAPPER_1SEG_H
@@ -43,7 +52,7 @@ namespace gr {
       typedef boost::shared_ptr<symbol_demapper_1seg> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::symbol_demapper.
+       * \brief It demaps the symbol in each carrier and then output each code-word serially. 
        *
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param constellation_size The constellation used (4 for QPSK, 16 for 16QAM 

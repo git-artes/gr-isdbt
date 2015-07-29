@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +48,8 @@ namespace gr {
       typedef boost::shared_ptr<energy_descrambler> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::energy_descrambler.
-       *
-       * To avoid accidental use of raw pointers, isdbt::energy_descrambler's
-       * constructor is in a private implementation
-       * class. isdbt::energy_descrambler::make is the public interface for
-       * creating new instances.
+       * \brief An implementation of the energy descrambler block as specified by 
+       * the standard. 
        */
       static sptr make();
     };

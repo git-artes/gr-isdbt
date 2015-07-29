@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +50,9 @@ namespace gr {
       typedef boost::shared_ptr<tmcc_decoder> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::tmcc_decoder.
-       *
+       * \brief Given the useful carriers, this block decodes the TMCC carriers, and outputs those carriers corresponding to actual DTV data (i.e. not including pilots nor AC). Plus, it re-orders the segments 
+     * so as to provide them in the ascending (and correct in terms of nomenclature) order.
+     
        * \param mode The transmission mode (either 1, 2 or 3). 
        * \param print_params Whether or not to print the decoded TMCC parameters. 
        * This is useful when first watching a channel, since several parameters in the 

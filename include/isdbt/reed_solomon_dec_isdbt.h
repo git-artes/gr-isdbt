@@ -1,6 +1,15 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
+ * Copyright 2015, minor modifications
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,9 +53,8 @@ namespace gr {
       typedef boost::shared_ptr<reed_solomon_dec_isdbt> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::reed_solomon_dec_isdbt.
-       *
-       * 
+       * \brief It receives blocks of 204 bytes (corresponding to a TSP), 
+       * and performs a Reed-Solomon decoding as specified by the standard. 
        */
       static sptr make();
     };

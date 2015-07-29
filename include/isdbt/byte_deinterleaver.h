@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +48,7 @@ namespace gr {
       typedef boost::shared_ptr<byte_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::byte_deinterleaver.
-       *
+       * \brief A simple Forney byte de-interleaver, as specified in the standard. 
        */
       static sptr make();
     };

@@ -17,6 +17,8 @@ For more information (papers, signal recording of ISDB-T signals, etc.) please v
 
 **Build instructions**
 
+For a system wide installation:
+
     git clone https://github.com/git-artes/gr-isdbt.git  
     cd gr-isdbt  
     mkdir build  
@@ -24,7 +26,18 @@ For more information (papers, signal recording of ISDB-T signals, etc.) please v
     cmake ../  
     make && sudo make install  
 
-If installed for the first time: 
+For a user space installation, or GNURadio installed in a location different from the default location /usr/local:
+
+    git clone https://github.com/git-artes/gr-isdbt.git  
+    cd gr-isdbt  
+    mkdir build  
+    cd build  
+    cmake -DCMAKE_INSTALL_PREFIX=<your_GNURadio_install_dir> ../
+    cmake ../  
+    make
+    make install  
+
+On Debian/Ubuntu based distributions, you may have to run:
 
     sudo ldconfig  
 

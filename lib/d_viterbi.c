@@ -2,6 +2,8 @@
  * Copyright 1995 Phil Karn, KA9Q
  * Copyright 2008 Free Software Foundation, Inc.
  * 2014 Added SSE2 implementation Bogdan Diaconescu
+ * Copyright 2015, minor modifications,
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
  *
  * This file is part of GNU Radio
  *

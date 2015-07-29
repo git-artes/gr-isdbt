@@ -1,6 +1,14 @@
 /* -*- c++ -*- */
-/* 
- * Copyright 2015 <+YOU OR YOUR COMPANY+>.
+/*  
+ * Copyright 2015
+ *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
+ *   Pablo Belzarena 
+ *   Gabriel Gomez Sena 
+ *   Pablo Flores Guridi 
+ *  Victor Gonzalez Barbone
+ *
+ *  Instituto de Ingenieria Electrica, Facultad de Ingenieria,
+ *  Universidad de la Republica, Uruguay.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +48,12 @@ namespace gr {
       typedef boost::shared_ptr<bit_deinterleaver> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::bit_deinterleaver.
+       * \brief A very simple block that performs bit de-interleaving (different 
+       * delay to different bits in the symbols).
        *
        * \param mode Transmission mode (either 1, 2 or 3). 
        * \param segments The number of segments to be de-interleaved. 
-       * \param constellation_size The constellation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM). 
-       *
+       * \param constellation_size The constellation used (4 for QPSK, 16 for 16QAM and 64 for 64QAM).
        */
       static sptr make(int mode, int segments, int constellation_size);
     };
