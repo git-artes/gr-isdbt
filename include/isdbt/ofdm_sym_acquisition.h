@@ -38,7 +38,7 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief Class description: The block performs one-shot OFDM symbol and fractional frequency synchronization. 
+     * \brief Performs one-shot OFDM symbol and fractional frequency synchronization. 
      * \ingroup isdbt 
      *
      * This block receives the stream of complex baseband samples corresponding to several 
@@ -54,7 +54,7 @@ namespace gr {
       typedef boost::shared_ptr<ofdm_sym_acquisition> sptr;
 
       /*!
-       \brief Constructor description: The block performs one-shot OFDM symbol and fractional frequency synchronization. 
+       \brief Performs one-shot OFDM symbol and fractional frequency synchronization. 
 
        \param fft_length The number of samples in a useful OFDM symbol (typically, a power of 2). 
        \param cp_length The number of samples in the cyclic prefix. Typically, a fraction of fft_length (however, 

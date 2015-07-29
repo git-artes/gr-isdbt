@@ -38,7 +38,7 @@ namespace gr {
   namespace isdbt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Class, ofdm_sym_acquisition_dvbt.
      * \ingroup isdbt
      *
      */
@@ -48,7 +48,7 @@ namespace gr {
       typedef boost::shared_ptr<ofdm_sym_acquisition_dvbt> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::ofdm_sym_acquisition_dvbt.
+       * \brief Constructor, ofdm_sym_acquisition_dvbt.
        *
        */
       static sptr make(int fft_length, int cp_length, float snr);
