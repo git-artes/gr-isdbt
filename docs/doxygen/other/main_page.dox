@@ -1,10 +1,7 @@
 /*! \mainpage
 
-Welcome to the GNU Radio ISDBT Block
+Welcome to the GNU Radio ISDBT Module.
 
-This is the intro page for the Doxygen manual generated for the ISDBT
-block (docs/doxygen/other/main_page.dox). Edit it to add more detailed
-documentation about the new GNU Radio modules contained in this
-project.
+This is an open source implementation of a receiver for the Digital Television standard ISDB-T (ARIB's STD-B31) in GNU Radio.
 
 */
