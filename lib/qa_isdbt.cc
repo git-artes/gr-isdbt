@@ -38,6 +38,7 @@
 //#include "qa_viterbi_decoder_1seg_itpp.h"
 //#include "qa_bit_deinterleaver_streamed.h"
 #include "qa_reed_solomon_dec_isdbt.h"
+#include "qa_ofdm_synchronization.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -55,6 +56,7 @@ qa_isdbt::suite()
 //  s->addTest(gr::isdbt::qa_viterbi_decoder_1seg_itpp::suite());
 //  s->addTest(gr::isdbt::qa_bit_deinterleaver_streamed::suite());
   s->addTest(gr::isdbt::qa_reed_solomon_dec_isdbt::suite());
+  s->addTest(gr::isdbt::qa_ofdm_synchronization::suite());
 
   return s;
 }

@@ -562,12 +562,15 @@ namespace gr {
                     if ( d_cp_found )
                     {
                         low = d_consumed + d_cp_start - d_fft_length + 1 ;
-                        PRINTF("low: %i\n",low);
+                        //printf("low ofdm_sym: %i\n",low);
                         derotate(&in[low], &out[i*d_fft_length]);
 
                         if (freq_error_out_connected){
                             freq_error_out[i] = d_nextphaseinc/(pow(2*((long)M_PI),2)*d_fft_length); 
                         }
+
+                        //for (int ii=0; ii<10; ii++)
+                        //    printf("out[%i]=%f+j%f\n",ii+i*d_fft_length, out[i*d_fft_length+ii].real(), out[i*d_fft_length+ii].imag()); 
                     }
                     else
                     {

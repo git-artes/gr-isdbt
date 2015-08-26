@@ -45,7 +45,8 @@ list(APPEND isdbt_sources
     frequency_deinterleaver_1seg_impl.cc
     time_deinterleaver_1seg_impl.cc
     symbol_demapper_1seg_impl.cc
-    viterbi_decoder_impl.cc )
+    viterbi_decoder_impl.cc
+    ofdm_synchronization_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -81,6 +82,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_synchronization.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_deinterleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_energy_descrambler.cc
