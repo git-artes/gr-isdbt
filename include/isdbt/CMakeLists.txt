@@ -39,5 +39,6 @@ install(FILES
     frequency_deinterleaver_1seg.h
     time_deinterleaver_1seg.h
     symbol_demapper_1seg.h
-    viterbi_decoder.h DESTINATION include/isdbt
+    viterbi_decoder.h
+    ofdm_synchronization.h DESTINATION include/isdbt
 )
