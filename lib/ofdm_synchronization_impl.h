@@ -121,8 +121,10 @@ namespace gr {
                 float d_last_timing_offset; 
                 float d_avg_samp_inc; 
 
-                float d_alpha; 
-                float d_beta; 
+                float d_alpha_freq; 
+                float d_beta_freq; 
+                float d_alpha_timing; 
+                float d_beta_timing; 
                 float d_freq_aux; 
                 float d_est_freq; 
                 float d_delta_aux; 
@@ -135,6 +137,11 @@ namespace gr {
                 void advance_delta_loop(float error); 
 
                 int interpolate_input(const gr_complex * in, gr_complex * out);  
+
+                /*!
+                 * \brief Estimates post-fft synchronization parameters. 
+                 */
+                void estimate_fine_synchro(); 
 
                 /*!
                  * \brief Estimates post-fft synchronization parameters: ofdm symbol, and sampler. 

@@ -167,11 +167,15 @@ namespace gr {
             d_cp_start_offset = 0; 
             d_fine_freq = 0; 
 
-            float loop_bw = 3.14159/500; 
+            float loop_bw_freq = 3.14159/100; 
+            float loop_bw_timing = 3.14159/10000; 
             float damping = sqrtf(2.0f)/2.0f; 
-            float denom = (1.0 + 2.0*damping*loop_bw + loop_bw*loop_bw); 
-            d_beta = (4*loop_bw*loop_bw)/denom; 
-            d_alpha = (4*damping*loop_bw)/denom; 
+            float denom = (1.0 + 2.0*damping*loop_bw_freq + loop_bw_freq*loop_bw_freq); 
+            d_beta_freq = (4*loop_bw_freq*loop_bw_freq)/denom; 
+            d_alpha_freq = (4*damping*loop_bw_freq)/denom; 
+            denom = (1.0 + 2.0*damping*loop_bw_timing + loop_bw_timing*loop_bw_timing); 
+            d_beta_timing = (4*loop_bw_timing*loop_bw_timing)/denom; 
+            d_alpha_timing = (4*damping*loop_bw_timing)/denom; 
             d_freq_aux = 0; 
             d_est_freq = 0; 
 
@@ -287,41 +291,60 @@ namespace gr {
                 incr = (int)f;
                 d_samp_phase = s - f;
                 ii += incr;
-               /* if(oo==d_cp_length+d_fft_length){
-                    required_for_interpolating_cp_and_fft=ii; 
-                    d_last_samp_phase = d_samp_phase; 
-                }*/
             }
-            //printf("out[0]=%f+j%f, out[cp+fft]=%f+j%f\n", out[0].real(), out[0].imag(), out[d_fft_length+d_cp_length+1].real(), out[d_fft_length+d_cp_length].imag() ); 
-            //printf("in[0]=%f+j%f, in[cp+fft]=%f+j%f\n", in[0].real(), in[0].imag(), in[d_fft_length+d_cp_length].real(), in[d_fft_length+d_cp_length].imag() ); 
-            //printf("expected_phase=%f, real_phase: %f, d_samp_inc:%e, previous_phase:%f\n", expected_phase, d_samp_phase, d_samp_inc-1.0, previous_phase); 
            
-            if (expected_phase>1)
-            {
-                // If the phase is bigger than 1, it will wrap modulus 1, and thus we should skip the next sample in the input to the interpolator.  
-                d_cp_start_offset++; 
-            }
-            else if (expected_phase<0)
-            {
-                // If the phase is less than 0, it will wrap modulus 1, and thus we should re-feed the last sample in the input to the interpolator.  
-                d_cp_start_offset--; 
-            }
-
             // return how many inputs we required to generate d_cp_length+d_fft_length outputs 
             //return required_for_interpolating_cp_and_fft;
-            return oo;
+            return ii;
         }
 
 
         void ofdm_synchronization_impl::advance_freq_loop(float error){
-            d_freq_aux = d_freq_aux + d_beta*error; 
-            d_est_freq = d_est_freq + d_freq_aux + d_alpha*error; 
+            d_freq_aux = d_freq_aux + d_beta_freq*error; 
+            d_est_freq = d_est_freq + d_freq_aux + d_alpha_freq*error; 
         }
 
         void ofdm_synchronization_impl::advance_delta_loop(float error){
-            d_delta_aux = d_delta_aux + d_beta*error; 
-            d_est_delta = d_est_delta + d_delta_aux + d_alpha*error; 
+            d_delta_aux = d_delta_aux + d_beta_timing*error; 
+            d_est_delta = d_est_delta + d_delta_aux + d_alpha_timing*error; 
         }
+
+        void
+            ofdm_synchronization_impl::estimate_fine_synchro()
+            {
+                gr_complex delta_curr_channel;  
+                volk_32fc_x2_conjugate_dot_prod_32fc(&delta_curr_channel, &d_channel_gain[1], &d_channel_gain[0], d_active_carriers-1);
+                d_timing_offset = d_fft_length/(2*3.14159)*std::arg(delta_curr_channel); 
+                double fractional_offset, cp_start_offset;  
+                fractional_offset = modf(-d_timing_offset, &cp_start_offset); 
+                d_cp_start_offset += cp_start_offset; 
+               
+                gr_complex result_1st;  
+                volk_32fc_x2_conjugate_dot_prod_32fc(&result_1st, &d_channel_gain[0], &d_previous_channel_gain[0], floor(d_active_carriers/2.0));
+                gr_complex result_2nd;  
+                int low = (int)ceil(d_active_carriers/2.0); 
+                volk_32fc_x2_conjugate_dot_prod_32fc(&result_2nd, &d_channel_gain[low], &d_previous_channel_gain[low], d_active_carriers-low+1);
+                float delta_est_error = 1.0/(1.0+((float)d_cp_length)/d_fft_length)/(2.0*3.14159*d_active_carriers/2.0)*std::arg(result_2nd*std::conj(result_1st)) ; 
+                float freq_est_error  = (std::arg(result_1st)+std::arg(result_2nd))/2.0/(1.0+(float)d_cp_length/d_fft_length); 
+               
+                if((int)cp_start_offset==0 && !d_moved_cp)
+                {
+                    advance_delta_loop(delta_est_error);
+                    advance_freq_loop(freq_est_error);
+                }
+                else
+                {
+                   // delta_est_error = 0; 
+                }
+                    //printf("freq_est_error: %e, d_cp_start_offset:%i, d_est_freq:%f, d_freq_offset:%i, d_peak_epsilon:%e\n", freq_est_error, d_cp_start_offset, d_est_freq, d_freq_offset, d_peak_epsilon); 
+
+                d_moved_cp = ((int)cp_start_offset!=0); 
+
+                d_samp_inc = 1.0-d_est_delta; 
+                d_peak_epsilon = d_est_freq;  
+               
+                
+            }
 
         void
             ofdm_synchronization_impl::estimate_fine_freq()
@@ -331,9 +354,15 @@ namespace gr {
                 volk_32fc_x2_conjugate_dot_prod_32fc(&result, &d_channel_gain[0], &d_previous_channel_gain[0], d_active_carriers);
                 //d_fine_freq  = 1.0/(1+(float)d_cp_length/d_fft_length)*std::arg(result); 
                 d_fine_freq  = std::arg(result)/(1.0+(float)d_cp_length/d_fft_length); 
-                
+
+                if(!d_moved_cp)
+                {
+                    printf("d_fine_freq: %e, d_cp_start_offset:%i, d_est_freq:%f\n", d_fine_freq, d_cp_start_offset, d_est_freq); 
+                    advance_freq_loop(d_fine_freq);
+                }
+
                 //advance_freq_loop(d_fine_freq+d_freq_offset*2*3.14159);
-                advance_freq_loop(d_fine_freq);
+                //advance_freq_loop(d_fine_freq);
                 d_peak_epsilon = d_est_freq;  
                
                 //printf("d_cp_start_offset: %i, peak_epsilon: %f, fine_freq: %f, arg: %f, fast_atan=%f, integer_freq=%i, total_freq_correction: %f, d_est_freq: %f\n", d_cp_start_offset, d_peak_epsilon, d_fine_freq, std::arg(result), fast_atan2f(result), d_freq_offset, -d_peak_epsilon/(2*3.14159)-d_freq_offset, d_est_freq/(2*3.14159));
@@ -361,17 +390,19 @@ namespace gr {
                 //if (!d_moved_cp)
                 if((int)cp_start_offset==0 && !d_moved_cp)
                 {
+                    advance_delta_loop(delta_est_error);
                 }
                 else
                 {
-                    delta_est_error = 0; 
+                   // delta_est_error = 0; 
                 }
 
-                advance_delta_loop(delta_est_error);
+                //advance_delta_loop(delta_est_error);
                 d_moved_cp = ((int)cp_start_offset!=0); 
                 //advance_delta_loop(delta_phase/(d_fft_length+d_cp_length));
+                
                 d_samp_inc = 1.0-d_est_delta; 
-                //d_samp_inc = 0.999996; 
+                //d_samp_inc = 1-3.67e-6; 
                
                 //printf("cp_start_est: %i, corrective_timing_offset: %f, frac_offset=%f, cp_start_offset=%i, d_samp_phase=%f, delta_phase: %f, d_samp_inc=%f, d_avg_samp_inc=%e\n", d_cp_start, -d_timing_offset, fractional_offset, d_cp_start_offset, d_samp_phase, delta_phase, d_samp_inc, d_avg_samp_inc);
                //printf("d_samp_phase=%f, delta_est_error = %e, d_est_delta=%e, d_cp_start_offset=%i, cp_start_offset: %i\n", d_samp_phase, delta_est_error, d_est_delta, d_cp_start_offset, (int)cp_start_offset);
@@ -814,9 +845,9 @@ namespace gr {
                     d_cp_found = d_initial_acquired; 
                     d_cp_start_offset = 0; 
                     d_samp_phase = 0; 
-                    d_samp_inc = 1.0; 
+                    //d_samp_inc = 1.0; 
                     d_est_freq = d_peak_epsilon; 
-                    d_est_delta = 0; 
+                    //d_est_delta = 0; 
 
                 }
                 else
@@ -829,7 +860,8 @@ namespace gr {
                     float peak_epsilon_aux; 
                     //d_cp_found = ml_sync(&d_interpolated[0], d_cp_start+d_cp_start_offset + 8, std::max(d_cp_start+d_cp_start_offset - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
                     d_cp_found = ml_sync(&in[d_consumed], d_cp_start+d_cp_start_offset + 8, std::max(d_cp_start+d_cp_start_offset - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
-                    //printf("peak_epsilon_aux: %f\n",peak_epsilon_aux/(2*3.14159)); 
+                    printf("peak_epsilon_aux: %f, peak_epsilon: %f\n",peak_epsilon_aux/(2*3.14159), d_peak_epsilon/(2*3.14159)); 
+                  
                     if ( !d_cp_found )
                     {
                         // We may have not found the CP because the smaller search range was too small (rare, but possible). 
@@ -838,7 +870,7 @@ namespace gr {
                                 &d_cp_start, &d_peak_epsilon);
                         d_cp_start_offset = 0; 
                         d_samp_phase = 0; 
-                        //d_est_freq = d_peak_epsilon; 
+                        d_est_freq = d_peak_epsilon; 
                     }
 
                 }
@@ -850,11 +882,11 @@ namespace gr {
                     
                     //int low = d_cp_start - d_fft_length + 1 ;
                     int low = d_cp_start + d_cp_start_offset - d_fft_length + 1 ;
-                    //printf("low: %i\n", low); 
 
                     //required_for_interpolation = interpolate_input(&in[d_consumed], &d_interpolated[0]); 
                     //derotate(&d_interpolated[low], &d_prefft_synched[0]);
                     required_for_interpolation = interpolate_input(&in[d_consumed+low], &d_interpolated[0]); 
+                    //printf("low: %i, fin: %i\n", d_consumed+low, d_consumed+low+required_for_interpolation); 
                     derotate(&d_interpolated[0], &d_prefft_synched[0]);
                         //for (int ii=0; ii<10; ii++)
                         //    printf("pre_fft[%i]=%f+j%f\n",ii+i*d_fft_length, d_prefft_synched[ii].real(), d_prefft_synched[ii].imag()); 
@@ -887,20 +919,22 @@ namespace gr {
                          
                     if(freq_error_output_connected)
                     {
-                        out_freq_error[i] = d_peak_epsilon/(2*3.14159); 
+                        out_freq_error[i] = d_peak_epsilon/(2*3.14159) + d_freq_offset; 
                     }
                     if(samp_error_output_connected)
                     {
-                        out_samp_error[i] = d_samp_inc; 
+                        out_samp_error[i] = d_est_delta; 
                     }
 
                   
-                    estimate_fine_timing(); 
 
                     // If an integer frequency error was detected, I add it to the estimation, which considers 
                     // fractional errors only. 
                     d_est_freq = d_est_freq + 3.14159*2*d_freq_offset; 
-                    estimate_fine_freq(); 
+                    //estimate_fine_freq(); 
+                    //estimate_fine_timing(); 
+
+                    estimate_fine_synchro(); 
 
                     //memcpy(&out[i*d_fft_length], &d_postfft[0], sizeof(gr_complex)*d_fft_length); 
                 }
@@ -920,12 +954,19 @@ namespace gr {
                 }
                 //d_consumed += d_cp_length+d_fft_length;
                 d_consumed += required_for_interpolation;
+                //printf("required_for_interpolation: %i, cp+fft:%i, cp_offset:%i\n",required_for_interpolation, d_fft_length+d_cp_length, d_consumed - (d_fft_length+d_cp_length)*noutput_items);
                 d_out += 1; 
             }
 
             // Tell runtime system how many input items we consumed on
             // each input stream.
             consume_each(d_consumed);
+
+            d_cp_start_offset += d_consumed - (d_fft_length+d_cp_length)*noutput_items;
+            if (d_cp_start_offset!=0)
+            {
+                d_moved_cp = true; 
+            }
 
             // Tell runtime system how many output items we produced.
             return (d_out);
