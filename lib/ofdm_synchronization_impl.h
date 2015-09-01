@@ -111,15 +111,11 @@ namespace gr {
                // fine frequency and symbol synchro 
                 gr_complex * d_previous_channel_gain; 
                 gr_complex * d_delta_channel_gains; 
-                float d_timing_offset; 
                 gr_complex * d_interpolated; 
                 gr::filter::mmse_fir_interpolator_cc d_inter; 
                 float d_samp_inc;
                 float d_samp_phase; 
                 int d_cp_start_offset; 
-                float d_fine_freq; 
-                float d_last_timing_offset; 
-                float d_avg_samp_inc; 
 
                 float d_alpha_freq; 
                 float d_beta_freq; 
@@ -129,7 +125,6 @@ namespace gr {
                 float d_est_freq; 
                 float d_delta_aux; 
                 float d_est_delta;
-                int d_last_samp_phase; 
                 bool d_moved_cp;  
 
                 void advance_freq_loop(float error); 
@@ -142,16 +137,6 @@ namespace gr {
                  * \brief Estimates post-fft synchronization parameters. 
                  */
                 void estimate_fine_synchro(); 
-
-                /*!
-                 * \brief Estimates post-fft synchronization parameters: ofdm symbol, and sampler. 
-                 */
-                void estimate_fine_timing(); 
-
-                /*!
-                 * \brief Estimates post-fft synchronization parameters: ofdm frequency. 
-                 */
-                void estimate_fine_freq(); 
 
                /*!
                 * Signals downstream the symbol index and (if necessary) resynching. 

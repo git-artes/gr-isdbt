@@ -566,7 +566,8 @@ namespace gr {
                         derotate(&in[low], &out[i*d_fft_length]);
 
                         if (freq_error_out_connected){
-                            freq_error_out[i] = d_nextphaseinc/(pow(2*((long)M_PI),2)*d_fft_length); 
+                            freq_error_out[i] = -d_phaseinc*d_fft_length/(2.0*((long)M_PI)); 
+                            printf("freq_error_out: %f\n",freq_error_out[i]); 
                         }
 
                         //for (int ii=0; ii<10; ii++)
