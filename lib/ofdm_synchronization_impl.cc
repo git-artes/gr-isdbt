@@ -158,14 +158,11 @@ namespace gr {
 
             d_previous_channel_gain = new gr_complex[d_active_carriers]; 
             d_delta_channel_gains = new gr_complex[d_active_carriers]; 
-            d_timing_offset = 0; 
             d_samp_inc = 1; 
             d_samp_phase = 0; 
-            d_last_samp_phase = 0; 
             //d_interpolated = new gr_complex[2*d_fft_length+d_cp_length]; 
             d_interpolated = new gr_complex[d_fft_length+d_cp_length]; 
             d_cp_start_offset = 0; 
-            d_fine_freq = 0; 
 
             float loop_bw_freq = 3.14159/100; 
             float loop_bw_timing = 3.14159/10000; 
@@ -279,12 +276,8 @@ namespace gr {
 
             double s, f; 
             int incr; 
-            //int required_for_interpolating_cp_and_fft = 0; 
-            //d_samp_phase = d_last_samp_phase; 
-            float expected_phase = d_samp_phase + ((float)d_cp_length+d_fft_length)*(d_samp_inc-1.0); 
             while(oo < d_cp_length+d_fft_length) {
                 out[oo++] = d_inter.interpolate(&in[ii], d_samp_phase);
-                //printf("int[%i]=%f+j%f; out[%i]=%f+j%f, ntaps=%i, s=%f, f=%f, incr=%i, d_samp_phase=%f, ii=%i\n",ii, in[ii].real(), in[ii].imag(), oo-1, out[oo-1].real(), out[oo-1].imag(), d_inter.ntaps(), s, f, incr, d_samp_phase, ii); 
 
                 s = d_samp_phase + d_samp_inc;
                 f = floor(s);
@@ -294,7 +287,6 @@ namespace gr {
             }
            
             // return how many inputs we required to generate d_cp_length+d_fft_length outputs 
-            //return required_for_interpolating_cp_and_fft;
             return ii;
         }
 
@@ -312,12 +304,6 @@ namespace gr {
         void
             ofdm_synchronization_impl::estimate_fine_synchro()
             {
-                gr_complex delta_curr_channel;  
-                volk_32fc_x2_conjugate_dot_prod_32fc(&delta_curr_channel, &d_channel_gain[1], &d_channel_gain[0], d_active_carriers-1);
-                d_timing_offset = d_fft_length/(2*3.14159)*std::arg(delta_curr_channel); 
-                double fractional_offset, cp_start_offset;  
-                fractional_offset = modf(-d_timing_offset, &cp_start_offset); 
-                d_cp_start_offset += cp_start_offset; 
                
                 gr_complex result_1st;  
                 volk_32fc_x2_conjugate_dot_prod_32fc(&result_1st, &d_channel_gain[0], &d_previous_channel_gain[0], floor(d_active_carriers/2.0));
@@ -326,8 +312,9 @@ namespace gr {
                 volk_32fc_x2_conjugate_dot_prod_32fc(&result_2nd, &d_channel_gain[low], &d_previous_channel_gain[low], d_active_carriers-low+1);
                 float delta_est_error = 1.0/(1.0+((float)d_cp_length)/d_fft_length)/(2.0*3.14159*d_active_carriers/2.0)*std::arg(result_2nd*std::conj(result_1st)) ; 
                 float freq_est_error  = (std::arg(result_1st)+std::arg(result_2nd))/2.0/(1.0+(float)d_cp_length/d_fft_length); 
-               
-                if((int)cp_start_offset==0 && !d_moved_cp)
+
+              // if for any reason the CP position changed, the signal error is wrong and should not be fed to the loop. 
+                if( !d_moved_cp )
                 {
                     advance_delta_loop(delta_est_error);
                     advance_freq_loop(freq_est_error);
@@ -336,76 +323,10 @@ namespace gr {
                 {
                    // delta_est_error = 0; 
                 }
-                    //printf("freq_est_error: %e, d_cp_start_offset:%i, d_est_freq:%f, d_freq_offset:%i, d_peak_epsilon:%e\n", freq_est_error, d_cp_start_offset, d_est_freq, d_freq_offset, d_peak_epsilon); 
-
-                d_moved_cp = ((int)cp_start_offset!=0); 
+                //printf("freq_est_error: %e, d_cp_start_offset:%i, d_est_freq:%f, d_freq_offset:%i, d_peak_epsilon:%e\n", freq_est_error, d_cp_start_offset, d_est_freq, d_freq_offset, d_peak_epsilon); 
 
                 d_samp_inc = 1.0-d_est_delta; 
                 d_peak_epsilon = d_est_freq;  
-               
-                
-            }
-
-        void
-            ofdm_synchronization_impl::estimate_fine_freq()
-            {
-                
-                gr_complex result;
-                volk_32fc_x2_conjugate_dot_prod_32fc(&result, &d_channel_gain[0], &d_previous_channel_gain[0], d_active_carriers);
-                //d_fine_freq  = 1.0/(1+(float)d_cp_length/d_fft_length)*std::arg(result); 
-                d_fine_freq  = std::arg(result)/(1.0+(float)d_cp_length/d_fft_length); 
-
-                if(!d_moved_cp)
-                {
-                    printf("d_fine_freq: %e, d_cp_start_offset:%i, d_est_freq:%f\n", d_fine_freq, d_cp_start_offset, d_est_freq); 
-                    advance_freq_loop(d_fine_freq);
-                }
-
-                //advance_freq_loop(d_fine_freq+d_freq_offset*2*3.14159);
-                //advance_freq_loop(d_fine_freq);
-                d_peak_epsilon = d_est_freq;  
-               
-                //printf("d_cp_start_offset: %i, peak_epsilon: %f, fine_freq: %f, arg: %f, fast_atan=%f, integer_freq=%i, total_freq_correction: %f, d_est_freq: %f\n", d_cp_start_offset, d_peak_epsilon, d_fine_freq, std::arg(result), fast_atan2f(result), d_freq_offset, -d_peak_epsilon/(2*3.14159)-d_freq_offset, d_est_freq/(2*3.14159));
-                //printf("total_freq_correction: %f, d_freq_offset: %i, d_est_freq: %f, error: %f\n", -d_peak_epsilon/(2*3.14159)-d_freq_offset, d_freq_offset, d_est_freq/(2*3.14159), d_fine_freq/(2*3.14159));
- 
-            }
-
-        void
-            ofdm_synchronization_impl::estimate_fine_timing()
-            {
-                gr_complex delta_curr_channel;  
-                volk_32fc_x2_conjugate_dot_prod_32fc(&delta_curr_channel, &d_channel_gain[1], &d_channel_gain[0], d_active_carriers-1);
-                d_timing_offset = d_fft_length/(2*3.14159)*std::arg(delta_curr_channel); 
-                double fractional_offset, cp_start_offset;  
-                fractional_offset = modf(-d_timing_offset, &cp_start_offset); 
-                d_cp_start_offset += cp_start_offset; 
-               
-                gr_complex result_1st;  
-                volk_32fc_x2_conjugate_dot_prod_32fc(&result_1st, &d_channel_gain[0], &d_previous_channel_gain[0], floor(d_active_carriers/2.0));
-                gr_complex result_2nd;  
-                int low = (int)ceil(d_active_carriers/2.0); 
-                volk_32fc_x2_conjugate_dot_prod_32fc(&result_2nd, &d_channel_gain[low], &d_previous_channel_gain[low], d_active_carriers-low+1);
-                float delta_est_error = 1.0/(1.0+((float)d_cp_length)/d_fft_length)/(2.0*3.14159*d_active_carriers/2.0)*std::arg(result_2nd*std::conj(result_1st)) ; 
-               
-                //if (!d_moved_cp)
-                if((int)cp_start_offset==0 && !d_moved_cp)
-                {
-                    advance_delta_loop(delta_est_error);
-                }
-                else
-                {
-                   // delta_est_error = 0; 
-                }
-
-                //advance_delta_loop(delta_est_error);
-                d_moved_cp = ((int)cp_start_offset!=0); 
-                //advance_delta_loop(delta_phase/(d_fft_length+d_cp_length));
-                
-                d_samp_inc = 1.0-d_est_delta; 
-                //d_samp_inc = 1-3.67e-6; 
-               
-                //printf("cp_start_est: %i, corrective_timing_offset: %f, frac_offset=%f, cp_start_offset=%i, d_samp_phase=%f, delta_phase: %f, d_samp_inc=%f, d_avg_samp_inc=%e\n", d_cp_start, -d_timing_offset, fractional_offset, d_cp_start_offset, d_samp_phase, delta_phase, d_samp_inc, d_avg_samp_inc);
-               //printf("d_samp_phase=%f, delta_est_error = %e, d_est_delta=%e, d_cp_start_offset=%i, cp_start_offset: %i\n", d_samp_phase, delta_est_error, d_est_delta, d_cp_start_offset, (int)cp_start_offset);
                 
             }
 
@@ -667,7 +588,8 @@ namespace gr {
                 else
                 {
                     success = false; 
-                    printf("OFDM_SYNCHRO: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); }
+                    printf("OFDM_SYNCHRO: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); 
+                }
 
                 //We now check whether the peak is in the border of the search interval. This would mean that 
                 //the search interval is not correct, and it should be re-set. This happens for instance when the 
@@ -678,6 +600,7 @@ namespace gr {
                     if ( ( peak_index == 0 ) || ( peak_index == datain_length-1 ) )
                     {
                         success = false; 
+                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
                 else
@@ -685,6 +608,7 @@ namespace gr {
                     if ( ( peak_index < 5 ) || ( peak_index > datain_length-5 ) )
                     {
                         success = false; 
+                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
 
@@ -826,76 +750,82 @@ namespace gr {
 
             for (int i = 0; i < noutput_items ; i++) 
             {
-                //int required_for_interpolation = interpolate_input(&in[d_consumed], &d_interpolated[0]); 
                 int required_for_interpolation = d_cp_length + d_fft_length; 
-                d_avg_samp_inc = 0; 
-                //memcpy(&d_interpolated[0], &in[d_consumed], sizeof(gr_complex)*(2*d_fft_length+d_cp_length)); 
-                //int required_for_interpolation = d_cp_length + d_fft_length; 
                 
-                // This is initial aquisition of symbol start
-                // It is also calle coarse frequency correction
-                // TODO - make a FSM
                 if (!d_initial_acquired)
                 {
                     // If we are here it means that we have no idea where the CP may be. We thus 
-                    // search it thoroughly
+                    // search it thoroughly. We also perform a coarse frequency estimation. 
                     d_initial_acquired = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, &d_cp_start, &d_peak_epsilon);
-                    //d_initial_acquired = ml_sync(&d_interpolated[0], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, &d_cp_start, &d_peak_epsilon);
                     required_for_interpolation = d_cp_length + d_fft_length; 
                     d_cp_found = d_initial_acquired; 
                     d_cp_start_offset = 0; 
                     d_samp_phase = 0; 
                     //d_samp_inc = 1.0; 
-                    d_est_freq = d_peak_epsilon; 
+                    //d_est_freq = d_peak_epsilon; 
                     //d_est_delta = 0; 
 
                 }
                 else
                 {
                     //If we are here it means that in the previous iteration we found the CP. We
-                    //now thus only search near it. 
-                    //d_cp_found = ml_sync(&in[d_consumed], d_cp_start + 8, std::max(d_cp_start - 8,d_cp_length+d_fft_length-1), \
-                    //        &d_cp_start, &d_peak_epsilon);
+                    //now thus only search near it. In fact, we use this only to check whether the 
+                    //CP is still present (it may well happen that the USRP drops samples in which
+                    //case the peak in the correlation is not present). 
                     int cp_start_aux; 
                     float peak_epsilon_aux; 
-                    //d_cp_found = ml_sync(&d_interpolated[0], d_cp_start+d_cp_start_offset + 8, std::max(d_cp_start+d_cp_start_offset - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
-                    d_cp_found = ml_sync(&in[d_consumed], d_cp_start+d_cp_start_offset + 8, std::max(d_cp_start+d_cp_start_offset - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
-                    printf("peak_epsilon_aux: %f, peak_epsilon: %f\n",peak_epsilon_aux/(2*3.14159), d_peak_epsilon/(2*3.14159)); 
-                  
+                    d_cp_found = ml_sync(&in[d_consumed], d_cp_start + 8, std::max(d_cp_start - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
+                    //d_cp_start = cp_start_aux; 
+                    //d_peak_epsilon = peak_epsilon_aux; 
+                 
                     if ( !d_cp_found )
                     {
-                        // We may have not found the CP because the smaller search range was too small (rare, but possible). 
-                        // We re-try with the whole search range. 
+                        // We may have not found the CP because the smaller search range was too small (rare, but possible, in 
+                        // particular when sampling time error are present). We thus re-try with the whole search range. 
                         d_cp_found = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
                                 &d_cp_start, &d_peak_epsilon);
-                        d_cp_start_offset = 0; 
                         d_samp_phase = 0; 
-                        d_est_freq = d_peak_epsilon; 
                     }
 
                 }
 
                 if ( d_cp_found )
                 {
-                    //int low = d_consumed + d_cp_start - d_fft_length + 1 ;
-                    //derotate(&in[low], &d_prefft_synched[0]);
+                   // safe-margin. Using a too adjusted CP position may result in taking samples from the NEXT ofdm 
+                   // symbol. It is better to stay on the safe-side (plus, 10 samples is nothing in this context). 
+                   d_cp_start_offset = -10;  
+                   
+                    /*
+                    int low = d_consumed + d_cp_start + d_cp_start_offset - d_fft_length + 1 ;
+                    derotate(&in[low], &d_prefft_synched[0]);
+                    */
                     
-                    //int low = d_cp_start - d_fft_length + 1 ;
                     int low = d_cp_start + d_cp_start_offset - d_fft_length + 1 ;
+                    // I interpolate the signal with the estimated sampling clock error. 
+                    // The filter used as interpolator has non-causal output (why is beyond my understading). This -3
+                    // solves this issue. TODO why does this happen? better solution?
+                    required_for_interpolation = interpolate_input(&in[d_consumed+low-3], &d_interpolated[0]);
 
-                    //required_for_interpolation = interpolate_input(&in[d_consumed], &d_interpolated[0]); 
-                    //derotate(&d_interpolated[low], &d_prefft_synched[0]);
-                    required_for_interpolation = interpolate_input(&in[d_consumed+low], &d_interpolated[0]); 
-                    //printf("low: %i, fin: %i\n", d_consumed+low, d_consumed+low+required_for_interpolation); 
+                    for(int ii=0; ii<10; ii++)
+                    {
+                    //printf("in[%i]=%f+j%f; out[%i]=%f+j%f\n",ii, in[d_consumed+low+ii].real(), in[d_consumed+low+ii].imag(), ii, d_interpolated[ii].real(), d_interpolated[ii].imag()); 
+                    }
+                    for(int ii=d_fft_length+d_cp_length-10; ii<d_fft_length+d_cp_length; ii++)
+                    {
+                    //printf("in[%i]=%f+j%f; out[%i]=%f+j%f\n",ii, in[d_consumed+low+ii].real(), in[d_consumed+low+ii].imag(), ii, d_interpolated[ii].real(), d_interpolated[ii].imag()); 
+                    }
+
+                    // I derotate the signal with the estimated frequency error. 
                     derotate(&d_interpolated[0], &d_prefft_synched[0]);
-                        //for (int ii=0; ii<10; ii++)
-                        //    printf("pre_fft[%i]=%f+j%f\n",ii+i*d_fft_length, d_prefft_synched[ii].real(), d_prefft_synched[ii].imag()); 
-                    calculate_fft(&d_prefft_synched[0], &d_postfft[0]);
-                    //to test only the symbol timing, uncomment the next line
-                    //memcpy(&out[i*d_fft_length], &d_prefft_synched[0], sizeof(gr_complex)*d_fft_length); 
                     
+                    // I (naturally) calculate the FFT. 
+                    calculate_fft(&d_prefft_synched[0], &d_postfft[0]);
+                   
+                    // Calculate and correct the integer frequency error.  
                     d_freq_offset = estimate_integer_freq_offset(&d_postfft[0]);
                     d_integer_freq_derotated = &d_postfft[0] + d_freq_offset; 
+                    //Estimate the current symbol index. Should be performed at every iteration since the USRP 
+                    //may drop samples, in which case we signal it downstream. 
                     d_previous_symbol = d_current_symbol; 
                     d_current_symbol = estimate_symbol_index(d_integer_freq_derotated);
                     send_symbol_index_and_resync(i); 
@@ -904,10 +834,12 @@ namespace gr {
                     d_previous_channel_gain = d_channel_gain; 
                     d_channel_gain = aux; 
 
+                    //I calculate the channel taps at the SPs...
                     calculate_channel_taps_sp(d_integer_freq_derotated, d_current_symbol);
+                    // and interpolate in the rest of the carriers. 
                     linearly_estimate_channel_taps();
 
-
+                    // Equalization is applied. 
                     for (int carrier = 0; carrier < d_active_carriers; carrier++)
                     {
                         out[i*d_active_carriers +carrier] = d_integer_freq_derotated[carrier+d_zeros_on_left]/d_channel_gain[carrier];
@@ -931,12 +863,10 @@ namespace gr {
                     // If an integer frequency error was detected, I add it to the estimation, which considers 
                     // fractional errors only. 
                     d_est_freq = d_est_freq + 3.14159*2*d_freq_offset; 
-                    //estimate_fine_freq(); 
-                    //estimate_fine_timing(); 
 
+                    // I update the fine timing and frequency estimations. 
                     estimate_fine_synchro(); 
 
-                    //memcpy(&out[i*d_fft_length], &d_postfft[0], sizeof(gr_complex)*d_fft_length); 
                 }
                 else
                 {
@@ -952,9 +882,7 @@ namespace gr {
                     // bye!
                     return (d_out);
                 }
-                //d_consumed += d_cp_length+d_fft_length;
                 d_consumed += required_for_interpolation;
-                //printf("required_for_interpolation: %i, cp+fft:%i, cp_offset:%i\n",required_for_interpolation, d_fft_length+d_cp_length, d_consumed - (d_fft_length+d_cp_length)*noutput_items);
                 d_out += 1; 
             }
 
@@ -962,12 +890,13 @@ namespace gr {
             // each input stream.
             consume_each(d_consumed);
 
+            /*
             d_cp_start_offset += d_consumed - (d_fft_length+d_cp_length)*noutput_items;
             if (d_cp_start_offset!=0)
             {
                 d_moved_cp = true; 
             }
-
+*/
             // Tell runtime system how many output items we produced.
             return (d_out);
 
