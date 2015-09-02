@@ -18,7 +18,7 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
            # self, "ISDB-T RF Channel Decoding",
             self, "isdbt_rf_channel_decoding",
             gr.io_signature(1, 1, gr.sizeof_gr_complex*1),
-            gr.io_signature(1, 1, gr.sizeof_gr_complex*13*96*2**(mode-1)),
+            gr.io_signaturev(2, 2, [gr.sizeof_gr_complex*13*96*2**(mode-1), gr.sizeof_gr_complex*(13*108*2**(mode-1)+1)]),
         )
 
         ##################################################
@@ -50,7 +50,8 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
         ##################################################
         self.connect((self.fft_vxx_0, 0), (self.isdbt_sync_and_channel_estimaton_0, 0))    
         self.connect((self.isdbt_ofdm_sym_acquisition_0, 0), (self.fft_vxx_0, 0))    
-        self.connect((self.isdbt_sync_and_channel_estimaton_0, 0), (self.isdbt_tmcc_decoder_0, 0))    
+        self.connect((self.isdbt_sync_and_channel_estimaton_0, 0), (self.isdbt_tmcc_decoder_0, 0))
+        self.connect((self.isdbt_sync_and_channel_estimaton_0, 1), (self, 1))
         self.connect((self.isdbt_tmcc_decoder_0, 0), (self, 0))    
         self.connect((self, 0), (self.isdbt_ofdm_sym_acquisition_0, 0))    
 
