@@ -7,14 +7,14 @@ tags: # Tags are arbitrary, but look at CGRAN what other authors are using
   - Viterbi 
 
 author: 
-  - Federico "La Rocca" Larroca <flarroca@fing.edu.uy> 
+  - Federico "Larroca" La Rocca <flarroca@fing.edu.uy> 
   - Pablo Belzarena 
   - Gabriel Gomez Sena 
   - Pablo Flores Guridi 
   - Victor Gonzalez Barbone 
 
 copyright_owner: 
-  - Federico "La Rocca" Larroca  
+  - Federico "Larroca" La Rocca  
   - Pablo Belzarena 
   - Gabriel Gomez Sena 
   - Pablo Flores Guridi 
