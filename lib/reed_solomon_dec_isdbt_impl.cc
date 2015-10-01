@@ -163,6 +163,12 @@ namespace gr {
                             }
                             d_new_ber = total_bit_errors/(float)(out_bsize*8.0); 
                             */
+
+                            //rs_status is the number of byte errors detected by the decoder (see reed_solomon.cc). It may 
+                            //well happen that if the error is too big, it corrects bytes in the stuffed 0's at the beginning. Thus
+                            //the method above (now commented) is not reliable as a BER indicator since these 0's are not part of 
+                            //the output. Although the result is actual the byte error rate (and not the bit error rate), we preferred
+                            //the method below that uses the rs_status, since at least it indicates errors in this case.  
                             d_new_ber = rs_status/(float)d_n;
                             ber_out[i] = d_last_ber_out; 
                             d_last_ber_out = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
@@ -170,9 +176,6 @@ namespace gr {
                             //ber_out[i] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
                             //d_last_ber_out = ber_out[i]; 
                             
-                            //ber_out[i*noutput_items] = 0.5; 
-                            //if (total_bit_errors>0)
-                             //   printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 
                     }
 
                     //printf("Reed-Solomon: out[0]=%x\n", out[0]); 
