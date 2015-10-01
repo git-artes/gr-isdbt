@@ -150,6 +150,7 @@ namespace gr {
 
                     if(ber_out_connected)
                     {
+                            /*
                             unsigned int total_bit_errors = 0; 
                             unsigned char error; 
                             for (int B=0; B<out_bsize; B++){
@@ -157,12 +158,18 @@ namespace gr {
                                 for (int b=0; b<8; b++){
                                     total_bit_errors += ((error>>b)&1); 
                                 }
-                                //if (total_bit_errors>0)
-                                //    printf("out: %x; in: %x; total_bit_errors: %i; error: %x\n", out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
+                                //if (rs_status>0)
+                                    //printf("B: %i; out: %x; in: %x; total_bit_errors: %i; error: %x\n", B, out[i*noutput_items+B], in[i*noutput_items+B], total_bit_errors, error); 
                             }
                             d_new_ber = total_bit_errors/(float)(out_bsize*8.0); 
-                            ber_out[i] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
-                            d_last_ber_out = ber_out[i]; 
+                            */
+                            d_new_ber = rs_status/(float)d_n;
+                            ber_out[i] = d_last_ber_out; 
+                            d_last_ber_out = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
+                            
+                            //ber_out[i] = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
+                            //d_last_ber_out = ber_out[i]; 
+                            
                             //ber_out[i*noutput_items] = 0.5; 
                             //if (total_bit_errors>0)
                              //   printf("ber_out-post[%i], nouput_items=%i******************************: %f\n",i, noutput_items, ber_out[i]); 
