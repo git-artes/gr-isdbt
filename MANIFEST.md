@@ -21,7 +21,7 @@ copyright_owner:
   - Victor Gonzalez Barbone 
 
 license:  
-repo: 
+repo: https://github.com/git-artes/gr-isdbt
 website: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/ 
 icon: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/icon.png  
 --- 
