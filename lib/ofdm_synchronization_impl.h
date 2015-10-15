@@ -136,7 +136,7 @@ namespace gr {
                 /*!
                  * \brief Estimates post-fft synchronization parameters. 
                  */
-                void estimate_fine_synchro(); 
+                void estimate_fine_synchro(gr_complex * current_channel, gr_complex * previous_channel); 
 
                /*!
                 * Signals downstream the symbol index and (if necessary) resynching. 
@@ -146,13 +146,13 @@ namespace gr {
                  /*!
                  * \brief Calculates the channel taps based on pilots. This is the linear very simple implementation. 
                  */
-                void linearly_estimate_channel_taps();
+                void linearly_estimate_channel_taps(int current_symbol, gr_complex * channel_gain);
 
                 /*!
                  * \brief Calculates the channel taps at the SPs, given the input complex baseband signal and a symbol number 
                  * (between 0 and 3). The method that integer frequency offset has been corrected.  
                  */
-                void calculate_channel_taps_sp(const gr_complex * in, int current_symbol);
+                void calculate_channel_taps_sp(const gr_complex * in, int current_symbol, gr_complex * channel_gain);
 
                 /*! 
                  * Estimates the current symbol. Necessary for equalization. 

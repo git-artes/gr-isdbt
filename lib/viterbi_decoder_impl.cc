@@ -310,7 +310,8 @@ namespace gr {
                                                 d_last_ber_out = ber_out[out_count-d_ntraceback]; 
                                                 // the factorization above raises from considering how many bits 
                                                 // are actually used in the metric when depuncturing is performed. 
-                                                // Not all 16 bits are depunctured equally (the pattern may change from 
+                                                // Not all 16 bits (to generate 8 bits at its output, the mother code needs
+                                                // 16 bits at its input) are depunctured equally (the pattern may change from 
                                                 // code-word to code-word) so expect some negative bers, 
                                                 // which should even out as larger averages are used. 
                                                 
