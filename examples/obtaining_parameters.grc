@@ -132,7 +132,7 @@
     </param>
     <param>
       <key>label</key>
-      <value>frecuencia central</value>
+      <value>center frequency</value>
     </param>
     <param>
       <key>type</key>
@@ -209,7 +209,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(8, 443)</value>
+      <value>(16, 451)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -335,7 +335,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(136, 443)</value>
+      <value>(152, 451)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -515,11 +515,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_casa_latele2</value>
+      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_569_adentro.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -578,7 +578,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(640, 363)</value>
+      <value>(792, 299)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -625,7 +625,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(776, 512)</value>
+      <value>(736, 369)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -715,7 +715,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -833,7 +833,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1072, 139)</value>
+      <value>(848, 171)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -896,7 +896,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(856, 171)</value>
+      <value>(648, 203)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -939,7 +939,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(944, 33)</value>
+      <value>(960, 9)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -986,11 +986,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1040, 336)</value>
+      <value>(1056, 225)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -1033,7 +1033,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(800, 363)</value>
+      <value>(984, 339)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1096,7 +1096,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(472, 139)</value>
+      <value>(448, 155)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1171,7 +1171,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fftsize</key>
@@ -1454,7 +1454,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(752, 555)</value>
+      <value>(736, 419)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1801,7 +1801,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fbw</key>
@@ -1847,6 +1847,10 @@
       <value></value>
     </param>
     <param>
+      <key>portadoras</key>
+      <value>total_carriers</value>
+    </param>
+    <param>
       <key>comment</key>
       <value></value>
     </param>
@@ -1860,7 +1864,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(560, 512)</value>
+      <value>(544, 377)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1881,10 +1885,6 @@
     <param>
       <key>minoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>portadoras</key>
-      <value>total_carriers</value>
     </param>
   </block>
   <block>
@@ -2555,7 +2555,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
