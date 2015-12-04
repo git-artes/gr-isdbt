@@ -39,6 +39,8 @@
 //#include "qa_bit_deinterleaver_streamed.h"
 #include "qa_reed_solomon_dec_isdbt.h"
 #include "qa_ofdm_synchronization.h"
+#include "qa_ofdm_synchronization_1seg.h"
+#include "qa_tmcc_decoder_1seg.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -57,6 +59,8 @@ qa_isdbt::suite()
 //  s->addTest(gr::isdbt::qa_bit_deinterleaver_streamed::suite());
   s->addTest(gr::isdbt::qa_reed_solomon_dec_isdbt::suite());
   s->addTest(gr::isdbt::qa_ofdm_synchronization::suite());
+  s->addTest(gr::isdbt::qa_ofdm_synchronization_1seg::suite());
+  s->addTest(gr::isdbt::qa_tmcc_decoder_1seg::suite());
 
   return s;
 }

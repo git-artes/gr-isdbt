@@ -36,5 +36,7 @@ install(FILES
     isdbt_viterbi_decoder.xml
     isdbt_isdbt_rf_channel_decoding.xml
     isdbt_isdbt_channel_decoding.xml
-    isdbt_ofdm_synchronization.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_ofdm_synchronization.xml
+    isdbt_ofdm_synchronization_1seg.xml
+    isdbt_tmcc_decoder_1seg.xml DESTINATION share/gnuradio/grc/blocks
 )

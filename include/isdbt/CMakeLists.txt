@@ -40,5 +40,7 @@ install(FILES
     time_deinterleaver_1seg.h
     symbol_demapper_1seg.h
     viterbi_decoder.h
-    ofdm_synchronization.h DESTINATION include/isdbt
+    ofdm_synchronization.h
+    ofdm_synchronization_1seg.h
+    tmcc_decoder_1seg.h DESTINATION include/isdbt
 )
