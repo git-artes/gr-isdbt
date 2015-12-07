@@ -491,7 +491,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/test_out.ts</value>
+      <value>test_out.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -534,11 +534,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_casa_montecarlo</value>
+      <value>569MHz_recording.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -891,7 +891,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3737,7 +3737,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fbw</key>
@@ -4444,7 +4444,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>

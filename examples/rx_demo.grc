@@ -217,7 +217,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1.0/8</value>
+      <value>1.0/16</value>
     </param>
   </block>
   <block>
@@ -379,7 +379,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/test_out.ts</value>
+      <value>test_out.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -422,15 +422,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/saeta_20150907.bin</value>
+      <value>569MHz_recording.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(8, 179)</value>
+      <value>(8, 171)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -677,7 +677,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2676,7 +2676,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fbw</key>
@@ -3383,7 +3383,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>

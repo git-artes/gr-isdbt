@@ -9,6 +9,10 @@
       <value></value>
     </param>
     <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
       <key>window_size</key>
       <value>1280, 1024</value>
     </param>
@@ -291,7 +295,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/test_out.ts</value>
+      <value>test_out.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -334,11 +338,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_laboratorio2</value>
+      <value>569MHz_dongle_recording.out</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -542,7 +546,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2555,7 +2559,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>

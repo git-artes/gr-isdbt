@@ -430,11 +430,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_casa_latele2</value>
+      <value>569MHz_recording.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -587,7 +587,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -897,7 +897,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_size</key>
@@ -964,7 +964,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_length</key>
@@ -996,7 +996,7 @@
     </param>
   </block>
   <block>
-    <key>isdbt_sync_and_channel_estimaton</key>
+    <key>isdbt_ofdm_synchronization</key>
     <param>
       <key>alias</key>
       <value></value>
@@ -1012,6 +1012,53 @@
     <param>
       <key>_enabled</key>
       <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1040, 113)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>cp_length</key>
+      <value>0.0625</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>isdbt_ofdm_synchronization_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>mode</key>
+      <value>3</value>
+    </param>
+  </block>
+  <block>
+    <key>isdbt_sync_and_channel_estimaton</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2828,7 +2875,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fbw</key>
@@ -3535,7 +3582,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3777,6 +3824,24 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>isdbt_ofdm_synchronization_0</source_block_id>
+    <sink_block_id>blocks_complex_to_arg_0</sink_block_id>
+    <source_key>1</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>isdbt_ofdm_synchronization_0</source_block_id>
+    <sink_block_id>blocks_complex_to_mag_0</sink_block_id>
+    <source_key>1</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>isdbt_ofdm_synchronization_0</source_block_id>
+    <sink_block_id>blocks_vector_to_stream_0_2</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
     <source_block_id>isdbt_sync_and_channel_estimaton_0</source_block_id>
     <sink_block_id>blocks_complex_to_arg_0</sink_block_id>
     <source_key>1</source_key>
@@ -3797,6 +3862,12 @@
   <connection>
     <source_block_id>low_pass_filter_0</source_block_id>
     <sink_block_id>isdbt_ofdm_sym_acquisition_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>low_pass_filter_0</source_block_id>
+    <sink_block_id>isdbt_ofdm_synchronization_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
