@@ -25,7 +25,7 @@ For a system wide installation:
     mkdir build  
     cd build  
     cmake ../  
-    make && sudo make install  
+    make -j `grep -c ^processor /proc/cpuinfo` && sudo make install && sudo ldconfig  
 
 For a user space installation, or GNURadio installed in a location different from the default location /usr/local:
 
