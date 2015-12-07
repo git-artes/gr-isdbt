@@ -45,9 +45,9 @@ On Debian/Ubuntu based distributions, you may have to run:
 **Remarks**
 - The above build instructions are general. You may accelerate the compilation time by using the -j flag. Please visit http://www.math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process for a guide.   
 - Note that gr-isdbt makes heavy use of VOLK. A profile should be run to make the best out of it. Please visit https://gnuradio.org/redmine/projects/gnuradio/wiki/Volk for instructions, or simply run: 
-    
-    volk_profile  
 
+
+    volk_profile 
 
 IIE Instituto de Ingeniería Eléctrica  
 Facultad de Ingeniería  
