@@ -816,7 +816,7 @@ namespace gr {
                         d_samp_phase = 0; 
                         d_moved_cp = true; 
                         //d_samp_inc = 1.0; 
-                        //d_est_freq = d_peak_epsilon; 
+                        d_est_freq = d_peak_epsilon; 
                         //d_est_delta = 0; 
 
                     }
@@ -831,6 +831,9 @@ namespace gr {
                         float peak_epsilon_aux; 
                         d_cp_found = ml_sync(&in[d_consumed], d_cp_start + 8, std::max(d_cp_start - 8,d_cp_length+d_fft_length-1), &cp_start_aux, &peak_epsilon_aux);
                         //d_cp_start = cp_start_aux; 
+                        //I am taking the one-shot estimation for the frequency since it works better than the feedback system: it obtains a better MER and is more 
+                        //robust to errors. 
+                        //TODO why is this happenning????
                         d_peak_epsilon = peak_epsilon_aux; 
 
                         if ( !d_cp_found )
@@ -919,7 +922,8 @@ namespace gr {
 
                         // If an integer frequency error was detected, I add it to the estimation, which considers 
                         // fractional errors only. 
-                        d_est_freq = d_est_freq + 3.14159*2*d_freq_offset; 
+                        
+                        //d_est_freq = d_est_freq + 3.14159*2*d_freq_offset; 
 
                         // I update the fine timing and frequency estimations. 
                         estimate_fine_synchro(d_channel_gain, d_previous_channel_gain); 
