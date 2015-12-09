@@ -88,7 +88,8 @@ namespace gr {
                 int d_zeros_on_left;
                 int d_freq_offset_max;
                 int d_freq_offset; 
-                int d_freq_offset_disagree; 
+                int d_freq_offset_disagree_count; 
+                int d_freq_offset_candidate; 
 
                 int d_tmcc_carriers_size;
                 const int * d_tmcc_carriers; 
@@ -118,6 +119,8 @@ namespace gr {
                 gr_complex * d_channel_gain; 
                 int d_current_symbol;
                 int d_previous_symbol; 
+                bool d_symbol_acq;
+                int d_symbol_correct_count;
                 float * d_corr_sp; 
          
                // fine frequency and symbol synchro 
