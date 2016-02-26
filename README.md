@@ -27,7 +27,7 @@ For a system wide installation:
     cmake ../  
     make && sudo make install  
 
-For a user space installation, or GNURadio installed in a location different from the default location /usr/local:
+For a user space installation, or GNU Radio installed in a location different from the default location /usr/local:
 
     git clone https://github.com/git-artes/gr-isdbt.git  
     cd gr-isdbt  
@@ -43,9 +43,9 @@ On Debian/Ubuntu based distributions, you may have to run:
     sudo ldconfig  
 
 **Remarks**
+- Instructions above assume you have downloaded and compiled GNU Radio (either with the build-gnuradio script or with PyBOMBS). If you've used a pre-compiled binary package (like in $ sudo apt-get install gnuradio), then you should also install gnuradio-dev (and naturally cmake and git, if they were not installed). 
 - The above build instructions are general. You may accelerate the compilation time by using the -j flag. Please visit http://www.math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process for a guide.   
 - Note that gr-isdbt makes heavy use of VOLK. A profile should be run to make the best out of it. Please visit https://gnuradio.org/redmine/projects/gnuradio/wiki/Volk for instructions, or simply run: 
-
 
     volk_profile 
 
