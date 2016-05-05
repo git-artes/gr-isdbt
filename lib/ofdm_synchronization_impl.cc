@@ -157,6 +157,12 @@ namespace gr {
                   d_peak_epsilon = 0;
 
                   d_channel_gain = new gr_complex[d_active_carriers]; 
+                  d_coeffs_linear_estimate_first = new gr_complex[11]; 
+                  d_coeffs_linear_estimate_last = new gr_complex[11]; 
+                  for (int i=1; i<12; i++){
+                      d_coeffs_linear_estimate_first[i-1] = gr_complex(1.0-i/12.0,0.0);
+                      d_coeffs_linear_estimate_last[i-1] = gr_complex(i/12.0,0.0);
+                  }
 
                   d_previous_channel_gain = new gr_complex[d_active_carriers]; 
                   d_delta_channel_gains = new gr_complex[d_active_carriers]; 
@@ -201,6 +207,8 @@ namespace gr {
             delete [] d_known_phase_diff; 
 
             delete [] d_channel_gain; 
+            delete [] d_coeffs_linear_estimate_first; 
+            delete [] d_coeffs_linear_estimate_last; 
 
             delete [] d_previous_channel_gain; 
             delete [] d_delta_channel_gains; 
@@ -365,20 +373,23 @@ namespace gr {
                 // It does not use measurements from the previous OFDM symnbols (does not use history)
                 // as it may have encountered a phase change for the current phase only
                 // TODO interpolation is too simple, a new method(s) should be implemented
-                int current_sp_carrier = 0; 
-                int next_sp_carrier = 0; 
+                    
+                // Current sp carrier
+                int current_sp_carrier = 3*current_symbol; 
+                // Next sp carrier
+                int next_sp_carrier = 12 + 3*current_symbol; 
                 for (int i = 0; i < d_sp_carriers_size-1; i++)
                 {
-                    // Current sp carrier
-                    current_sp_carrier = 12*i+3*current_symbol;
-                    // Next sp carrier
-                    next_sp_carrier = 12*(i+1)+3*current_symbol;
 
                     // Calculate interpolation for all intermediate values
-                    for (int j = 1; j < next_sp_carrier-current_sp_carrier; j++)
+                    for (int j = 1; j < 12; j++)
                     {
-                        channel_gain[current_sp_carrier+j] = channel_gain[current_sp_carrier]*gr_complex(1.0-j/12.0,0.0) +  channel_gain[next_sp_carrier]*gr_complex(j/12.0,0.0) ;
+                        //channel_gain[current_sp_carrier+j] = channel_gain[current_sp_carrier]*gr_complex(1.0-j/12.0,0.0) +  channel_gain[next_sp_carrier]*gr_complex(j/12.0,0.0) ;
+                        channel_gain[current_sp_carrier+j] = channel_gain[current_sp_carrier]*d_coeffs_linear_estimate_first[j-1] + \
+                                                             channel_gain[next_sp_carrier]*d_coeffs_linear_estimate_last[j-1];
                     }
+                    current_sp_carrier += 12;
+                    next_sp_carrier += 12;
 
                 }
                 /////////////////////////////////////////////////////////////

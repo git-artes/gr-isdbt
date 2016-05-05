@@ -104,6 +104,8 @@ namespace gr {
                 gr_complex * d_pilot_values; 
                 int d_sp_carriers_size;
                 gr_complex * d_channel_gain; 
+                gr_complex * d_coeffs_linear_estimate_first;
+                gr_complex * d_coeffs_linear_estimate_last;
                 int d_current_symbol;
                 int d_previous_symbol; 
                 float * d_corr_sp; 
