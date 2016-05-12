@@ -78,9 +78,6 @@ namespace gr {
                 int d_consumed; 
                 int d_out; 
 
-                // the complex input (length fft_len) with pre-fft synchronization applied. 
-                gr_complex * d_prefft_synched; 
-
                 //FFT part
                 gr_complex * d_postfft; 
                 gr::fft::fft_complex d_fft_calculator; 
@@ -104,8 +101,16 @@ namespace gr {
                 gr_complex * d_pilot_values; 
                 int d_sp_carriers_size;
                 gr_complex * d_channel_gain; 
+                // These are some variables I will use to increase performance
+                // the interpolation coefficientes I use for linear interpolation
                 gr_complex * d_coeffs_linear_estimate_first;
+                gr_complex * d_aux_linear_estimate_first;
                 gr_complex * d_coeffs_linear_estimate_last;
+                gr_complex * d_aux_linear_estimate_last;
+                float * d_channel_gain_mag_sq;
+                float * d_ones;
+                gr_complex * d_channel_gain_inv; 
+
                 int d_current_symbol;
                 int d_previous_symbol; 
                 float * d_corr_sp; 
@@ -113,6 +118,8 @@ namespace gr {
                // fine frequency and symbol synchro 
                 gr_complex * d_previous_channel_gain; 
                 gr_complex * d_delta_channel_gains; 
+                //whether to use the sampling correction (may be costy)
+                bool d_interpolate;
                 gr_complex * d_interpolated; 
                 gr::filter::mmse_fir_interpolator_cc d_inter; 
                 float d_samp_inc;
@@ -184,9 +191,11 @@ namespace gr {
                 int estimate_integer_freq_offset(const gr_complex * in); 
 
                 /*!
-                 * \brief It calculate the FFT of in and saves it on out. Note that the fft_size is assumed given by d_fft_length. 
+                 * \brief It calculate the FFT of what is saved on the d_fft_calculator.get_inbuf() and saves it on out. Plus, 
+                 * it performs a fft shift. 
+                 * Note that the fft_size is assumed given by d_fft_length. 
                  */
-                void calculate_fft(const gr_complex * in, gr_complex * out); 
+                void calculate_fft(gr_complex * out); 
 
                 /*!
                  * \brief Calculates the likelihood function, and outputs the position of its maximum. 
@@ -229,7 +238,7 @@ namespace gr {
 
 
             public:
-                ofdm_synchronization_impl(int mode, float cp_length);
+                ofdm_synchronization_impl(int mode, float cp_length, bool interpolate);
                 ~ofdm_synchronization_impl();
 
                 // Where all the action really happens

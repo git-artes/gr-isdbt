@@ -50,11 +50,11 @@ namespace gr {
       typedef boost::shared_ptr<ofdm_synchronization> sptr;
 
       /*!
-       * \brief This block performs the whole OFDM synchronization: symbol timing, frequency correction and channel
+       * \brief This block performs the whole OFDM synchronization: symbol timing, frequency and sampling correction and channel
        * equalization. 
        * \return a sptr pointer.
        */
-      static sptr make(int mode, float cp_length);
+      static sptr make(int mode, float cp_length, bool interpolate);
     };
 
   } // namespace isdbt

@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_synchronization</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_synchronization($mode, $cp_length)</make>
+  <make>isdbt.ofdm_synchronization($mode, $cp_length, $interpolate)</make>
   <param>
       <name>Transmission Mode</name>
 	  <key>mode</key>
@@ -43,9 +43,24 @@
     <option>
 		<name>1/32</name>
 		<key>0.03125</key>
-	</option>
-  </param>
+    </option>
+</param>
 
+   <param>
+      <name>Interpolate</name>
+      <key>interpolate</key>
+      <value>True</value>
+      <type>enum</type>
+      <option>
+          <name>Yes</name>
+          <key>True</key>
+      </option>
+      <option>
+          <name>No</name>
+          <key>False</key>
+      </option>
+  </param>
+ 
   <sink>
     <name>in</name>
     <type>complex</type>

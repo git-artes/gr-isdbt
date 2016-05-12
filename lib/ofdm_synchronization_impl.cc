@@ -39,6 +39,8 @@
 #include <gnuradio/expj.h>
 #include <stdio.h>
 #include <volk/volk.h>
+//for debugging 
+#include <ctime>
 
 namespace gr {
     namespace isdbt {
@@ -75,16 +77,16 @@ namespace gr {
 
 
         ofdm_synchronization::sptr
-            ofdm_synchronization::make(int mode, float cp_length)
+            ofdm_synchronization::make(int mode, float cp_length, bool interpolate)
             {
                 return gnuradio::get_initial_sptr
-                    (new ofdm_synchronization_impl(mode, cp_length));
+                    (new ofdm_synchronization_impl(mode, cp_length, interpolate));
             }
 
         /*
          * The private constructor
          */
-        ofdm_synchronization_impl::ofdm_synchronization_impl(int mode, float cp_length)
+        ofdm_synchronization_impl::ofdm_synchronization_impl(int mode, float cp_length, bool interpolate)
             : gr::block("ofdm_synchronization",
                     gr::io_signature::make(1, 1, sizeof(gr_complex)),
                     //gr::io_signature::make(1,1,sizeof(gr_complex)*pow(2.0,10+mode))),
@@ -132,7 +134,6 @@ namespace gr {
                   d_corr = new gr_complex[2 * d_fft_length + d_cp_length];
                   peak_detect_init(0.3, 0.9);
 
-                  d_prefft_synched = new gr_complex[d_fft_length]; 
                   d_postfft = new gr_complex[d_fft_length];
 
                   //integer frequency correction part
@@ -157,8 +158,18 @@ namespace gr {
                   d_peak_epsilon = 0;
 
                   d_channel_gain = new gr_complex[d_active_carriers]; 
+                  d_channel_gain_mag_sq = new float[d_active_carriers];
+                  d_ones = new float[d_active_carriers];
+                  for(int i=0; i<d_active_carriers; i++)
+                  {
+                      d_ones[i] = 1.0;
+                  }
+                  d_channel_gain_inv = new gr_complex[d_active_carriers];
+
                   d_coeffs_linear_estimate_first = new gr_complex[11]; 
+                  d_aux_linear_estimate_first = new gr_complex[11]; 
                   d_coeffs_linear_estimate_last = new gr_complex[11]; 
+                  d_aux_linear_estimate_last = new gr_complex[11]; 
                   for (int i=1; i<12; i++){
                       d_coeffs_linear_estimate_first[i-1] = gr_complex(1.0-i/12.0,0.0);
                       d_coeffs_linear_estimate_last[i-1] = gr_complex(i/12.0,0.0);
@@ -170,6 +181,7 @@ namespace gr {
                   d_samp_phase = 0; 
                   //d_interpolated = new gr_complex[2*d_fft_length+d_cp_length]; 
                   d_interpolated = new gr_complex[d_fft_length+d_cp_length]; 
+                  d_interpolate = interpolate; 
                   d_cp_start_offset = -10; 
 
                   float loop_bw_freq = 3.14159/100; 
@@ -200,15 +212,20 @@ namespace gr {
             delete [] d_norm; 
             delete [] d_corr; 
 
-            delete [] d_prefft_synched; 
             delete [] d_postfft; 
 
             delete [] d_pilot_values; 
             delete [] d_known_phase_diff; 
 
             delete [] d_channel_gain; 
+            delete [] d_channel_gain_mag_sq;
+            delete [] d_ones;
+            delete [] d_channel_gain_inv;
+
             delete [] d_coeffs_linear_estimate_first; 
+            delete [] d_aux_linear_estimate_first; 
             delete [] d_coeffs_linear_estimate_last; 
+            delete [] d_aux_linear_estimate_last; 
 
             delete [] d_previous_channel_gain; 
             delete [] d_delta_channel_gains; 
@@ -329,10 +346,6 @@ namespace gr {
                     advance_delta_loop(delta_est_error);
                     advance_freq_loop(freq_est_error);
                 }
-                else
-                {
-                    // delta_est_error = 0; 
-                }
                 //printf("freq_est_error: %e, d_cp_start_offset:%i, d_est_freq:%f, d_freq_offset:%i, d_peak_epsilon:%e\n", freq_est_error, d_cp_start_offset, d_est_freq, d_freq_offset, d_peak_epsilon); 
 
                 d_samp_inc = 1.0-d_est_delta; 
@@ -370,7 +383,7 @@ namespace gr {
             ofdm_synchronization_impl::linearly_estimate_channel_taps(int current_symbol, gr_complex * channel_gain)
             {
                 // This method interpolates scattered measurements across one OFDM symbol
-                // It does not use measurements from the previous OFDM symnbols (does not use history)
+                // It does not use measurements from the previous OFDM symbols (does not use history)
                 // as it may have encountered a phase change for the current phase only
                 // TODO interpolation is too simple, a new method(s) should be implemented
                     
@@ -381,13 +394,13 @@ namespace gr {
                 for (int i = 0; i < d_sp_carriers_size-1; i++)
                 {
 
-                    // Calculate interpolation for all intermediate values
+                    volk_32fc_s32fc_multiply_32fc(d_aux_linear_estimate_first, d_coeffs_linear_estimate_first, channel_gain[current_sp_carrier], 11); 
+                    volk_32fc_s32fc_multiply_32fc(d_aux_linear_estimate_last, d_coeffs_linear_estimate_last, channel_gain[next_sp_carrier], 11); 
                     for (int j = 1; j < 12; j++)
                     {
-                        //channel_gain[current_sp_carrier+j] = channel_gain[current_sp_carrier]*gr_complex(1.0-j/12.0,0.0) +  channel_gain[next_sp_carrier]*gr_complex(j/12.0,0.0) ;
-                        channel_gain[current_sp_carrier+j] = channel_gain[current_sp_carrier]*d_coeffs_linear_estimate_first[j-1] + \
-                                                             channel_gain[next_sp_carrier]*d_coeffs_linear_estimate_last[j-1];
+                        channel_gain[current_sp_carrier+j] = d_aux_linear_estimate_first[j-1] + d_aux_linear_estimate_last[j-1];
                     }
+ 
                     current_sp_carrier += 12;
                     next_sp_carrier += 12;
 
@@ -395,6 +408,8 @@ namespace gr {
                 /////////////////////////////////////////////////////////////
                 //take care of extreme cases: first carriers and last carriers
                 /////////////////////////////////////////////////////////////
+                //I did not optimize this part since they're only a few carriers
+                
                 gr_complex tg_alpha; 
                 if (current_symbol>0){
                     //we have not updated the gain on the first carriers
@@ -423,23 +438,15 @@ namespace gr {
 
         void ofdm_synchronization_impl::calculate_channel_taps_sp(const gr_complex * in, int current_symbol, gr_complex * channel_gain)
         {
-            int current_sp_carrier = 0; 
             // We first calculate the channel gain on the SP carriers.
-            for (int i = 0; i < d_sp_carriers_size; i++)
+            // We get each sp carrier position. We now know which is the current symbol (0, 1, 2 or 3)
+            for (int current_sp_carrier = 3*current_symbol; current_sp_carrier<d_active_carriers-1; current_sp_carrier+=12)
             {
-                // We get each sp carrier position. We now know which is the current symbol (0, 1, 2 or 3)
-                current_sp_carrier = 12*i+3*current_symbol;
-                // channel gain = (sp carrier actual value)/(sp carrier expected value)
                 channel_gain[current_sp_carrier] = in[current_sp_carrier]/d_pilot_values[current_sp_carrier];
             }
             //we then calculate the gain on the CP
             channel_gain[d_active_carriers-1] = in[d_active_carriers-1]/d_pilot_values[d_active_carriers-1];
-            /*printf("CP chann_gain = %f+j%f; arg|CP chann_gain|= %f, CP in=%f+j%f\n",channel_gain[d_active_carriers-1].real(), channel_gain[d_active_carriers-1].imag(), \
-              std::arg(channel_gain[d_active_carriers-1]), \
-              in[d_active_carriers-1].real(),\
-              in[d_active_carriers-1].imag()\
-              );*/
-        }
+       }
 
 
         int 
@@ -454,33 +461,30 @@ namespace gr {
                 gr_complex sum = 0;
                 int current_symbol = 0;
 
-                int next_sp_carrier; // The next sp carrier
                 int current_sp_carrier; // The current sp carrier
-                gr_complex phase;
                 // sym_count (Symbol count) can take values 0 to 3, according to the positions of the scattered pilots
                 for (int sym_count = 0; sym_count < 4; sym_count++)
                 {
                     sum = 0;
+                    //The position of the next and current sp carrier based on the value of sym_count
                     // For every scattered pilot but the last one...
-                    for (int i=0; i < d_sp_carriers_size-1; i++)
+                    for (int next_sp_carrier=12+3*sym_count; next_sp_carrier < d_active_carriers-1; next_sp_carrier+=12)
                     {
-                        // Get the position of the next and current sp carrier based on the value of sym_count
-                        next_sp_carrier = 12*(i+1)+3*sym_count; 
-                        current_sp_carrier = 12*i+3*sym_count; 
-
+                        current_sp_carrier = next_sp_carrier-12;
                         if (d_pilot_values[next_sp_carrier]==d_pilot_values[current_sp_carrier])
                         {
                             // If the phase difference between in[next_sp_carrier] and in[current_sp_carrier] is zero,
                             // is because we expect both to be always in phase
-                            phase = in[next_sp_carrier]*conj(in[current_sp_carrier]);
+                            sum += in[next_sp_carrier]*conj(in[current_sp_carrier]);
                         }
                         else
                         {
                             // If the phase difference between in[next_sp_carrier] and in[current_sp_carrier] is not zero,
                             // is because we expect both to be always out of phase (180 degrees)
-                            phase = -in[next_sp_carrier]*conj(in[current_sp_carrier]);
+                            sum -= in[next_sp_carrier]*conj(in[current_sp_carrier]);
                         }
-                        sum += phase;
+
+                        //sum += d_pilot_values[next_sp_carrier]*d_pilot_values[current_sp_carrier]*in[next_sp_carrier]*conj(in[current_sp_carrier]);
                     }
                     d_corr_sp[sym_count] = abs(sum); 
                     if (abs(sum)>max)
@@ -506,7 +510,6 @@ namespace gr {
                 float max = 0;
                 gr_complex sum = 0;
                 int start = 0;
-                gr_complex phase;
 
                 // for d_zeros_on_left +/- d_freq_offset_max...
                 for (int i = d_zeros_on_left - d_freq_offset_max; i < d_zeros_on_left + d_freq_offset_max; i++)
@@ -516,12 +519,17 @@ namespace gr {
                     {
 
                         if (d_known_phase_diff[j] == 0)
-                            // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is zero, is because we expect both to be always in phase
-                            phase = in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
+                        {
+                            // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is zero, 
+                            // is because we expect both to be always in phase
+                            sum += in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
+                        }
                         else
-                            // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is not zero, is because we expect both to be always out of phase (180 degrees)
-                            phase = -in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
-                        sum +=phase;
+                        {
+                            // If the phase difference between tmcc_carriers[j+1] and tmcc_carriers[j] is not zero, 
+                            // is because we expect both to be always out of phase (180 degrees)
+                            sum -= in[i + d_tmcc_carriers[j + 1]]*conj(in[i + d_tmcc_carriers[j]]);
+                        }
                     }
                     if (abs(sum) > max)
                     {
@@ -538,10 +546,10 @@ namespace gr {
 
 
         void
-            ofdm_synchronization_impl::calculate_fft(const gr_complex * in, gr_complex * out)
+            ofdm_synchronization_impl::calculate_fft(gr_complex * out)
             {
-                // copy the input into the calculator's buffer
-                memcpy(d_fft_calculator.get_inbuf(), in, sizeof(gr_complex)*d_fft_length); 
+                // I assume the input data has already been copied into the calculator's buffer
+                //memcpy(d_fft_calculator.get_inbuf(), in, sizeof(gr_complex)*d_fft_length); 
                 //calculate the FFT
                 d_fft_calculator.execute(); 
 
@@ -645,7 +653,7 @@ namespace gr {
 
                 // Calculate norm
                 low = lookup_stop - (d_cp_length + d_fft_length - 1);
-                size = lookup_start - (lookup_stop - (d_cp_length + d_fft_length - 1)) + 1;
+                size = lookup_start - low + 1;
                 volk_32fc_magnitude_squared_32f(&d_norm[low], &in[low], size);
 
                 // Calculate gamma on each point
@@ -657,22 +665,16 @@ namespace gr {
                 volk_32fc_x2_multiply_conjugate_32fc(&d_corr[low - d_fft_length], &in[low], &in[low - d_fft_length], size);
 
                 // Calculate time delay and frequency correction
-                // This looks like spaghetti code but it is fast
+                float sum_aux = 0;
                 for (int i = lookup_start - 1; i >= lookup_stop; i--)
                 {
                     int k = i - lookup_stop;
 
-                    d_phi[k] = 0.0;
-                    d_gamma[k] = 0.0;
-
-                    // Moving sum for calculating gamma and phi
-                    for (int j = 0; j < d_cp_length; j++)
-                    {
-                        // Calculate gamma and store it
-                        d_gamma[k] += d_corr[i - j - d_fft_length];
-                        // Calculate phi and store it
-                        d_phi[k] += d_norm[i - j] + d_norm[i - j - d_fft_length];
-                    }
+                    //TODO no accumulator for complexes in VOLK for the moment.    
+                    volk_32fc_32f_dot_prod_32fc(&d_gamma[k], &d_corr[i-d_cp_length+1-d_fft_length], d_ones, d_cp_length);
+                    volk_32f_accumulator_s32f(&d_phi[k], &d_norm[i-d_cp_length+1], d_cp_length);
+                    volk_32f_accumulator_s32f(&sum_aux, &d_norm[i-d_cp_length+1-d_fft_length], d_cp_length);
+                    d_phi[k] += sum_aux;
                 }
 
                 // Init lambda with gamma
@@ -714,35 +716,7 @@ namespace gr {
                 volk_32fc_s32fc_x2_rotator_32fc(&out[0], &in[0], phase_increment, &phase_current, d_fft_length) ; 
                 d_phase = std::arg(phase_current); 
                 d_phase = fmod(d_phase + d_phaseinc*d_cp_length, (float)2*M_PI);
-                /*            for (int i = 0; i < d_fft_length; i++)
-                              {
-                // if (i == d_nextpos)
-                //     d_phaseinc = d_nextphaseinc;
-                // We are interested only in fft_length
-                d_phase += d_phaseinc;
-
-                while (d_phase > (float)M_PI)
-                d_phase -= (float)(2.0 * M_PI);
-                while (d_phase < (float)(-M_PI))
-                d_phase += (float)(2.0 * M_PI);
-
-                d_derot[i] = gr_expj(d_phase);
-                }
-
-                //d_nextphaseinc = sensitivity * (d_peak_epsilon);
-                //d_nextpos = d_cp_start - (d_cp_length+d_fft_length); 
-
-                volk_32fc_x2_multiply_32fc(&out[0], &d_derot[0], &in[0], d_fft_length);
-                for (int i = 0; i < d_cp_length; i++)
-                {
-                d_phase += d_phaseinc;
-                while (d_phase > (float)M_PI)
-                d_phase -= (float)(2.0 * M_PI);
-                while (d_phase < (float)(-M_PI))
-                d_phase += (float)(2.0 * M_PI);
-                }
-                */
-            }
+           }
 
 
         int
@@ -799,8 +773,9 @@ namespace gr {
                         if ( !d_cp_found )
                         {
                             // We may have not found the CP because the smaller search range was too small (rare, but possible, in 
-                            // particular when sampling time error are present). We thus re-try with the whole search range. 
-                            d_cp_found = ml_sync(&in[d_consumed], 2 * d_fft_length + d_cp_length - 1, d_fft_length + d_cp_length - 1, \
+                            // particular when sampling time error are present). We thus re-try with a bigger search range and 
+                            // update d_cp_start. 
+                            d_cp_found = ml_sync(&in[d_consumed], d_cp_start+16, std::max(d_cp_start-16,d_cp_length+d_fft_length-1), \
                                     &d_cp_start, &peak_epsilon_aux);
                             d_samp_phase = 0; 
                             d_moved_cp = true;
@@ -820,20 +795,26 @@ namespace gr {
                            */
 
                         int low = d_cp_start + d_cp_start_offset - d_fft_length + 1 ;
-                        
-                        // I interpolate the signal with the estimated sampling clock error. 
-                        // The filter used as interpolator has non-causal output (why is beyond my understading). This -3
-                        // solves this issue. TODO why does this happen? better solution?
-                        required_for_interpolation = interpolate_input(&in[d_consumed+low-3], &d_interpolated[0]);
-
-                        // I derotate the signal with the estimated frequency error. 
-                        derotate(&d_interpolated[0], &d_prefft_synched[0]);
+                       
+                        if (d_interpolate) {
+                            // I interpolate the signal with the estimated sampling clock error. 
+                            // The filter used as interpolator has non-causal output (why is beyond my understading). This -3
+                            // solves this issue. TODO why does this happen? better solution?
+                            required_for_interpolation = interpolate_input(&in[d_consumed+low-3], &d_interpolated[0]);
+                            // I derotate the signal with the estimated frequency error. 
+                            
+                            derotate(d_interpolated, d_fft_calculator.get_inbuf());
+                        }
+                        else 
+                        {
+                            derotate(&in[d_consumed+low], d_fft_calculator.get_inbuf());
+                        }
 
                         // I (naturally) calculate the FFT. 
-                        calculate_fft(&d_prefft_synched[0], &d_postfft[0]);
+                        calculate_fft(d_postfft);
 
                         // Calculate and correct the integer frequency error.  
-                        d_freq_offset = estimate_integer_freq_offset(&d_postfft[0]);
+                        d_freq_offset = estimate_integer_freq_offset(d_postfft);
 
                         d_integer_freq_derotated = &d_postfft[0] + d_freq_offset + d_zeros_on_left; 
 
@@ -850,17 +831,26 @@ namespace gr {
 
                         //I calculate the channel taps at the SPs...
                         calculate_channel_taps_sp(d_integer_freq_derotated, d_current_symbol, d_channel_gain);
+                        
                         // and interpolate in the rest of the carriers. 
                         linearly_estimate_channel_taps(d_current_symbol, d_channel_gain);
 
                         // Equalization is applied. 
-                        for (int carrier = 0; carrier < d_active_carriers; carrier++)
-                        {
-                            out[i*d_active_carriers +carrier] = d_integer_freq_derotated[carrier]/d_channel_gain[carrier];
-                            if (ch_output_connected){
-                                // the channel taps output is connected
-                                out_channel_gain[i*d_active_carriers + carrier] = d_channel_gain[carrier]; 
-                            }
+    
+                        //I now perform a rather indirect complex division with VOLK (plus, I tried to minimize
+                        // the usage of auxilary variables) 
+                        // TODO a new VOLK kernel that makes complex division?
+                        volk_32fc_x2_multiply_conjugate_32fc(&out[i*d_active_carriers], d_integer_freq_derotated, d_channel_gain, d_active_carriers);
+                        volk_32fc_magnitude_squared_32f(d_channel_gain_mag_sq, d_channel_gain, d_active_carriers);
+                        volk_32f_x2_divide_32f(d_channel_gain_mag_sq, d_ones, d_channel_gain_mag_sq, d_active_carriers);
+                        volk_32fc_32f_multiply_32fc(&out[i*d_active_carriers], &out[i*d_active_carriers], d_channel_gain_mag_sq, d_active_carriers);
+                        // Using what follows instead, is actually slower (seems that taking powers is worse than simply dividing).
+                        //volk_32fc_s32f_power_32fc(d_channel_gain_inv, d_channel_gain, -1.0, d_active_carriers);
+                        //volk_32fc_x2_multiply_32fc(&out[i*d_active_carriers], d_integer_freq_derotated, d_channel_gain_inv, d_active_carriers);
+
+                        if (ch_output_connected){
+                            // the channel taps output is connected
+                            memcpy(&out_channel_gain[i*d_active_carriers], d_channel_gain, d_active_carriers*sizeof(gr_complex));
                         }
 
                         if(freq_error_output_connected)
@@ -872,15 +862,13 @@ namespace gr {
                             out_samp_error[i] = d_est_delta; 
                         }
 
-
-
                         // If an integer frequency error was detected, I add it to the estimation, which considers 
                         // fractional errors only. 
                         d_est_freq = d_est_freq + 3.14159*2*d_freq_offset; 
 
                         // I update the fine timing and frequency estimations. 
                         estimate_fine_synchro(d_channel_gain, d_previous_channel_gain); 
-                    
+
                         d_out += 1; 
 
                     }
@@ -900,34 +888,15 @@ namespace gr {
                     }
                     d_consumed += required_for_interpolation;
 
-                    d_moved_cp = false; 
-                    /*int delta_pos = required_for_interpolation - (d_fft_length+d_cp_length);
-                    d_cp_start_offset += delta_pos; 
-                    printf("d_cp-start_offset: %i\n",d_cp_start_offset);
-
-                    if (delta_pos!=0)
-                    {
-                        d_moved_cp = true; 
-                    }
-                    else
-                    {
-                        d_moved_cp = false; 
-                    }
-                    */
-                }
+                    int delta_pos = required_for_interpolation - (d_fft_length+d_cp_length);
+                    d_moved_cp = (delta_pos!=0);
+               }
 
                 // Tell runtime system how many input items we consumed on
                 // each input stream.
                 consume_each(d_consumed);
 
-                /*
-                   d_cp_start_offset += d_consumed - (d_fft_length+d_cp_length)*noutput_items;
-                   if (d_cp_start_offset!=0)
-                   {
-                   d_moved_cp = true; 
-                   }
-                   */
-                // Tell runtime system how many output items we produced.
+               // Tell runtime system how many output items we produced.
                 return (d_out);
 
             }

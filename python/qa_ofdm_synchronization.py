@@ -84,7 +84,7 @@ class qa_ofdm_synchronization (gr_unittest.TestCase):
 
 
         src = blocks.vector_source_c(src_data)
-        ofdmsym = isdbt.ofdm_synchronization(mode, cp_len)
+        ofdmsym = isdbt.ofdm_synchronization(mode, cp_len, True)
         dst = blocks.vector_sink_c(active_carriers)
 
         self.tb.connect(src,ofdmsym)
