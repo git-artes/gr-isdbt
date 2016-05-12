@@ -58,11 +58,17 @@ namespace gr {
     class ofdm_sym_acquisition_impl : public ofdm_sym_acquisition
     {
      private:
+
+         static const int d_total_segments; 
+         static const int d_carriers_per_segment_2k;
       int d_fft_length;
       int d_cp_length;
+      int d_active_carriers; 
       int d_extended_range;
       float d_snr;
       float d_rho;
+      
+      float * d_ones;
 
       int d_index;
 
@@ -73,7 +79,10 @@ namespace gr {
       gr_complex * d_corr;
       gr_complex * d_gamma;
       float * d_lambda;
+      float * d_phi;
       float * d_arg;
+
+      float d_peak_epsilon; 
 
       // For peak detector
       float d_threshold_factor_rise;
@@ -96,6 +105,7 @@ namespace gr {
       int d_freq_correction_timeout;
 
       int d_cp_start;
+      int d_cp_start_offset;
       gr_complex * d_derot;
       int d_to_consume;
       int d_to_out;
@@ -115,7 +125,7 @@ namespace gr {
        * the return value is used (either true or false). 
        *
        */
-      int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, gr_complex * derot, int * to_consume, int * to_out);
+      int ml_sync(const gr_complex * in, int lookup_start, int lookup_stop, int * cp_pos, float * peak_epsilon);
      
      /*!
       * \brief Initializes the parameters used in the peak_detect_process. 
@@ -125,13 +135,12 @@ namespace gr {
       * \param alpha The parameter used to update both the average maximum and minimum (exponential filter, or single-root iir). 
       *
       */ 
-      int peak_detect_init(float threshold_factor_rise, float alpha);
+      void peak_detect_init(float threshold_factor_rise, float alpha);
      
       /*!
-       * \brief Given datain and its length, the method return the peak position and its value in the form of an array (for 
-       * "historical" reasons, since it's always a single value). 
+       * \brief Given datain and its length, the method return the peak position 
        */ 
-      int peak_detect_process(const float * datain, const int datain_length, int * peak_pos, int * peak_max);
+      int peak_detect_process(const float * datain, const int datain_length, int * peak_pos);
 
       /*!
        * \brief Sends a tag downstream that signals that acquisition was successfully performed (or that we lost synchronization 

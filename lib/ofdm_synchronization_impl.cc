@@ -878,7 +878,7 @@ namespace gr {
                         send_sync_start();
                         d_initial_acquired = false;
 
-                        // Restart wit a half number so that we'll not endup with the same situation
+                        // Restart with a half number so that we'll not endup with the same situation
                         // This will prevent peak_detect to not detect anything
                         d_consumed += (d_cp_length+d_fft_length)/2;
                         consume_each(d_consumed);
