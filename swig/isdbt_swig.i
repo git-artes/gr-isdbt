@@ -9,7 +9,7 @@
 
 %{
 #include "isdbt/ofdm_sym_acquisition.h"
-#include "isdbt/sync_and_channel_estimaton.h"
+#include "isdbt/sync_and_channel_estimation.h"
 #include "isdbt/symbol_demapper.h"
 #include "isdbt/tmcc_decoder.h"
 #include "isdbt/subset_of_carriers.h"
@@ -33,8 +33,8 @@
 
 %include "isdbt/ofdm_sym_acquisition.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, ofdm_sym_acquisition);
-%include "isdbt/sync_and_channel_estimaton.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, sync_and_channel_estimaton);
+%include "isdbt/sync_and_channel_estimation.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, sync_and_channel_estimation);
 
 %include "isdbt/subset_of_carriers.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, subset_of_carriers);

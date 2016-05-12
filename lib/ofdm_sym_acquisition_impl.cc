@@ -91,7 +91,7 @@ namespace gr {
                 else
                 {
                     success = false; 
-                    printf("OFDM_SYNCHRO: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); 
+                    printf("gr-isdbt.OFDM_SYM_ACQ: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); 
                 }
 
                 //We now check whether the peak is in the border of the search interval. This would mean that 
@@ -103,7 +103,7 @@ namespace gr {
                     if ( ( peak_index == 0 ) || ( peak_index == datain_length-1 ) )
                     {
                         success = false; 
-                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
+                        printf("gr-isdbt.OFDM_SYM_ACQ: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
                 else
@@ -111,7 +111,7 @@ namespace gr {
                     if ( ( peak_index < 5 ) || ( peak_index > datain_length-5 ) )
                     {
                         success = false; 
-                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
+                        printf("gr-isdbt.OFDM_SYM_ACQ: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
 
@@ -228,6 +228,8 @@ namespace gr {
               d_freq_correction_count(0), d_freq_correction_timeout(0)
         {
             set_relative_rate(1.0 / (double) (d_cp_length + d_fft_length));
+
+            printf("[gr-isdbt.OFDM_SYM_ACQ] You are using ofdm_sym_acquisition to perform coarse OFDM synchronization. Consider using ofdm_synchronization instead. \n");
 
             int mode = 3;
             if (d_fft_length==4096)

@@ -32,7 +32,7 @@ from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import isdbt
 
-class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
+class qa_sync_and_channel_estimation (gr_unittest.TestCase):
 
     def setUp (self):
         self.tb = gr.top_block ()
@@ -47,7 +47,7 @@ class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
         mode = 1; 
         total_carriers = total_segments*108*2**(mode-1)+1
         fft_size = 2**(10+mode)
-        sync = isdbt.sync_and_channel_estimaton(fft_size, total_carriers,200)
+        sync = isdbt.sync_and_channel_estimation(fft_size, total_carriers,200)
 
         src_data = range(fft_size)*2
         
@@ -65,4 +65,4 @@ class qa_sync_and_channel_estimaton (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_sync_and_channel_estimaton, "qa_sync_and_channel_estimaton.xml")
+    gr_unittest.run(qa_sync_and_channel_estimation, "qa_sync_and_channel_estimation.xml")

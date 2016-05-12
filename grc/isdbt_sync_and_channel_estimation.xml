@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <block>
   <name>Sync And Channel Estimation</name>
-  <key>isdbt_sync_and_channel_estimaton</key>
+  <key>isdbt_sync_and_channel_estimation</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.sync_and_channel_estimaton($transmission_mode.fft_length, $transmission_mode.payload_length, $offset_max)</make>
+  <make>isdbt.sync_and_channel_estimation($transmission_mode.fft_length, $transmission_mode.payload_length, $offset_max)</make>
   <param>
     <name>Transmission Mode</name>
     <key>transmission_mode</key>

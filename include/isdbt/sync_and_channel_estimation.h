@@ -28,8 +28,8 @@
 
 
 
-#ifndef INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_H
-#define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_H
+#ifndef INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATION_H
+#define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATION_H
 
 #include <isdbt/api.h>
 #include <gnuradio/sync_block.h>
@@ -46,10 +46,10 @@ namespace gr {
      * Optionally, it outputs the estimation of the channel taps. 
      *
      */
-    class ISDBT_API sync_and_channel_estimaton : virtual public gr::sync_block
+    class ISDBT_API sync_and_channel_estimation : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<sync_and_channel_estimaton> sptr;
+      typedef boost::shared_ptr<sync_and_channel_estimation> sptr;
 
       /*!
        * \brief This block performs the integer frequency estimation (and correction),
@@ -69,5 +69,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_H */
+#endif /* INCLUDED_ISDBT_SYNC_AND_CHANNEL_estimation_H */
 

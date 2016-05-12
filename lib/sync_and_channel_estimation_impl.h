@@ -26,17 +26,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_IMPL_H
-#define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_IMPL_H
+#ifndef INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATION_IMPL_H
+#define INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATION_IMPL_H
 
-#include <isdbt/sync_and_channel_estimaton.h>
+#include <isdbt/sync_and_channel_estimation.h>
 #include <deque>
 #include <boost/circular_buffer.hpp>
 
 namespace gr {
     namespace isdbt {
 
-        class sync_and_channel_estimaton_impl : public sync_and_channel_estimaton
+        class sync_and_channel_estimation_impl : public sync_and_channel_estimation
         {
             private:
 
@@ -79,6 +79,14 @@ namespace gr {
                 float * d_known_phase_diff;
 
                 gr_complex * d_channel_gain; 
+
+                gr_complex * d_aux_linear_estimate_first; 
+                gr_complex * d_aux_linear_estimate_last; 
+                gr_complex * d_coeffs_linear_estimate_first; 
+                gr_complex * d_coeffs_linear_estimate_last;
+
+                float * d_channel_gain_mag_sq; 
+                float * d_ones; 
 
                 // It will be initialized after process_tmcc_data function
                 int d_freq_offset;
@@ -125,7 +133,7 @@ namespace gr {
                  * function, and calculate its maximum (see our webpage for further info on the algorithm). The correction 
                  * is left to a separate function. 
                  */
-                int process_tmcc_data(const gr_complex * in);
+                int estimate_integer_freq_offset(const gr_complex * in);
 
 //                gr_complex * frequency_correction(const gr_complex * in, gr_complex * out);
 
@@ -135,7 +143,7 @@ namespace gr {
                  * Similarly to the TMCC case, this method considers the four possible scattered pilot dispositions 
                  * and calculates a certain correlation (see our webpage for further info on the algorithm). 
                  */
-                int process_sp_data(const gr_complex * in);
+                int estimate_symbol_index(const gr_complex * in);
 
                 /*!
                  * \brief Calculates the channel taps at the SPs, given the input complex baseband signal and a symbol number 
@@ -159,8 +167,8 @@ namespace gr {
 
 
             public:
-                sync_and_channel_estimaton_impl(int fft_length, int payload_length, int offset_max);
-                ~sync_and_channel_estimaton_impl();
+                sync_and_channel_estimation_impl(int fft_length, int payload_length, int offset_max);
+                ~sync_and_channel_estimation_impl();
 
                 int work(int noutput_items,
                         gr_vector_const_void_star &input_items,
@@ -170,5 +178,5 @@ namespace gr {
     } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_SYNC_AND_CHANNEL_ESTIMATON_IMPL_H */
+#endif /* INCLUDED_ISDBT_SYNC_AND_CHANNEL_estimation_IMPL_H */
 

@@ -41,17 +41,17 @@ class isdbt_rf_channel_decoding(gr.hier_block2):
         # Blocks
         ##################################################
         self.isdbt_tmcc_decoder_0 = isdbt.tmcc_decoder(mode, tmcc_print)
-        self.isdbt_sync_and_channel_estimaton_0 = isdbt.sync_and_channel_estimaton(total_carriers, active_carriers, max_freq_offset)
+        self.isdbt_sync_and_channel_estimation_0 = isdbt.sync_and_channel_estimation(total_carriers, active_carriers, max_freq_offset)
         self.isdbt_ofdm_sym_acquisition_0 = isdbt.ofdm_sym_acquisition(total_carriers, int(guard*total_carriers), snr)
         self.fft_vxx_0 = fft.fft_vcc(total_carriers, True, (window.rectangular(total_carriers)), True, 1)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.fft_vxx_0, 0), (self.isdbt_sync_and_channel_estimaton_0, 0))    
+        self.connect((self.fft_vxx_0, 0), (self.isdbt_sync_and_channel_estimation_0, 0))    
         self.connect((self.isdbt_ofdm_sym_acquisition_0, 0), (self.fft_vxx_0, 0))    
-        self.connect((self.isdbt_sync_and_channel_estimaton_0, 0), (self.isdbt_tmcc_decoder_0, 0))
-        self.connect((self.isdbt_sync_and_channel_estimaton_0, 1), (self, 1))
+        self.connect((self.isdbt_sync_and_channel_estimation_0, 0), (self.isdbt_tmcc_decoder_0, 0))
+        self.connect((self.isdbt_sync_and_channel_estimation_0, 1), (self, 1))
         self.connect((self.isdbt_tmcc_decoder_0, 0), (self, 0))    
         self.connect((self, 0), (self.isdbt_ofdm_sym_acquisition_0, 0))    
 
