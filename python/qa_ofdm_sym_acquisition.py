@@ -81,10 +81,10 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
         #src_data = sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
+        expected_result = sym1[int(total_carriers*cp_len)-10:len(sym1)-10]+\
+                sym2[int(total_carriers*cp_len)-10:len(sym2)-10]+\
+                sym3[int(total_carriers*cp_len)-10:len(sym3)-10]+\
+                sym4[int(total_carriers*cp_len)-10:len(sym4)-10]
 
         expected_freq = (0,)*4
 
@@ -102,8 +102,8 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
+        print "actual=", actual_result[1:30]
+        print "expected=", expected_result[1:30]
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 

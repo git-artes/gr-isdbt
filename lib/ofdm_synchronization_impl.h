@@ -48,13 +48,13 @@ namespace gr {
                 int d_cp_length;
                 int d_active_carriers; 
 
-                // for symbol time synchronization
+                // for symbol time and coarse frequency synchronization
                 int d_cp_start;
                 bool d_cp_found; 
                 gr_complex * d_gamma;
                 float * d_phi; 
                 float * d_lambda;
-                float d_peak_epsilon;
+                float d_coarse_freq;
                 gr_complex * d_derot;
                 gr_complex * d_conj;
                 float * d_norm;
@@ -82,10 +82,15 @@ namespace gr {
                 gr_complex * d_postfft; 
                 gr::fft::fft_complex d_fft_calculator; 
 
-                //integer frequency correction part
+                //zero padding to the left
                 int d_zeros_on_left;
+                //integer frequency variables
                 int d_freq_offset_max;
                 int d_freq_offset; 
+                int d_freq_offset_agree_count;
+                bool d_freq_offset_acq; 
+                
+               
                 int d_tmcc_carriers_size;
                 const int * d_tmcc_carriers; 
                 static const int tmcc_carriers_size_2k;
@@ -113,6 +118,8 @@ namespace gr {
 
                 int d_current_symbol;
                 int d_previous_symbol; 
+                bool d_symbol_acq; 
+                int d_symbol_correct_count;
                 float * d_corr_sp; 
          
                // fine frequency and symbol synchro 
@@ -131,11 +138,14 @@ namespace gr {
                 float d_alpha_timing; 
                 float d_beta_timing; 
                 float d_freq_aux; 
-                float d_est_freq; 
+                float d_fine_freq; 
                 float d_delta_aux; 
                 float d_est_delta;
                 bool d_moved_cp;  
 
+                // the total frequency error (used for derotation)
+                float d_total_freq_error;
+                
                 void advance_freq_loop(float error); 
                 
                 void advance_delta_loop(float error); 

@@ -250,8 +250,6 @@ namespace gr {
             const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
             set_alignment(std::max(1, alignment_multiple));
 
-            const int alignment = volk_get_alignment();
-
             d_gamma = new gr_complex[d_fft_length];
             if (d_gamma == NULL)
                 std::cout << "cannot allocate memory: d_gamma" << std::endl;

@@ -151,6 +151,13 @@ namespace gr {
 
             // a test to check if we can use time-interpolation for channel estimation
             set_history(5); 
+            
+            //VOLK alignment as recommended by GNU Radio's Manual. It has a similar effect 
+            //than set_output_multiple(), thus we will generally get multiples of this value
+            //as noutput_items. 
+            const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
+            set_alignment(std::max(1, alignment_multiple));
+
 
             d_ninput = d_fft_length;
             d_noutput = d_active_carriers;

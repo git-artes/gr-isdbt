@@ -578,6 +578,7 @@ namespace gr {
                 }
 
 
+                // change it only when it consistently points to a different frequency
                if (d_freq_offset_disagree_count > 3)
                 {
                     d_freq_offset = start-d_zeros_on_left;
@@ -872,9 +873,10 @@ namespace gr {
                         // I (naturally) calculate the FFT. 
                         calculate_fft(&d_prefft_synched[0], &d_postfft[0]);
 
-                        // Calculate and correct the integer frequency error.  
+                        // Calculate a candidate integer frequency error.  
                         estimate_integer_freq_offset(&d_postfft[0]);
-                        
+                       
+                        // d_freq_offset may be modified by estimate_integer_freq_offset
                         d_integer_freq_derotated = &d_postfft[0] + d_freq_offset + d_zeros_on_left; 
 
                         //Estimate the current symbol index.                        
