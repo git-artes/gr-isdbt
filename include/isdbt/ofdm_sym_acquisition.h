@@ -64,6 +64,8 @@ namespace gr {
        *
        */
       static sptr make(int fft_length, int cp_length, float snr);
+
+      virtual int get_cp_start_offset() const = 0;
     };
 
   } // namespace isdbt

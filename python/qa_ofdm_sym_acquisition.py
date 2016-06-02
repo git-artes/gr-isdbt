@@ -62,6 +62,98 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym_with_cp = ofdm_sym[len(ofdm_sym)-cp_length:len(ofdm_sym)] + ofdm_sym
         return sym_with_cp
 
+    def test_ofdm_symbol_aquisition_mode3_cp14 (self):
+
+        mode = 3
+        total_carriers = 2**(10+mode)
+        cp_len = 1/4.0
+
+        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+
+        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
+        expected_freq = (0,)*4
+
+
+        src = blocks.vector_source_c(src_data)
+        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
+        dst = blocks.vector_sink_c(total_carriers)
+        dst_freq = blocks.vector_sink_f()
+
+        self.tb.connect(src,ofdmsym)
+        self.tb.connect(ofdmsym,dst)
+        self.tb.connect((ofdmsym,1),dst_freq)
+        self.tb.run()
+
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
+        # check data
+        actual_result = dst.data()
+        actual_freq = dst_freq.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
+        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
+
+    def test_ofdm_symbol_aquisition_mode3_cp18 (self):
+
+        mode = 3
+        total_carriers = 2**(10+mode)
+        cp_len = 1/8.0
+
+        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+
+        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
+        expected_freq = (0,)*4
+
+
+        src = blocks.vector_source_c(src_data)
+        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
+        dst = blocks.vector_sink_c(total_carriers)
+        dst_freq = blocks.vector_sink_f()
+
+        self.tb.connect(src,ofdmsym)
+        self.tb.connect(ofdmsym,dst)
+        self.tb.connect((ofdmsym,1),dst_freq)
+        self.tb.run()
+
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
+        # check data
+        actual_result = dst.data()
+        actual_freq = dst_freq.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
+        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
+
     def test_ofdm_symbol_aquisition_mode3_cp116 (self):
 
         mode = 3
@@ -81,11 +173,6 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
         #src_data = sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len)-10:len(sym1)-10]+\
-                sym2[int(total_carriers*cp_len)-10:len(sym2)-10]+\
-                sym3[int(total_carriers*cp_len)-10:len(sym3)-10]+\
-                sym4[int(total_carriers*cp_len)-10:len(sym4)-10]
-
         expected_freq = (0,)*4
 
 
@@ -99,11 +186,16 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        print "actual=", actual_result[1:30]
-        print "expected=", expected_result[1:30]
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
@@ -118,13 +210,14 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -138,56 +231,22 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
-        # check data
-        actual_result = dst.data()
-        actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
-        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
-        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
 
-    def test_ofdm_symbol_aquisition_mode3_cp18 (self):
-
-        mode = 3
-        total_carriers = 2**(10+mode)
-        cp_len = 1/8.0
-
-        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-
-        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
-        expected_freq = (0,)*4
-
-
-        src = blocks.vector_source_c(src_data)
-        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
-        dst = blocks.vector_sink_c(total_carriers)
-        dst_freq = blocks.vector_sink_f()
-
-        self.tb.connect(src,ofdmsym)
-        self.tb.connect(ofdmsym,dst)
-        self.tb.connect((ofdmsym,1),dst_freq)
-        self.tb.run()
 
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
-    def test_ofdm_symbol_aquisition_mode3_cp14 (self):
+    def test_ofdm_symbol_aquisition_mode2_cp14 (self):
 
-        mode = 3
+        mode = 2
         total_carriers = 2**(10+mode)
         cp_len = 1/4.0
 
@@ -196,13 +255,14 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -216,13 +276,65 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
+
+    def test_ofdm_symbol_aquisition_mode2_cp18 (self):
+
+        mode = 2
+        total_carriers = 2**(10+mode)
+        cp_len = 1/8.0
+
+        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+
+        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
+        expected_freq = (0,)*4
+
+
+        src = blocks.vector_source_c(src_data)
+        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
+        dst = blocks.vector_sink_c(total_carriers)
+        dst_freq = blocks.vector_sink_f()
+
+        self.tb.connect(src,ofdmsym)
+        self.tb.connect(ofdmsym,dst)
+        self.tb.connect((ofdmsym,1),dst_freq)
+        self.tb.run()
+
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
+        # check data
+        actual_result = dst.data()
+        actual_freq = dst_freq.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
+        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
 
     def test_ofdm_symbol_aquisition_mode2_cp116 (self):
 
@@ -242,11 +354,7 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -260,11 +368,16 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
@@ -279,13 +392,14 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -299,56 +413,22 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
-        # check data
-        actual_result = dst.data()
-        actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
-        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
-        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
 
-    def test_ofdm_symbol_aquisition_mode2_cp18 (self):
-
-        mode = 2
-        total_carriers = 2**(10+mode)
-        cp_len = 1/8.0
-
-        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-
-        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
-        expected_freq = (0,)*4
-
-
-        src = blocks.vector_source_c(src_data)
-        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
-        dst = blocks.vector_sink_c(total_carriers)
-        dst_freq = blocks.vector_sink_f()
-
-        self.tb.connect(src,ofdmsym)
-        self.tb.connect(ofdmsym,dst)
-        self.tb.connect((ofdmsym,1),dst_freq)
-        self.tb.run()
 
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
-    def test_ofdm_symbol_aquisition_mode2_cp14 (self):
+    def test_ofdm_symbol_aquisition_mode1_cp14 (self):
 
-        mode = 2
+        mode = 1
         total_carriers = 2**(10+mode)
         cp_len = 1/4.0
 
@@ -357,13 +437,14 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -377,13 +458,65 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
+
+    def test_ofdm_symbol_aquisition_mode1_cp18 (self):
+
+        mode = 1
+        total_carriers = 2**(10+mode)
+        cp_len = 1/8.0
+
+        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+
+        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
+        expected_freq = (0,)*4
+
+
+        src = blocks.vector_source_c(src_data)
+        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
+        dst = blocks.vector_sink_c(total_carriers)
+        dst_freq = blocks.vector_sink_f()
+
+        self.tb.connect(src,ofdmsym)
+        self.tb.connect(ofdmsym,dst)
+        self.tb.connect((ofdmsym,1),dst_freq)
+        self.tb.run()
+
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
+        # check data
+        actual_result = dst.data()
+        actual_freq = dst_freq.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
+        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+
 
     def test_ofdm_symbol_aquisition_mode1_cp116 (self):
 
@@ -403,11 +536,7 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -421,11 +550,16 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
+
+
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
@@ -440,13 +574,14 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
         sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
+        #sym1 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym2 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym3 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym4 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
+        #sym5 = self.generate_symbol_with_cp(range(total_carriers), int(total_carriers*cp_len));
 
         src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
+        #src_data = sym1 + sym2 + sym3 + sym4 + sym5
         expected_freq = (0,)*4
 
 
@@ -460,91 +595,19 @@ class qa_ofdm_sym_acquisition (gr_unittest.TestCase):
         self.tb.connect((ofdmsym,1),dst_freq)
         self.tb.run()
 
-        # check data
-        actual_result = dst.data()
-        actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
-        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
-        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
+        offset = ofdmsym.get_cp_start_offset()
+        expected_result = sym1[int(total_carriers*cp_len)+offset:len(sym1)+offset]+\
+                sym2[int(total_carriers*cp_len)+offset:len(sym2)+offset]+\
+                sym3[int(total_carriers*cp_len)+offset:len(sym3)+offset]+\
+                sym4[int(total_carriers*cp_len)+offset:len(sym4)+offset]
 
-    def test_ofdm_symbol_aquisition_mode1_cp18 (self):
-
-        mode = 1
-        total_carriers = 2**(10+mode)
-        cp_len = 1/8.0
-
-        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-
-        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
-        expected_freq = (0,)*4
-
-
-        src = blocks.vector_source_c(src_data)
-        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
-        dst = blocks.vector_sink_c(total_carriers)
-        dst_freq = blocks.vector_sink_f()
-
-        self.tb.connect(src,ofdmsym)
-        self.tb.connect(ofdmsym,dst)
-        self.tb.connect((ofdmsym,1),dst_freq)
-        self.tb.run()
 
         # check data
         actual_result = dst.data()
         actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
         self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
         self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
-    def test_ofdm_symbol_aquisition_mode1_cp14 (self):
-
-        mode = 1
-        total_carriers = 2**(10+mode)
-        cp_len = 1/4.0
-
-        sym1 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym2 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym3 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym4 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-        sym5 = self.generate_random_symbol(total_carriers, int(total_carriers*cp_len))
-
-        src_data = [random.random() for i in range(20)]+ sym1 + sym2 + sym3 + sym4 + sym5
-        expected_result = sym1[int(total_carriers*cp_len):len(sym1)]+\
-                sym2[int(total_carriers*cp_len):len(sym2)]+\
-                sym3[int(total_carriers*cp_len):len(sym3)]+\
-                sym4[int(total_carriers*cp_len):len(sym4)]
-
-        expected_freq = (0,)*4
-
-
-        src = blocks.vector_source_c(src_data)
-        ofdmsym = isdbt.ofdm_sym_acquisition(fft_length=total_carriers, cp_length=int(total_carriers*cp_len), snr=50)
-        dst = blocks.vector_sink_c(total_carriers)
-        dst_freq = blocks.vector_sink_f()
-
-        self.tb.connect(src,ofdmsym)
-        self.tb.connect(ofdmsym,dst)
-        self.tb.connect((ofdmsym,1),dst_freq)
-        self.tb.run()
-
-        # check data
-        actual_result = dst.data()
-        actual_freq = dst_freq.data()
-        #print "actual=", actual_result
-        #print "expected=", expected_result
-        self.assertFloatTuplesAlmostEqual(expected_result, actual_result)
-        self.assertFloatTuplesAlmostEqual(expected_freq, actual_freq)
 
 
 if __name__ == '__main__':
