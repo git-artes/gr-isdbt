@@ -39,7 +39,8 @@ namespace gr {
 
     /*!
      * \brief This block performs the whole OFDM synchronization: symbol timing, frequency correction and channel
-     * equalization. 
+     * equalization.  In addition to mode (1, 2 or 3) and CP length (as a percentage), you may indicate whether or not correct
+     * the estimated sampling error (it uses an interpolator which consumes a non-negligible portion of the total computation time).
      * \ingroup isdbt
      *
      */
@@ -51,7 +52,8 @@ namespace gr {
 
       /*!
        * \brief This block performs the whole OFDM synchronization: symbol timing, frequency and sampling correction and channel
-       * equalization. 
+       * equalization. In addition to mode (1, 2 or 3) and CP length (as a percentage), you may indicate whether or not correct
+       * the estimated sampling error (it uses an interpolator which consumes a non-negligible portion of the total computation time).
        * \return a sptr pointer.
        */
       static sptr make(int mode, float cp_length, bool interpolate);

@@ -269,7 +269,7 @@ namespace gr {
                     reg_prbs = (reg_prbs >> 1) | (new_bit << 10); // We movo all the register to the right and add the new_bit as MSB
                     d_pilot_values[k] = gr_complex((float)(4 * 2 * (0.5 - aux)) / 3, 0);
                 }
-                printf("d_pilot_value[%i]: %f\n", d_active_carriers-1, d_pilot_values[d_active_carriers-1].real());
+                //printf("d_pilot_value[%i]: %f\n", d_active_carriers-1, d_pilot_values[d_active_carriers-1].real());
             }
 
         void
@@ -642,7 +642,7 @@ namespace gr {
                 else
                 {
                     success = false; 
-                    printf("OFDM_SYNCHRO: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); 
+                    //printf("OFDM_SYNCHRO: peak under/over average! peak %f, avg_max %f, avg_min %f\n", datain[ peak_index ], d_avg_max, d_avg_min); 
                 }
 
                 //We now check whether the peak is in the border of the search interval. This would mean that 
@@ -654,7 +654,7 @@ namespace gr {
                     if ( ( peak_index == 0 ) || ( peak_index == datain_length-1 ) )
                     {
                         success = false; 
-                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
+                        //printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
                 else
@@ -662,7 +662,7 @@ namespace gr {
                     if ( ( peak_index < 5 ) || ( peak_index > datain_length-5 ) )
                     {
                         success = false; 
-                        printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
+                        //printf("OFDM_SYNCHRO: peak at border! peak %f, avg_max %f, avg_min %f, peak_index: %i\n", datain[ peak_index ], d_avg_max, d_avg_min, peak_index); 
                     }
                 }
 
