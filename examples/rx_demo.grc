@@ -387,7 +387,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>test_out.ts</value>
+      <value>/home/flarroca/facultad/proyectos/2014_fstv/test_out.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -434,7 +434,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_569_afuera.dat</value>
+      <value>/home/flarroca/facultad/proyectos/2014_fstv/grabaciones/grabacion_569_adentro.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1183,7 +1183,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1203,7 +1203,7 @@
     </param>
     <param>
       <key>interpolate</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -1478,7 +1478,7 @@
     </param>
     <param>
       <key>print_params</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>transmission_mode</key>
