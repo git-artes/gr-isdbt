@@ -49,6 +49,9 @@ On Debian/Ubuntu based distributions, you may have to run:
 
     volk_profile 
 
+**Known bugs**
+- It will not compile with the latest version of VOLK (those after https://github.com/gnuradio/volk/commit/485cd5d03635fdf2c7bf43f0775decf1cfbb60ec). The error message looks something like "error: cannot convert ‘unsigned int*’ to ‘uint16_t* {aka short unsigned int*}’ in argument passing". Manual correction is very simple (see https://github.com/git-artes/gr-isdbt/issues/18). We are working on a more automated way to correct the bug. (Thanks to @pqyptixa). 
+
 IIE Instituto de Ingeniería Eléctrica  
 Facultad de Ingeniería  
 Universidad de la República  
