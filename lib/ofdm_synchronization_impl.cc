@@ -614,13 +614,15 @@ namespace gr {
             ofdm_synchronization_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos)
             {
                 #if VOLK_GT_122
-                uint32_t peak_index = 0;
+                uint16_t peak_index = 0;
+                uint32_t d_datain_length = (uint32_t)datain_length;
                 #else
                 unsigned int peak_index = 0;
+                int d_datain_length = datain_length;
                 #endif
                 bool success = true;
 
-                volk_32f_index_max_16u(&peak_index, &datain[0], datain_length); 
+                volk_32f_index_max_16u(&peak_index, &datain[0], d_datain_length); 
 
                 if (datain_length>=d_fft_length){
                     float min = datain[(peak_index + d_fft_length/2) % d_fft_length];
