@@ -62,7 +62,11 @@ namespace gr {
         int 
             ofdm_sym_acquisition_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos)
             {
+                #if VOLK_GT_122
                 unsigned int peak_index = 0;
+                #else
+                uint32_t peak_index = 0;
+                #endif
                 bool success = true;
 
                 volk_32f_index_max_16u(&peak_index, &datain[0], datain_length); 

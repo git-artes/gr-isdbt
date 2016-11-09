@@ -52,8 +52,8 @@ list(APPEND isdbt_sources
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
-	MESSAGE(STATUS "No C++ sources... skipping lib/")
-	return()
+    MESSAGE(STATUS "No C++ sources... skipping lib/")
+    return()
 endif(NOT isdbt_sources)
 
 add_library(gnuradio-isdbt SHARED ${isdbt_sources})
@@ -63,7 +63,7 @@ set_target_properties(gnuradio-isdbt PROPERTIES DEFINE_SYMBOL "gnuradio_isdbt_EX
 if(APPLE)
     set_target_properties(gnuradio-isdbt PROPERTIES
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-    )
+        )
 endif(APPLE)
 
 ########################################################################
@@ -73,7 +73,34 @@ install(TARGETS gnuradio-isdbt
     LIBRARY DESTINATION lib${LIB_SUFFIX} # .so/.dylib file
     ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib file
     RUNTIME DESTINATION bin              # .dll file
-)
+    )
+
+#######################################################################
+## Workaround for issues with the change of VOLK API
+## See https://github.com/gnuradio/volk/issues/84
+## and https://github.com/git-artes/gr-isdbt/issues/18
+#######################################################################
+
+if(NOT VOLK_VERSION)
+    set(VOLK_VERSION "1.2.2")
+endif(NOT VOLK_VERSION)
+
+if(VOLK_VERSION VERSION_EQUAL 1.2.2)
+    find_file(VOLK_GREATER_THAN_122
+        NAMES volk/volk_32f_index_max_32u.h
+        HINTS ${CMAKE_INSTALL_PREFIX}/include
+        PATHS /usr/local/include
+        /usr/include
+        ${CMAKE_INSTALL_PREFIX}/include
+        )
+    if(VOLK_GREATER_THAN_122)
+        set(VOLK_VERSION "1.2.3+")
+    endif(VOLK_GREATER_THAN_122)
+endif(VOLK_VERSION VERSION_EQUAL 1.2.2)
+
+if(VOLK_VERSION VERSION_GREATER 1.2.2)
+    add_definitions(-DVOLK_GT_122=1)
+endif(VOLK_VERSION VERSION_GREATER 1.2.2)
 
 ########################################################################
 # Build and register unit test
