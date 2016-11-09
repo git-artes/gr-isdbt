@@ -1,7 +1,6 @@
 /* -*- c++ -*- */
 /*  
- * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
- * Copyright 2015, minor modifications
+ * Copyright 2015, 2016 minor modifications
  *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
  *   Pablo Belzarena 
  *   Gabriel Gomez Sena 
@@ -32,14 +31,17 @@
 #define INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_IMPL_H
 
 #include <isdbt/reed_solomon_dec_isdbt.h>
-#include <isdbt/reed_solomon.h>
+
+extern "C" {
+#include <gnuradio/fec/rs.h>
+}
 
 namespace gr {
   namespace isdbt {
 
     /*!
      * \brief Reed Solomon decoder of the ISDB-Tb standard: RS(N=204,K=239,T=8). It is an instance of a more general 
-     * decoder by Bogdan Diaconescu. 
+     * decoder included with GNU Radio. 
      * \ingroup isdbt
      * \param p characteristic of GF(p^m) \n
      * \param m we use GF(p^m) \n
@@ -64,9 +66,8 @@ namespace gr {
       const static int d_blocks;
       const static int d_lambda;
 
-      unsigned char * d_in;
-
-      reed_solomon d_rs;
+      void *d_rs;    /* Reed-Solomon characteristics structure */
+      int decode(unsigned char &out, const unsigned char &in);
 
       // Used to average the BER
       float d_alpha_avg;

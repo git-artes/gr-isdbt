@@ -1,7 +1,6 @@
 /* -*- c++ -*- */
 /*  
- * Copyright 2013,2014,2015 <Bogdan Diaconescu, yo3iiu@yo3iiu.ro>.
- * Copyright 2015, minor modifications
+ * Copyright 2016, very minor modifications
  *   Federico "Larroca" La Rocca <flarroca@fing.edu.uy>
  *   Pablo Belzarena 
  *   Gabriel Gomez Sena 
@@ -48,6 +47,11 @@ namespace gr {
         const int reed_solomon_dec_isdbt_impl::d_s = 51;
         const int reed_solomon_dec_isdbt_impl::d_blocks = 1;
 
+        static const int d_rs_init_symsize =     8;
+        static const int d_rs_init_fcr     =     0;   // first consecutive root
+        static const int d_rs_init_prim    =     1;   // primitive is 1 (alpha)
+        static const int d_N = (1 << d_rs_init_symsize) - 1; // 255
+
         reed_solomon_dec_isdbt::sptr
             reed_solomon_dec_isdbt::make()
             {
@@ -61,18 +65,14 @@ namespace gr {
         reed_solomon_dec_isdbt_impl::reed_solomon_dec_isdbt_impl()
             : gr::block("reed_solomon_dec_isdbt",
                     gr::io_signature::make(1, 1, sizeof(unsigned char)*d_blocks*(d_n-d_s)),
-                    gr::io_signature::make2(1, 2, sizeof(unsigned char)*d_blocks*(d_k-d_s), sizeof(float))),
-            d_rs(d_p, d_m, d_gfpoly, d_n, d_k, d_t, d_s, d_blocks)
+                    gr::io_signature::make2(1, 2, sizeof(unsigned char)*d_blocks*(d_k-d_s), sizeof(float)))
         {
-            //TODO why does d_rs cannot be initialized in the body of the constructor??
-
-            d_in = new unsigned char[d_n];
-            if (d_in == NULL)
-            {
-                std::cout << "Cannot allocate memory" << std::endl;
-                return;
+            
+            d_rs = init_rs_char(d_rs_init_symsize, d_gfpoly, d_rs_init_fcr, d_rs_init_prim, (d_n - d_k));
+            if (d_rs == NULL) {
+                GR_LOG_FATAL(d_logger, "[GR-ISDBT] Reed-Solomon Decoder, cannot allocate memory for d_rs.");
+                throw std::bad_alloc();
             }
-            memset(&d_in[0], 0, d_n);
 
             d_last_ber_out = 0.5;
             d_alpha_avg = 0.001; 
@@ -84,20 +84,37 @@ namespace gr {
          */
         reed_solomon_dec_isdbt_impl::~reed_solomon_dec_isdbt_impl()
         {
-            delete [] d_in;
+            free_rs_char(d_rs);
         }
         
         void
             reed_solomon_dec_isdbt_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
             {
-                // see the explanation above for how to calculate this number. 
-                int input_required = noutput_items * (d_n-d_s);
-
                 unsigned ninputs = ninput_items_required.size();
                 for (unsigned int i = 0; i < ninputs; i++) {
-                    ninput_items_required[i] = input_required;
+                    ninput_items_required[i] = noutput_items;
                 }
             }
+
+        int
+            reed_solomon_dec_isdbt_impl::decode (unsigned char &out, const unsigned char &in)
+            {
+                unsigned char tmp[d_N];
+                int ncorrections;
+
+                // add missing prefix zero padding to message
+                memset(tmp, 0, d_s);
+                memcpy(&tmp[d_s], &in, (d_n - d_s));
+
+                // correct message...
+                ncorrections = decode_rs_char(d_rs, tmp, 0, 0);
+
+                // copy corrected message to output, skipping prefix zero padding
+                memcpy (&out, &tmp[d_s], (d_k - d_s));
+
+                return ncorrections;
+            }
+
 
         int
             reed_solomon_dec_isdbt_impl::general_work(int noutput_items,
@@ -111,28 +128,18 @@ namespace gr {
                 float *ber_out = (float *) output_items[1]; 
                 bool ber_out_connected  = output_items.size()>=2;  
 
-                int rs_status = 0; 
+                int j = 0; 
+                int k = 0; 
 
-                // We receive only nonzero data
-                int in_bsize = d_n - d_s;
-                int out_bsize = d_k - d_s;
-
-                //gettimeofday(&tvs, &tzs);
-                //
+                int nerrors_corrected = 0;
 
                 for (int i = 0; i < (d_blocks * noutput_items); i++)
                 {
-                    //TODO - zero copy?
-                    // Set first d_s symbols to zero
-                    memset(&d_in[0], 0, d_s);
-                    // Then copy actual data
-                    memcpy(&d_in[d_s], &in[i * in_bsize], in_bsize);
+                    nerrors_corrected = decode(out[k], in[j]);
 
-                    // if rs_status=-1 it means that the decoder gave up on the word
-                    rs_status = d_rs.rs_decode(d_in, NULL, 0);
-                    if(rs_status<0)
+                    // if nerrors_corrected=-1 it means that the decoder gave up on the word
+                    if(nerrors_corrected==-1)
                     {
-                        // the reed-solomon decoder has given up on correcting the TS, and is outputting the input. 
                         // In order to generate a useable TS, we will not ouput these TSP.  
                         //printf("RS: impossible to correct\n");
                         // We also reset the BER average. 
@@ -146,7 +153,8 @@ namespace gr {
                         //printf("RS: possible to correct. RS_status: %i\n", rs_status);
                     }
 
-                    memcpy(&out[i * out_bsize], &d_in[d_s], out_bsize);
+                    j += (d_n - d_s);
+                    k += (d_k - d_s);
 
                     if(ber_out_connected)
                     {
@@ -169,7 +177,7 @@ namespace gr {
                             //the method above (now commented) is not reliable as a BER indicator since these 0's are not part of 
                             //the output. Although the result is actual the byte error rate (and not the bit error rate), we preferred
                             //the method below that uses the rs_status, since at least it indicates errors in this case.  
-                            d_new_ber = rs_status/(float)d_k;
+                            d_new_ber = nerrors_corrected/(float)d_k;
                             ber_out[i] = d_last_ber_out; 
                             d_last_ber_out = d_alpha_avg*d_new_ber + (1-d_alpha_avg)*d_last_ber_out;
                             
@@ -181,10 +189,7 @@ namespace gr {
                     //printf("Reed-Solomon: out[0]=%x\n", out[0]); 
                 }
 
-                //gettimeofday(&tve, &tze);
-
                 //printf("reed_solomon: blocks: %i, us: %f\n", d_blocks * noutput_items,
-                //(float) (tve.tv_usec - tvs.tv_usec) / (float) (d_blocks * noutput_items));
 
                 // Tell runtime system how many output items we produced.
                 consume_each(noutput_items); 
