@@ -41,7 +41,7 @@ list(APPEND isdbt_sources
     #bit_deinterleaver_streamed_impl.cc
     ofdm_sym_acquisition_dvbt_impl.cc
     reed_solomon_dec_isdbt_impl.cc 
-    reed_solomon.cc
+    #reed_solomon.cc
     frequency_deinterleaver_1seg_impl.cc
     time_deinterleaver_1seg_impl.cc
     symbol_demapper_1seg_impl.cc
