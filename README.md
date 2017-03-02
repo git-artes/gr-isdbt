@@ -55,7 +55,7 @@ On Debian/Ubuntu based distributions, you may have to run:
 *Q*: Cmake complains about unmet requirements. What's the problem?   
 *A*: You should read the errors carefully (though we reckon they are sometimes mysterious). Most probably is a missing library. Candidates are Boost (in Ubuntu libboost-all-dev) or libcppunit (in Ubuntu libcppunit-dev).   
 
-*Q*: Cmake complains about some Policy CMP0026 and LOCATION target property and who knows what else. Again, what's the problem? 
+*Q*: Cmake complains about some Policy CMP0026 and LOCATION target property and who knows what else. Again, what's the problem?  
 *A*: This is a problem with using Cmake with a version >= 3, which is installed in Ubuntu 16, for instance. The good news is that you may ignore all these warnings. 
 
 *Q*: It is not compiling. What's the problem?  
