@@ -17,7 +17,7 @@ from collections import deque
 VERBOSE = 0
 
 # System configuration
-mode = 1
+mode = 3
 cp = 1.0/8
 segment_clock_periods = 96*2**(mode-1)
 symbol_clock_periods = int(2**(10+mode)*(1+cp))
@@ -45,7 +45,7 @@ switch_delay = 3
 
 # Layer A
 mod_scheme_A = 6
-fec_A = 7.0/8
+fec_A = 5.0/6
 num_segments_A = 13
 clock_periods_A = num_segments_A*segment_clock_periods
 #----
