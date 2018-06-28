@@ -3,7 +3,7 @@ This is a non-exhaustive list of things that should be done in the near-far futu
 * Better channel estimation
     The current implementation is extremely simple and not robust at all. Channel taps at the scattered pilots are calculated as a division and are assumed as true (i.e. no noise considerations). Plus, in the rest of the carriers, the estimation is simply a linear interpolation. A more robust (i.e. ML or MMSE, using time-frequency information) should be implemented since a huge performance improvements is expected with this relatively simple extension. 
 
-* Better synchronization
+* Better synchronization (Done. See the OFDM Synchronization block, now including feedback for both fine frequency and timing correction. Legacy block still present for comparison purposes.)
     Again, the current implementation is based on a classic method from 1997. It does not include any form of feedback, nor a timing synchronization block. This is a more complex addition (it requires integrating several blocks into one), but the improvements should be important too. 
 
 * Integer frequency correction
