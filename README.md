@@ -36,7 +36,6 @@ For a user space installation, or GNU Radio installed in a location different fr
     mkdir build  
     cd build  
     cmake -DCMAKE_INSTALL_PREFIX=<your_GNURadio_install_dir> ../
-    cmake ../  
     make
     make install  
 
