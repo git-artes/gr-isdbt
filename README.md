@@ -39,6 +39,8 @@ For a user space installation, or GNU Radio installed in a location different fr
     make
     make install  
 
+Please note that if you used PyBOMBS to install GNU Radio the DCMAKE_INSTALL_PREFIX should point to the PyBOMBS prefix. 
+
 On Debian/Ubuntu based distributions, you may have to run:
 
     sudo ldconfig  
