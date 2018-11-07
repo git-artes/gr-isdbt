@@ -6,7 +6,7 @@
 
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
-We are in not-so-early development stages (but still very active: **we are working on the transmitter side: see https://github.com/jhernandezbaraibar/gr-isdbt-Tx**), and any help and/or feedback is still welcome. Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on git) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt). 
+We are working on the transmitter side (see https://github.com/jhernandezbaraibar/gr-isdbt-Tx and this repo, where we'll unify both rx and tx), and any help and/or feedback is  welcome (both for TX and RX). Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on git) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt). 
 
 **Notes and examples**
 
