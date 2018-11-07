@@ -13,3 +13,4 @@ logs
 *.txt~
 *.sh~
 *~
+*.swp
