@@ -41,6 +41,7 @@
 #include "qa_ofdm_synchronization.h"
 #include "qa_ofdm_synchronization_1seg.h"
 #include "qa_tmcc_decoder_1seg.h"
+#include "qa_pilot_signals.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -61,6 +62,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_ofdm_synchronization::suite());
   s->addTest(gr::isdbt::qa_ofdm_synchronization_1seg::suite());
   s->addTest(gr::isdbt::qa_tmcc_decoder_1seg::suite());
+  s->addTest(gr::isdbt::qa_pilot_signals::suite());
 
   return s;
 }

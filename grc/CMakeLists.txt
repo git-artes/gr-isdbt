@@ -38,5 +38,6 @@ install(FILES
     isdbt_isdbt_channel_decoding.xml
     isdbt_ofdm_synchronization.xml
     isdbt_ofdm_synchronization_1seg.xml
-    isdbt_tmcc_decoder_1seg.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_tmcc_decoder_1seg.xml
+    isdbt_pilot_signals.xml DESTINATION share/gnuradio/grc/blocks
 )

@@ -42,5 +42,6 @@ install(FILES
     viterbi_decoder.h
     ofdm_synchronization.h
     ofdm_synchronization_1seg.h
-    tmcc_decoder_1seg.h DESTINATION include/isdbt
+    tmcc_decoder_1seg.h
+    pilot_signals.h DESTINATION include/isdbt
 )
