@@ -42,6 +42,7 @@
 #include "qa_ofdm_synchronization_1seg.h"
 #include "qa_tmcc_decoder_1seg.h"
 #include "qa_pilot_signals.h"
+#include "qa_frequency_interleaver.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -63,6 +64,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_ofdm_synchronization_1seg::suite());
   s->addTest(gr::isdbt::qa_tmcc_decoder_1seg::suite());
   s->addTest(gr::isdbt::qa_pilot_signals::suite());
+  s->addTest(gr::isdbt::qa_frequency_interleaver::suite());
 
   return s;
 }
