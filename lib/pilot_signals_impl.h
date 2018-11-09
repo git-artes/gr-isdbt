@@ -36,9 +36,23 @@ namespace gr {
         class pilot_signals_impl : public pilot_signals
         {
             private:
+                
+                // Number of segments
                 static const int d_total_segments; 
+                
+                // Total number of active carriers per segment in 2k mode (i'll calculate it for the corresponding mode later)
                 static const int d_carriers_per_segment_2k; 
+                // Number of data carriers per segment in 2k mode (i'll calculate it for the corresponding mode later)
                 static const int d_data_carriers_per_segment_2k;
+               
+                // This array contains in the i-th entry the position of the i-th segment in the outgoing symbol. 
+                // For instance, the first entry is a 6, since segment 0 should be in the middle of the 13 segments. 
+                static const int d_segments_positions[];
+                
+                // Number of carriers per segment
+                int d_carriers_per_segment;
+                // Number of data carriers per segment
+                int d_data_carriers_per_segment;
 
                 int d_tmcc_carriers_size;
                 const int * d_tmcc_carriers; 
@@ -62,7 +76,10 @@ namespace gr {
                 int d_fft_length;
                 int d_active_carriers; 
                 int d_data_carriers_size;
-                int * d_data_carriers;
+
+                // In the i-th position it contains the outgoing carrier position of the original i-th carrier 
+                // (i.e. only counting data carriers, not pilots nor TMCC nor AC, plus the segment reordering)
+                int * d_data_carriers_out;
                 
                 int d_zeros_on_left;
                 

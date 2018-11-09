@@ -84,6 +84,7 @@ namespace gr {
                 // Number of active carriers
                 int d_active_carriers;
 
+                // the positions of the segments before this block
                 static const int d_segments_positions[];
 
                 // Number of segments

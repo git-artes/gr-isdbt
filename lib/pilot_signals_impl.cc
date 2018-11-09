@@ -39,6 +39,10 @@ namespace gr {
         const int pilot_signals_impl::d_total_segments = 13;
         const int pilot_signals_impl::d_data_carriers_per_segment_2k = 96;
         const int pilot_signals_impl::d_carriers_per_segment_2k = 108;  
+        
+        // The segments positions
+        const int pilot_signals_impl::d_segments_positions[d_total_segments] = {11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12};
+        //const int pilot_signals_impl::d_segments_positions[d_total_segments] = {6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12};
 
         // TMCC carriers positions for each transmission mode
         // TODO There are some variables and methods used by both the TX and RX. I've copy-pasted them, but should
@@ -130,6 +134,7 @@ namespace gr {
             d_fft_length = pow(2.0,10+mode); 
             d_active_carriers = (1+d_total_segments*d_carriers_per_segment_2k*pow(2.0,mode-1)); 
             d_data_carriers_size = d_total_segments*d_data_carriers_per_segment_2k*pow(2.0,mode-1); 
+            
        
             //VOLK alignment as recommended by GNU Radio's Manual. It has a similar effect 
             //than set_output_multiple(), thus we will generally get multiples of this value
@@ -146,13 +151,16 @@ namespace gr {
             //  assign the TMCC carrier positions based on the mode
             tmcc_and_ac_positions(d_fft_length); 
 
-            // I pre-calculate the data carriers positions. It will save us many unnecesary computations
-            d_data_carriers = new int[4*d_data_carriers_size];
-            data_carriers_position();
-           
+            d_carriers_per_segment = (d_active_carriers-1)/d_total_segments;
+            d_data_carriers_per_segment = d_data_carriers_size/d_total_segments;
+
             d_sp_carriers_size = (d_active_carriers-1)/12; 
 
             d_current_symbol = 0;
+            
+            // I pre-calculate the data carriers positions. It will save us many unnecesary computations
+            d_data_carriers_out = new int[4*d_data_carriers_size];
+            data_carriers_position();
 
         }
 
@@ -162,7 +170,7 @@ namespace gr {
         pilot_signals_impl::~pilot_signals_impl()
         {
             delete [] d_pilot_values; 
-            delete [] d_data_carriers; 
+            delete [] d_data_carriers_out; 
         }
 
         void
@@ -225,38 +233,41 @@ namespace gr {
             pilot_signals_impl::data_carriers_position()
             {
                 /*
-                 * Assign to variables d_data_carriers the position of data carriers for the 4 possible symbols
-                 * TODO This is copied from tmcc_decoder_impl.cc Do something smarter than copying code...
+                 * Assign to variables d_data_carriers_out the position of data carriers for the 4 possible symbols
+                 * This is inspired from tmcc_decoder_impl.cc. It's not exactly the same method. 
                  */
 
                 for (int symbol_index = 0; symbol_index<4; symbol_index++){
                     int spilot_index = 0; 
                     int ac_pilot_index = 0; 
                     int tmcc_pilot_index = 0; 
-                    int carrier_out = 0; 
+                    int carrier_in = 0; 
 
 
-                    for (int carrier = 0; carrier < (d_active_carriers - 1);carrier++) {
+                    for (int carrier_out = 0; carrier_out < (d_active_carriers - 1);carrier_out++) {
 
-                        if (carrier == (12 * spilot_index + 3 * (symbol_index % 4))) 
+                        if (carrier_out == (12 * spilot_index + 3 * (symbol_index % 4))) 
                         {
                             // the current carrier is an scattered pilot
                             spilot_index++;
                         } 
-                        else if ((carrier == d_ac_carriers[ac_pilot_index]))
+                        else if ((carrier_out == d_ac_carriers[ac_pilot_index]))
                         {
                             // the current carrier is an AC pilot
                             ac_pilot_index++;
                         } 
-                        else if ((carrier == d_tmcc_carriers[tmcc_pilot_index])) 
+                        else if ((carrier_out == d_tmcc_carriers[tmcc_pilot_index])) 
                         {
                             // the current carrier is a tmcc pilot
                             tmcc_pilot_index++;
                         } 
                         else 
                         {
-                            d_data_carriers[symbol_index*d_data_carriers_size + carrier_out] = carrier; 
-                            carrier_out++;
+                            // carrier_out is thus a data carrier. 
+                            d_data_carriers_out[symbol_index*d_data_carriers_size + d_segments_positions[carrier_in/d_data_carriers_per_segment]*d_data_carriers_per_segment + (carrier_in%d_data_carriers_per_segment)] = d_zeros_on_left + carrier_out; 
+                            
+                            //d_data_carriers_out[symbol_index*d_data_carriers_size + carrier_in] = carrier_out; 
+                            carrier_in++;
                         }
                     }
                 }
@@ -286,7 +297,8 @@ namespace gr {
                     // copy the input at the right carriers
                     for (carrier = 0 ; carrier < d_data_carriers_size; carrier++) {
                         //out[i*d_fft_length+carrier] = in[i*d_active_carriers+carrier-d_zeros_on_left];
-                        out[i*d_fft_length + d_zeros_on_left + d_data_carriers[d_data_carriers_size*d_current_symbol + carrier]] = in[i*d_data_carriers_size + carrier]; 
+                        
+                        out[i*d_fft_length + d_data_carriers_out[d_data_carriers_size*d_current_symbol + carrier]] = in[i*d_data_carriers_size + carrier]; 
                     }
                     
                     // fill with the last zeros
