@@ -44,5 +44,6 @@ install(FILES
     ofdm_synchronization_1seg.h
     tmcc_decoder_1seg.h
     pilot_signals.h
-    frequency_interleaver.h DESTINATION include/isdbt
+    frequency_interleaver.h
+    time_interleaver.h DESTINATION include/isdbt
 )

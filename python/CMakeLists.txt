@@ -64,3 +64,4 @@ GR_ADD_TEST(qa_ofdm_synchronization_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SO
 GR_ADD_TEST(qa_tmcc_decoder_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tmcc_decoder_1seg.py)
 GR_ADD_TEST(qa_pilot_signals ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pilot_signals.py)
 GR_ADD_TEST(qa_frequency_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_interleaver.py)
+GR_ADD_TEST(qa_time_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.py)

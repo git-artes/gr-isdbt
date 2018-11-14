@@ -50,7 +50,8 @@ list(APPEND isdbt_sources
     ofdm_synchronization_1seg_impl.cc
     tmcc_decoder_1seg_impl.cc
     pilot_signals_impl.cc
-    frequency_interleaver_impl.cc )
+    frequency_interleaver_impl.cc
+    time_interleaver_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -113,6 +114,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_interleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_pilot_signals.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_tmcc_decoder_1seg.cc
