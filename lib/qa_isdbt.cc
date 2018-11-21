@@ -44,6 +44,7 @@
 #include "qa_pilot_signals.h"
 #include "qa_frequency_interleaver.h"
 #include "qa_time_interleaver.h"
+#include "qa_hierarchical_combinator.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -67,6 +68,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_pilot_signals::suite());
   s->addTest(gr::isdbt::qa_frequency_interleaver::suite());
   s->addTest(gr::isdbt::qa_time_interleaver::suite());
+  s->addTest(gr::isdbt::qa_hierarchical_combinator::suite());
 
   return s;
 }

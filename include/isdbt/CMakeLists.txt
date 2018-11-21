@@ -45,5 +45,6 @@ install(FILES
     tmcc_decoder_1seg.h
     pilot_signals.h
     frequency_interleaver.h
-    time_interleaver.h DESTINATION include/isdbt
+    time_interleaver.h
+    hierarchical_combinator.h DESTINATION include/isdbt
 )

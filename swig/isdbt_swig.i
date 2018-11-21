@@ -31,6 +31,7 @@
 #include "isdbt/pilot_signals.h"
 #include "isdbt/frequency_interleaver.h"
 #include "isdbt/time_interleaver.h"
+#include "isdbt/hierarchical_combinator.h"
 %}
 
 
@@ -86,3 +87,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, pilot_signals);
 GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_interleaver);
 %include "isdbt/time_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
+%include "isdbt/hierarchical_combinator.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_combinator);
