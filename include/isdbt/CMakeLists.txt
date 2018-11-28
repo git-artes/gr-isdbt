@@ -46,5 +46,6 @@ install(FILES
     pilot_signals.h
     frequency_interleaver.h
     time_interleaver.h
-    hierarchical_combinator.h DESTINATION include/isdbt
+    hierarchical_combinator.h
+    carrier_modulation.h DESTINATION include/isdbt
 )

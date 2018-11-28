@@ -32,6 +32,7 @@
 #include "isdbt/frequency_interleaver.h"
 #include "isdbt/time_interleaver.h"
 #include "isdbt/hierarchical_combinator.h"
+#include "isdbt/carrier_modulation.h"
 %}
 
 
@@ -89,3 +90,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_interleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
 %include "isdbt/hierarchical_combinator.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_combinator);
+%include "isdbt/carrier_modulation.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, carrier_modulation);
