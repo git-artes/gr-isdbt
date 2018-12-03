@@ -46,6 +46,7 @@
 #include "qa_time_interleaver.h"
 #include "qa_hierarchical_combinator.h"
 #include "qa_carrier_modulation.h"
+#include "qa_byte_interleaver.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -71,6 +72,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_time_interleaver::suite());
   s->addTest(gr::isdbt::qa_hierarchical_combinator::suite());
   s->addTest(gr::isdbt::qa_carrier_modulation::suite());
+  s->addTest(gr::isdbt::qa_byte_interleaver::suite());
 
   return s;
 }

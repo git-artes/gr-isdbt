@@ -53,7 +53,8 @@ list(APPEND isdbt_sources
     frequency_interleaver_impl.cc
     time_interleaver_impl.cc
     hierarchical_combinator_impl.cc
-    carrier_modulation_impl.cc )
+    carrier_modulation_impl.cc
+    byte_interleaver_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
@@ -116,6 +117,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_isdbt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_isdbt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_isdbt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_interleaver.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_carrier_modulation.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_hierarchical_combinator.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.cc
