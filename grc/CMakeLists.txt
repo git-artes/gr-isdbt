@@ -44,5 +44,6 @@ install(FILES
     isdbt_time_interleaver.xml
     isdbt_hierarchical_combinator.xml
     isdbt_carrier_modulation.xml
-    isdbt_byte_interleaver.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_byte_interleaver.xml
+    isdbt_energy_dispersal.xml DESTINATION share/gnuradio/grc/blocks
 )

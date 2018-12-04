@@ -79,7 +79,6 @@ namespace gr {
                     d_rate = (float) 7/8;
                     break;
             }
-            printf("d_rate: %f\n", d_rate);
 
             d_nsegments = nsegments; 
 

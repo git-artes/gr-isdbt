@@ -81,6 +81,8 @@ namespace gr {
         {
             set_relative_rate(1.0); 
 
+            // I initiate the PRBS register (useful for testing)
+            init_prbs();
         }
 
 
