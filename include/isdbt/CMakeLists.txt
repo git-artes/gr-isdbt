@@ -49,5 +49,6 @@ install(FILES
     hierarchical_combinator.h
     carrier_modulation.h
     byte_interleaver.h
-    energy_dispersal.h DESTINATION include/isdbt
+    energy_dispersal.h
+    tmcc_encoder.h DESTINATION include/isdbt
 )

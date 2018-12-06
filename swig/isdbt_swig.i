@@ -35,6 +35,7 @@
 #include "isdbt/carrier_modulation.h"
 #include "isdbt/byte_interleaver.h"
 #include "isdbt/energy_dispersal.h"
+#include "isdbt/tmcc_encoder.h"
 %}
 
 
@@ -98,3 +99,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, carrier_modulation);
 GR_SWIG_BLOCK_MAGIC2(isdbt, byte_interleaver);
 %include "isdbt/energy_dispersal.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, energy_dispersal);
+%include "isdbt/tmcc_encoder.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_encoder);

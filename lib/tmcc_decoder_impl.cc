@@ -568,6 +568,10 @@ namespace gr {
                         else
                         {
                             printf("TMCC NOT OK\n");
+                            //if (d_print_params)
+                            //{
+                            //    tmcc_print();
+                            //}
                         }
                     }
                 }

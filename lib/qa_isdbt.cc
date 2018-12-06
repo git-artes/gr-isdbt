@@ -48,6 +48,7 @@
 #include "qa_carrier_modulation.h"
 #include "qa_byte_interleaver.h"
 #include "qa_energy_dispersal.h"
+#include "qa_tmcc_encoder.h"
 
 CppUnit::TestSuite *
 qa_isdbt::suite()
@@ -75,6 +76,7 @@ qa_isdbt::suite()
   s->addTest(gr::isdbt::qa_carrier_modulation::suite());
   s->addTest(gr::isdbt::qa_byte_interleaver::suite());
   s->addTest(gr::isdbt::qa_energy_dispersal::suite());
+  s->addTest(gr::isdbt::qa_tmcc_encoder::suite());
 
   return s;
 }
