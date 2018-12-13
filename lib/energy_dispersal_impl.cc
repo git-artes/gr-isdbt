@@ -148,13 +148,21 @@ namespace gr {
                         init_prbs();
                         d_tsp_encoded = 0;
                     }
+
+                    // Note that the standard sends first the nex byte AFTER the sync
+                    // byte (0x47). However, the TS will most probably have the 0x47
+                    // at the beginning. 
+                    // TODO check that this is always the case and that the code below 
+                    // always work
                     //XOR every bit from 0 to 202
                     for (int j = 0; j < d_TSP_SIZE - 1; j++)
                     {
-                        out[i*d_TSP_SIZE + j] = in[i*d_TSP_SIZE + j] ^ clock_prbs(8); 
+                        //out[i*d_TSP_SIZE + j] = in[i*d_TSP_SIZE + j] ^ clock_prbs(8); 
+                        out[i*d_TSP_SIZE + j] = in[i*d_TSP_SIZE + j + 1] ^ clock_prbs(8); 
                     }
                     //Byte 203 should be sync. Don't do XOR, copy it
-                    out[i*d_TSP_SIZE + d_TSP_SIZE-1] = in[i*d_TSP_SIZE + d_TSP_SIZE-1];
+                    //out[i*d_TSP_SIZE + d_TSP_SIZE-1] = in[i*d_TSP_SIZE + d_TSP_SIZE-1];
+                    out[i*d_TSP_SIZE + d_TSP_SIZE-1] = in[i*d_TSP_SIZE ];
 
                     clock_prbs(8); // Consume 1 clock_prbs
                     d_tsp_encoded++;
