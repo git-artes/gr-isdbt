@@ -103,6 +103,7 @@ namespace gr {
 
             // I compute the number of TSP per OFDM frame, after which period I have to reset the PRBS
             d_tsp_per_frame = compute_tsp_per_ofdm_frame(d_mode, d_const_size, d_rate, d_nsegments);
+            printf("d_tsp_per_frame: %i\n", d_tsp_per_frame);
             
             init_prbs();
             d_tsp_encoded = 0;
@@ -122,6 +123,7 @@ namespace gr {
             int num_bits = log2(const_size);
 
             int tsp_per_ofdm_frame = (nsegments * num_bits*rate*d_data_carriers_mode1*((int)pow(2.0,mode-1)))/8;
+            printf("tsp_per_ofdm_frame: %i\n", tsp_per_ofdm_frame);
 
             return tsp_per_ofdm_frame; 
         }
@@ -152,7 +154,7 @@ namespace gr {
                         out[i*d_TSP_SIZE + j] = in[i*d_TSP_SIZE + j] ^ clock_prbs(8); 
                     }
                     //Byte 203 should be sync. Don't do XOR, copy it
-                    out[i*d_TSP_SIZE + 203] = in[i*d_TSP_SIZE + 203];
+                    out[i*d_TSP_SIZE + d_TSP_SIZE-1] = in[i*d_TSP_SIZE + d_TSP_SIZE-1];
 
                     clock_prbs(8); // Consume 1 clock_prbs
                     d_tsp_encoded++;

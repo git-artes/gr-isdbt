@@ -89,7 +89,7 @@
         </option>
     </param>
     <param>
-        <name>Layer A Length</name>
+        <name>Layer A Interleaver Length</name>
         <key>int_length_A</key>
         <type>int</type>
     </param>
@@ -146,7 +146,7 @@
         </option>
     </param>
     <param>
-        <name>Layer A Length</name>
+        <name>Layer B Interleaver Length</name>
         <key>int_length_B</key>
         <type>int</type>
     </param>
@@ -203,7 +203,7 @@
         </option>
     </param>
     <param>
-        <name>Layer C Length</name>
+        <name>Layer C Interleaver Length</name>
         <key>int_length_C</key>
         <type>int</type>
     </param>

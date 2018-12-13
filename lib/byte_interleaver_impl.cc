@@ -6,6 +6,8 @@
  *   Gabriel Gomez Sena 
  *   Pablo Flores Guridi 
  *   Victor Gonzalez Barbone
+ *   Javier Hernández
+ *   Santiago Castro
  * 
  *   Instituto de Ingenieria Electrica, Facultad de Ingenieria,
  *   Universidad de la Republica, Uruguay.
@@ -83,14 +85,24 @@ namespace gr {
             d_nsegments = nsegments; 
 
             int extra_delay = compute_extra_delay(d_mode, d_const_size, d_rate, d_nsegments);
+            printf("extra_delay in tsps: %i\n", extra_delay);
+
+            /*
             // the norm's delay is in TSP. Since I'll add this delay to all buffers (which are 
             // in bytes), I multiply it by TSP_SIZE and divide by the total buffers. 
             extra_delay = extra_delay*d_TSP_SIZE/d_I;
+            */
             // The "difficult" part in any deinterleaver is setting the buffer's size
             for (int i=0; i<d_I; i++)
             {
-                d_shift.push_back(new boost::circular_buffer<unsigned char>(extra_delay + 1 + d_M*i, 0)); 
+               // d_shift.push_back(new boost::circular_buffer<unsigned char>(extra_delay + 1 + d_M*i, 0)); 
+               d_shift.push_back(new boost::circular_buffer<unsigned char>(1 + d_M*i, 0)); 
             }
+               
+            // the norm's delay is in TSP. 
+            extra_delay = extra_delay*d_TSP_SIZE;
+           // I'll put the extra delay in another buffer 
+            d_shift.push_back(new boost::circular_buffer<unsigned char>(extra_delay + 1, 0)); 
 
         }
 
@@ -124,12 +136,22 @@ namespace gr {
                 const unsigned char *in = (const unsigned char *) input_items[0];
                 unsigned char *out = (unsigned char *) output_items[0];
 
-                int index_out = 0; 
+                unsigned char delayed; 
+                /*
                 for (int i = 0; i < noutput_items; i++)
                 {
                         d_shift[i % d_I]->push_back(in[i]);
                         out[i] = d_shift[i % d_I]->front();
                 }
+                */
+                for (int i = 0; i < noutput_items; i++)
+                {
+                    d_shift[d_I]->push_back(in[i]);
+                    delayed = d_shift[d_I]->front();
+                    d_shift[i % d_I]->push_back(delayed);
+                    out[i] = d_shift[i % d_I]->front();
+                }
+
 
                 // Tell runtime system how many output items we produced.
                 return noutput_items;
