@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>rx_demo</value>
+      <value>full_transceiver_isdbt</value>
     </param>
     <param>
       <key>max_nouts</key>
