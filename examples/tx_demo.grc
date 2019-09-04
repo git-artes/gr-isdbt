@@ -773,7 +773,7 @@
     </param>
     <param>
       <key>comment</key>
-      <value></value>
+      <value>See sec. 3.9.2 of the standard.</value>
     </param>
     <param>
       <key>affinity</key>
@@ -785,7 +785,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(376, 684)</value>
+      <value>(624, 596)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -813,7 +813,7 @@
     </param>
     <param>
       <key>vlen</key>
-      <value>total_carriers</value>
+      <value>data_carriers</value>
     </param>
   </block>
   <block>
@@ -1842,7 +1842,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(568, 580)</value>
+      <value>(360, 604)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -4131,7 +4131,7 @@
   </connection>
   <connection>
     <source_block_id>blocks_skiphead_0</source_block_id>
-    <sink_block_id>isdbt_tmcc_encoder_0</sink_block_id>
+    <sink_block_id>isdbt_pilot_signals_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -4233,7 +4233,7 @@
   </connection>
   <connection>
     <source_block_id>isdbt_frequency_interleaver_0</source_block_id>
-    <sink_block_id>isdbt_pilot_signals_0</sink_block_id>
+    <sink_block_id>blocks_skiphead_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -4245,7 +4245,7 @@
   </connection>
   <connection>
     <source_block_id>isdbt_pilot_signals_0</source_block_id>
-    <sink_block_id>blocks_skiphead_0</sink_block_id>
+    <sink_block_id>isdbt_tmcc_encoder_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
