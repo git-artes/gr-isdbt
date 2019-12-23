@@ -18,7 +18,7 @@ The **receiver** is now complete and tested. It is capable of demodulating the c
 
 The **transmitter** is complete, but still under development. It is currently capable of the following: 
 - It works perfectly fine on software together with the receiver (see examples/full_transceiver.grc). A transport stream file to be used in this example is available on the project's webpage. If you are not interested in "seeing" a video image, simply feed it with random bytes. 
-- Over the air transmission. We are currently able to receive the signal with an SDR (a B200 worked best for us) and are working on using a TV as a receiver.  
+- Over the air transmission. We are currently able to transmit and receive the signal with SDRs (a B200 worked best for us as a transmitter) and we are successfully testing it on commercial TVs (see examples/tx_demo.grc which uses the TS files we share in our webpage). Please send us your feedback, we are very interested.
 
 For more information (papers, recordings of ISDB-T signals, etc.) please visit our webpage: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/.    
 
