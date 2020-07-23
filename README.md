@@ -2,7 +2,7 @@
 
 **An open source implementation of a transceiver (i.e. receiver and transmitter) for the Digital Television standard ISDB-T (ARIB's STD-B31) in GNU Radio.**
 
-**If you find the code useful, please consider starring the repository and/or citing our research paper (e.g. https://iie.fing.edu.uy/publicaciones/2016/LFGGB16/).**
+**If you find the code useful, please consider starring the repository and/or citing our research paper (e.g. https://iie.fing.edu.uy/publicaciones/2020/LFAIM20/ regarding the transmitter or https://iie.fing.edu.uy/publicaciones/2016/LFGGB16/ regarding the receiver).**
 
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
