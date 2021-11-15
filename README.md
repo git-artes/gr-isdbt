@@ -4,6 +4,8 @@
 
 **If you find the code useful, please consider starring the repository and/or citing our research paper (e.g. https://iie.fing.edu.uy/publicaciones/2020/LFAIM20/ regarding the transmitter or https://iie.fing.edu.uy/publicaciones/2016/LFGGB16/ regarding the receiver).**
 
+**IMPORTANT**: We're currently porting this OOT to GNU Radio 3.8. To use the stable version (that works on 3.7 only) you should switch to the branch maint-3.7.
+
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
 Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on github) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt, which is now part of GNU Radio's base code). The transmitter side is based on the work of Javier and Santiago at https://github.com/jhernandezbaraibar/gr-isdbt-Tx. 
