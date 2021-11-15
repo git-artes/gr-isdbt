@@ -6,7 +6,9 @@
 
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
-We are currently working on the transmitter side (in particular we are re-writing the work of Javier and Santiago at https://github.com/jhernandezbaraibar/gr-isdbt-Tx), and any help and/or feedback is  welcome (both for TX and RX). Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on git) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt). 
+Since ISDB-T is similar to DVB-T, some of our blocks are heavily based on Bogdan Diaconescu's (BogdanDIA on github) DVB-T implementation (see https://github.com/BogdanDIA/gr-dvbt, which is now part of GNU Radio's base code). The transmitter side is based on the work of Javier and Santiago at https://github.com/jhernandezbaraibar/gr-isdbt-Tx. 
+
+Any help and/or feedback is  welcome. 
 
 **Notes and examples**
 
@@ -16,7 +18,7 @@ The **receiver** is now complete and tested. It is capable of demodulating the c
 - **Complete decoding and displaying the video/audio.** The receiver is capable of displaying on-line whole segments. **If a 1-seg transmission is present, the example in examples/rx_1seg_demo.grc may be used to decode it (it has been tested with a RTL cheap SDR)**. Layer B is decoded in examples/rx_demo.grc. Note that the transmission's parameters should be set accordingly by using examples/obtaining_parameters.grc. The output of both flowgraphs is a Transport Stream file which may be played by ffplay or mplayer (for instance). If before executing the flowgraph we create the file as a pipe (mkfifo test_out.ts), it should display the video online.   
 - **Signal analyzer.** Our actual objective with the project is to develop a relatively inexpensive ISDB-T measurement equipment. In examples/fullseg_receiver_and_measurements.grc we present a flowgraph which measures several indicators, such as pre and post Viterbi BER, MER, channel frequency response, etc. In order to use it **you should install our accompanying OOT module gr-mer** (available at https://github.com/git-artes/gr-mer).  
 
-The **transmitter** is complete, but still under testing. It is currently capable of the following: 
+The **transmitter** is complete and tested. It is currently capable of the following: 
 - It works perfectly fine on software together with the receiver (see examples/full_transceiver.grc). A transport stream file to be used in this example is available on the project's webpage. If you are not interested in "seeing" a video image, simply feed it with random bytes. 
 - Over the air transmission. We are currently able to transmit and receive the signal with SDRs (a B200 worked best for us as a transmitter) and we are successfully testing it on commercial TVs (see examples/tx_demo.grc which uses the TS files we share in our webpage). Please send us your feedback, **we are very interested**. 
 - If you want to transmit your own videos (or your webcam) you may follow our step-by-step guide in https://iie.fing.edu.uy/investigacion/grupos/artes/wp-content/uploads/sites/13/2019/12/transmitting_webcam_or_videos.pdf. 
