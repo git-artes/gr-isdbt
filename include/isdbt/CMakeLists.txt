@@ -24,5 +24,6 @@
 install(FILES
     api.h
     ofdm_synchronization.h
-    tmcc_decoder.h DESTINATION include/isdbt
+    tmcc_decoder.h
+    frequency_deinterleaver.h DESTINATION include/isdbt
 )

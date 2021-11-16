@@ -162,8 +162,8 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1352, 300]
-    rotation: 0
+    coordinate: [1077, 480]
+    rotation: 180
     state: enabled
 - name: blocks_throttle_0
   id: blocks_throttle
@@ -192,15 +192,15 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: 13*108*2**(3-1)+1
+    num_items: 13*96*2**(3-1)
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1145, 140]
-    rotation: 0
+    coordinate: [1194, 561]
+    rotation: 180
     state: true
 - name: channels_channel_model_0
   id: channels_channel_model
@@ -223,6 +223,23 @@ blocks:
     coordinate: [377, 341]
     rotation: 0
     state: enabled
+- name: isdbt_frequency_deinterleaver_0
+  id: isdbt_frequency_deinterleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    oneseg: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1319, 468]
+    rotation: 180
+    state: true
 - name: isdbt_ofdm_synchronization_0
   id: isdbt_ofdm_synchronization
   parameters:
@@ -250,12 +267,12 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mode: '3'
-    print_params: 'True'
+    print_params: 'False'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1198, 440]
+    coordinate: [1147, 331]
     rotation: 0
     state: true
 - name: low_pass_filter_0
@@ -371,8 +388,8 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1366, 147]
-    rotation: 0
+    coordinate: [956, 583]
+    rotation: 180
     state: true
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
@@ -461,9 +478,10 @@ connections:
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
-- [isdbt_ofdm_synchronization_0, '0', blocks_vector_to_stream_0, '0']
+- [isdbt_frequency_deinterleaver_0, '0', blocks_null_sink_0_0, '0']
+- [isdbt_frequency_deinterleaver_0, '0', blocks_vector_to_stream_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
-- [isdbt_tmcc_decoder_0, '0', blocks_null_sink_0_0, '0']
+- [isdbt_tmcc_decoder_0, '0', isdbt_frequency_deinterleaver_0, '0']
 - [low_pass_filter_0, '0', isdbt_ofdm_synchronization_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
 

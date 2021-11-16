@@ -20,5 +20,6 @@
 
 install(FILES
     isdbt_ofdm_synchronization.block.yml
-    isdbt_tmcc_decoder.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_tmcc_decoder.block.yml
+    isdbt_frequency_deinterleaver.block.yml DESTINATION share/gnuradio/grc/blocks
 )
