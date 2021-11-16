@@ -19,5 +19,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    isdbt_ofdm_synchronization.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_ofdm_synchronization.block.yml
+    isdbt_tmcc_decoder.block.yml DESTINATION share/gnuradio/grc/blocks
 )

@@ -23,5 +23,6 @@
 ########################################################################
 install(FILES
     api.h
-    ofdm_synchronization.h DESTINATION include/isdbt
+    ofdm_synchronization.h
+    tmcc_decoder.h DESTINATION include/isdbt
 )
