@@ -22,16 +22,14 @@
 This is the GNU Radio ISDBT module. Place your Python package
 description here (python/__init__.py).
 '''
+from __future__ import unicode_literals
 
 # import swig generated symbols into the isdbt namespace
 try:
-	# this might fail if the module is python-only
-	from isdbt_swig import *
+    # this might fail if the module is python-only
+    from .isdbt_swig import *
 except ImportError:
-	pass
+    pass
 
 # import any pure python here
-from isdbt_rf_channel_decoding import isdbt_rf_channel_decoding
-from isdbt_channel_decoding import isdbt_channel_decoding
-
 #

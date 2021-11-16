@@ -121,7 +121,7 @@ namespace gr {
                   const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
                   set_alignment(std::max(1, alignment_multiple));
 
-                  d_gamma = new gr_complex[d_fft_length];
+                  d_gamma = new gr_complex[d_fft_length + d_cp_length];
                   d_phi = new float[d_fft_length];
                   d_lambda = new float[d_fft_length];
                   d_derot = new gr_complex[d_cp_length + d_fft_length];
@@ -183,6 +183,8 @@ namespace gr {
                   d_previous_channel_gain = new gr_complex[d_active_carriers]; 
                   d_delta_channel_gains = new gr_complex[d_active_carriers]; 
                   d_samp_inc = 1; 
+                  d_est_delta = 0;
+                  d_delta_aux = 0;
                   d_samp_phase = 0; 
                   //d_interpolated = new gr_complex[2*d_fft_length+d_cp_length]; 
                   d_interpolated = new gr_complex[d_fft_length+d_cp_length]; 
@@ -249,6 +251,7 @@ namespace gr {
                 {
                     //ninput_items_required[i] = ( d_cp_length + d_fft_length ) * (noutput_items + 1) ;
                     ninput_items_required[i] = (int)ceil(( d_cp_length + d_fft_length ) * (noutput_items + 1) * d_samp_inc) + d_inter.ntaps() ;
+
                 }
 
             }
@@ -613,13 +616,13 @@ namespace gr {
         bool
             ofdm_synchronization_impl::peak_detect_process(const float * datain, const int datain_length, int * peak_pos)
             {
-                #if VOLK_GT_122
+                //#if VOLK_GT_122
                 uint16_t peak_index = 0;
                 uint32_t d_datain_length = (uint32_t)datain_length;
-                #else
-                unsigned int peak_index = 0;
-                int d_datain_length = datain_length;
-                #endif
+                //#else
+                //unsigned int peak_index = 0;
+                //int d_datain_length = datain_length;
+                //#endif
                 bool success = true;
 
                 volk_32f_index_max_16u(&peak_index, &datain[0], d_datain_length); 
@@ -704,9 +707,9 @@ namespace gr {
                 for (int i = lookup_start - 1; i >= lookup_stop; i--)
                 {
                     int k = i - lookup_stop;
-
-                    //TODO no accumulator for complexes in VOLK for the moment.    
+                    //TODO no accumulator for complexes in VOLK for the moment (exists since April 2021, change lines when widespread).    
                     volk_32fc_32f_dot_prod_32fc(&d_gamma[k], &d_corr[i-d_cp_length+1-d_fft_length], d_ones, d_cp_length);
+                    //volk_32fc_accumulator_s32fc(&d_gamma[k], &d_corr[i-d_cp_length+1-d_fft_length], d_cp_length);
                     volk_32f_accumulator_s32f(&d_phi[k], &d_norm[i-d_cp_length+1], d_cp_length);
                     volk_32f_accumulator_s32f(&sum_aux, &d_norm[i-d_cp_length+1-d_fft_length], d_cp_length);
                     d_phi[k] += sum_aux;
@@ -763,13 +766,20 @@ namespace gr {
             {
                 const gr_complex *in = (const gr_complex *) input_items[0];
                 gr_complex *out = (gr_complex *) output_items[0];
-                gr_complex *out_channel_gain = (gr_complex *)output_items[1]; 
-                float *out_freq_error = (float *)output_items[2]; 
-                float *out_samp_error = (float *)output_items[3]; 
 
                 bool ch_output_connected = output_items.size()>=2; 
                 bool freq_error_output_connected = output_items.size()>=3; 
                 bool samp_error_output_connected = output_items.size()>=4; 
+
+                gr_complex *out_channel_gain;
+                float *out_freq_error;
+                float *out_samp_error;
+                if (ch_output_connected)
+                    out_channel_gain = (gr_complex *)output_items[1]; 
+                if (freq_error_output_connected)
+                    out_freq_error = (float *)output_items[2]; 
+                if (samp_error_output_connected)
+                    out_samp_error = (float *)output_items[3]; 
 
                 d_consumed = 0;
                 d_out = 0;

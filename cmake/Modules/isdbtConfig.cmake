@@ -22,9 +22,10 @@ FIND_LIBRARY(
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-)
+          )
+
+include("${CMAKE_CURRENT_LIST_DIR}/isdbtTarget.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(ISDBT DEFAULT_MSG ISDBT_LIBRARIES ISDBT_INCLUDE_DIRS)
 MARK_AS_ADVANCED(ISDBT_LIBRARIES ISDBT_INCLUDE_DIRS)
-
