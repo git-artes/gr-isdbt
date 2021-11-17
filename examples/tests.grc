@@ -156,13 +156,13 @@ blocks:
     bus_structure_sink: '[[0,],]'
     comment: ''
     num_inputs: '1'
-    type: complex
-    vlen: 13*96*2**(3-1)
+    type: byte
+    vlen: '384'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1077, 480]
+    coordinate: [318, 581]
     rotation: 180
     state: enabled
 - name: blocks_throttle_0
@@ -199,7 +199,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1194, 561]
+    coordinate: [680, 667]
     rotation: 180
     state: true
 - name: channels_channel_model_0
@@ -258,6 +258,50 @@ blocks:
     coordinate: [821, 201]
     rotation: 0
     state: true
+- name: isdbt_symbol_demapper_0
+  id: isdbt_symbol_demapper
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size_A: '4'
+    constellation_size_B: '64'
+    constellation_size_C: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments_A: '1'
+    segments_B: '12'
+    segments_C: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [599, 455]
+    rotation: 180
+    state: true
+- name: isdbt_time_deinterleaver_0
+  id: isdbt_time_deinterleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length_A: '4'
+    length_B: '2'
+    length_C: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments_A: '1'
+    segments_B: '12'
+    segments_C: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [971, 433]
+    rotation: 180
+    state: enabled
 - name: isdbt_tmcc_decoder_0
   id: isdbt_tmcc_decoder
   parameters:
@@ -388,7 +432,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [956, 583]
+    coordinate: [436, 673]
     rotation: 180
     state: true
 - name: qtgui_freq_sink_x_0
@@ -468,7 +512,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [849, 422]
+    coordinate: [956, 59]
     rotation: 0
     state: disabled
 
@@ -478,9 +522,11 @@ connections:
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
-- [isdbt_frequency_deinterleaver_0, '0', blocks_null_sink_0_0, '0']
-- [isdbt_frequency_deinterleaver_0, '0', blocks_vector_to_stream_0, '0']
+- [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
+- [isdbt_symbol_demapper_0, '0', blocks_null_sink_0_0, '0']
+- [isdbt_time_deinterleaver_0, '0', blocks_vector_to_stream_0, '0']
+- [isdbt_time_deinterleaver_0, '0', isdbt_symbol_demapper_0, '0']
 - [isdbt_tmcc_decoder_0, '0', isdbt_frequency_deinterleaver_0, '0']
 - [low_pass_filter_0, '0', isdbt_ofdm_synchronization_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']

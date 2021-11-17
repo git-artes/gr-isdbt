@@ -27,6 +27,8 @@ list(APPEND isdbt_sources
     ofdm_synchronization_impl.cc
     tmcc_decoder_impl.cc
     frequency_deinterleaver_impl.cc
+    time_deinterleaver_impl.cc
+    symbol_demapper_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
