@@ -23,5 +23,6 @@ install(FILES
     isdbt_tmcc_decoder.block.yml
     isdbt_frequency_deinterleaver.block.yml
     isdbt_time_deinterleaver.block.yml
-    isdbt_symbol_demapper.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_symbol_demapper.block.yml
+    isdbt_bit_deinterleaver.block.yml DESTINATION share/gnuradio/grc/blocks
 )

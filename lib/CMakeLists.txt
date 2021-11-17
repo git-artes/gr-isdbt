@@ -29,6 +29,7 @@ list(APPEND isdbt_sources
     frequency_deinterleaver_impl.cc
     time_deinterleaver_impl.cc
     symbol_demapper_impl.cc
+    bit_deinterleaver_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)

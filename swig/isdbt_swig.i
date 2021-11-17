@@ -13,6 +13,7 @@
 #include "isdbt/frequency_deinterleaver.h"
 #include "isdbt/time_deinterleaver.h"
 #include "isdbt/symbol_demapper.h"
+#include "isdbt/bit_deinterleaver.h"
 %}
 
 %include "isdbt/ofdm_synchronization.h"
@@ -25,3 +26,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_deinterleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, time_deinterleaver);
 %include "isdbt/symbol_demapper.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, symbol_demapper);
+%include "isdbt/bit_deinterleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, bit_deinterleaver);

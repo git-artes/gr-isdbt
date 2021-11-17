@@ -27,5 +27,6 @@ install(FILES
     tmcc_decoder.h
     frequency_deinterleaver.h
     time_deinterleaver.h
-    symbol_demapper.h DESTINATION include/isdbt
+    symbol_demapper.h
+    bit_deinterleaver.h DESTINATION include/isdbt
 )
