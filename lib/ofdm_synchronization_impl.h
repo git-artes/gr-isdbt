@@ -48,6 +48,8 @@ namespace gr {
                 int d_cp_length;
                 int d_active_carriers; 
 
+                int d_align;
+
                 // for symbol time and coarse frequency synchronization
                 int d_cp_start;
                 bool d_cp_found; 

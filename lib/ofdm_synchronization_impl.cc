@@ -121,20 +121,22 @@ namespace gr {
                   const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
                   set_alignment(std::max(1, alignment_multiple));
 
-                  d_gamma = new gr_complex[d_fft_length + d_cp_length];
-                  d_phi = new float[d_fft_length];
-                  d_lambda = new float[d_fft_length];
-                  d_derot = new gr_complex[d_cp_length + d_fft_length];
+                  d_align = volk_get_alignment();
+
+                  d_gamma = (gr_complex *)volk_malloc((d_fft_length + d_cp_length)*sizeof(gr_complex), d_align);
+                  d_phi = (float *)volk_malloc(sizeof(float)*d_fft_length, d_align);
+                  d_lambda = (float *)volk_malloc(sizeof(float)*d_fft_length, d_align);
+                  d_derot = (gr_complex *)volk_malloc((d_cp_length + d_fft_length)*sizeof(gr_complex), d_align);
                   d_phaseinc = 0; 
                   d_nextphaseinc = 0; 
                   d_nextpos = 0; 
                   d_phase = 0; 
-                  d_conj = new gr_complex[2 * d_fft_length + d_cp_length];
-                  d_norm = new float[2 * d_fft_length + d_cp_length];
-                  d_corr = new gr_complex[2 * d_fft_length + d_cp_length];
+                  d_conj = (gr_complex *)volk_malloc((2 * d_fft_length + d_cp_length)*sizeof(gr_complex), d_align);
+                  d_norm = (float *)volk_malloc((2 * d_fft_length + d_cp_length)*sizeof(float), d_align);
+                  d_corr = (gr_complex *)volk_malloc((2 * d_fft_length + d_cp_length)*sizeof(gr_complex), d_align);
                   peak_detect_init(0.3, 0.9);
 
-                  d_postfft = new gr_complex[d_fft_length];
+                  d_postfft = (gr_complex *)volk_malloc(d_fft_length*sizeof(gr_complex), d_align);
 
                   //integer frequency correction part
                   d_zeros_on_left = int(ceil((d_fft_length-d_active_carriers)/2.0)); 
@@ -143,8 +145,8 @@ namespace gr {
                   d_freq_offset_agree_count = 0;
                   d_freq_offset_acq = false; 
                   tmcc_positions(d_fft_length); 
-                  d_pilot_values = new gr_complex[d_active_carriers];
-                  d_known_phase_diff = new float[d_tmcc_carriers_size];
+                  d_pilot_values = (gr_complex *)volk_malloc(d_active_carriers*sizeof(gr_complex), d_align);
+                  d_known_phase_diff = (float *)volk_malloc(d_tmcc_carriers_size*sizeof(float), d_align);
                   generate_prbs();
                   // Obtain phase diff for all tmcc pilots
                   // TODO eliminate d_known_phase_diff
@@ -154,7 +156,7 @@ namespace gr {
                   }
 
                   d_sp_carriers_size = (d_active_carriers-1)/12; 
-                  d_corr_sp = new float[4]; 
+                  d_corr_sp = (float *)volk_malloc(4*sizeof(float), d_align); 
 
                   d_moved_cp = true; 
                   d_current_symbol = 0; 
@@ -162,32 +164,32 @@ namespace gr {
                   d_symbol_correct_count = 0;
                   d_coarse_freq = 0;
 
-                  d_channel_gain = new gr_complex[d_active_carriers]; 
-                  d_channel_gain_mag_sq = new float[d_active_carriers];
-                  d_ones = new float[d_active_carriers];
+                  d_channel_gain = (gr_complex *)volk_malloc(d_active_carriers*sizeof(gr_complex), d_align); 
+                  d_channel_gain_mag_sq = (float *)volk_malloc(d_active_carriers*sizeof(float), d_align);
+                  d_ones = (float *)volk_malloc(d_active_carriers*sizeof(float),d_align);
                   for(int i=0; i<d_active_carriers; i++)
                   {
                       d_ones[i] = 1.0;
                   }
-                  d_channel_gain_inv = new gr_complex[d_active_carriers];
+                  d_channel_gain_inv = (gr_complex *)volk_malloc(d_active_carriers*sizeof(gr_complex), d_align);
 
-                  d_coeffs_linear_estimate_first = new gr_complex[11]; 
-                  d_aux_linear_estimate_first = new gr_complex[11]; 
-                  d_coeffs_linear_estimate_last = new gr_complex[11]; 
-                  d_aux_linear_estimate_last = new gr_complex[11]; 
+                  d_coeffs_linear_estimate_first = (gr_complex *)volk_malloc(sizeof(gr_complex)*11, d_align); 
+                  d_aux_linear_estimate_first = (gr_complex *)volk_malloc(sizeof(gr_complex)*11, d_align); 
+                  d_coeffs_linear_estimate_last = (gr_complex *)volk_malloc(sizeof(gr_complex)*11, d_align); 
+                  d_aux_linear_estimate_last = (gr_complex *)volk_malloc(sizeof(gr_complex)*11, d_align); 
                   for (int i=1; i<12; i++){
                       d_coeffs_linear_estimate_first[i-1] = gr_complex(1.0-i/12.0,0.0);
                       d_coeffs_linear_estimate_last[i-1] = gr_complex(i/12.0,0.0);
                   }
 
-                  d_previous_channel_gain = new gr_complex[d_active_carriers]; 
-                  d_delta_channel_gains = new gr_complex[d_active_carriers]; 
+                  d_previous_channel_gain = (gr_complex *)volk_malloc(d_active_carriers*sizeof(gr_complex), d_align); 
+                  d_delta_channel_gains = (gr_complex *)volk_malloc(d_active_carriers*sizeof(gr_complex), d_align); 
                   d_samp_inc = 1; 
                   d_est_delta = 0;
                   d_delta_aux = 0;
                   d_samp_phase = 0; 
                   //d_interpolated = new gr_complex[2*d_fft_length+d_cp_length]; 
-                  d_interpolated = new gr_complex[d_fft_length+d_cp_length]; 
+                  d_interpolated = (gr_complex *)volk_malloc((d_fft_length+d_cp_length)*sizeof(gr_complex), d_align); 
                   d_interpolate = interpolate; 
                   d_cp_start_offset = -10; 
 
@@ -212,33 +214,35 @@ namespace gr {
          */
         ofdm_synchronization_impl::~ofdm_synchronization_impl()
         {
-            delete [] d_gamma; 
-            delete [] d_phi; 
-            delete [] d_lambda;  
-            delete [] d_derot; 
-            delete [] d_conj; 
-            delete [] d_norm; 
-            delete [] d_corr; 
+            volk_free(d_gamma);
+            volk_free(d_phi);
+            volk_free(d_lambda);
+            volk_free(d_derot);
+            volk_free(d_conj);
+            volk_free(d_norm); 
+            volk_free(d_corr);
 
-            delete [] d_postfft; 
+            volk_free(d_postfft); 
 
-            delete [] d_pilot_values; 
-            delete [] d_known_phase_diff; 
+            volk_free(d_pilot_values); 
+            volk_free(d_known_phase_diff); 
 
-            delete [] d_channel_gain; 
-            delete [] d_channel_gain_mag_sq;
-            delete [] d_ones;
-            delete [] d_channel_gain_inv;
+            volk_free(d_corr_sp);
 
-            delete [] d_coeffs_linear_estimate_first; 
-            delete [] d_aux_linear_estimate_first; 
-            delete [] d_coeffs_linear_estimate_last; 
-            delete [] d_aux_linear_estimate_last; 
+            volk_free(d_channel_gain); 
+            volk_free(d_channel_gain_mag_sq);
+            volk_free(d_ones);
+            volk_free(d_channel_gain_inv);
 
-            delete [] d_previous_channel_gain; 
-            delete [] d_delta_channel_gains; 
+            volk_free(d_coeffs_linear_estimate_first); 
+            volk_free(d_aux_linear_estimate_first); 
+            volk_free(d_coeffs_linear_estimate_last); 
+            volk_free(d_aux_linear_estimate_last); 
 
-            delete [] d_interpolated; 
+            volk_free(d_previous_channel_gain); 
+            volk_free(d_delta_channel_gains); 
+
+            volk_free(d_interpolated); 
 
         }
 
