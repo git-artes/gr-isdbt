@@ -45,7 +45,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(VERSION_MAJOR 1)
 set(VERSION_API   0)
 set(VERSION_ABI   0)
-set(VERSION_PATCH git)
+# see https://github.com/gnuradio/gnuradio/pull/4854
+set(VERSION_PATCH 0)
 
 cmake_policy(SET CMP0011 NEW)
 
