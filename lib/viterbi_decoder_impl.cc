@@ -583,8 +583,8 @@ namespace gr {
                     d_m = log2(constellation_size);
            
                      
-                    d_bsize = 204*8/d_k; 
-                    //d_bsize = 24;
+                    //d_bsize = 204*8/d_k; 
+                    d_bsize = 24;
                     printf("d_bsize: %i\n",d_bsize);
 
                     /*
@@ -611,7 +611,7 @@ namespace gr {
 
                     d_last_minmetric = 0;
                     d_last_bestmetric = 0;
-                    d_alpha_avg = 1; 
+                    d_alpha_avg = 1e-5; 
                     d_last_ber_out = 0.5;
                     d_new_ber = 0;
 

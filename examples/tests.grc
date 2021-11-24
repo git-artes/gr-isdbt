@@ -181,9 +181,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [319, 1094]
+    coordinate: [572, 1100]
     rotation: 0
-    state: bypassed
+    state: enabled
 - name: blocks_null_sink_0_0
   id: blocks_null_sink
   parameters:
@@ -902,14 +902,32 @@ blocks:
     width8: '1'
     width9: '1'
     ylabel: Amplitude
-    ymax: '0.15'
-    ymin: '-0.15'
+    ymax: '0'
+    ymin: '-9'
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [471, 1104]
+    coordinate: [724, 1110]
+    rotation: 0
+    state: true
+- name: single_pole_iir_filter_xx_0
+  id: single_pole_iir_filter_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: 1e-3
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [335, 1076]
     rotation: 0
     state: true
 
@@ -934,10 +952,11 @@ connections:
 - [isdbt_viterbi_decoder_0, '0', blocks_null_sink_0_0, '0']
 - [isdbt_viterbi_decoder_0, '1', blocks_nlog10_ff_0, '0']
 - [isdbt_viterbi_decoder_0_0, '0', blocks_null_sink_0_0_0, '0']
-- [isdbt_viterbi_decoder_0_0, '1', blocks_nlog10_ff_0_0, '0']
 - [isdbt_viterbi_decoder_0_0, '1', qtgui_number_sink_0, '0']
+- [isdbt_viterbi_decoder_0_0, '1', single_pole_iir_filter_xx_0, '0']
 - [low_pass_filter_0, '0', isdbt_ofdm_synchronization_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
+- [single_pole_iir_filter_xx_0, '0', blocks_nlog10_ff_0_0, '0']
 
 metadata:
   file_format: 1
