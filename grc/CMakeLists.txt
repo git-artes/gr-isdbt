@@ -26,5 +26,6 @@ install(FILES
     isdbt_symbol_demapper.block.yml
     isdbt_bit_deinterleaver.block.yml
     isdbt_viterbi_decoder.block.yml
-    isdbt_byte_deinterleaver.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_byte_deinterleaver.block.yml
+    isdbt_energy_descrambler.block.yml DESTINATION share/gnuradio/grc/blocks
 )

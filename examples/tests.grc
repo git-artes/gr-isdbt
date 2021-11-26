@@ -215,7 +215,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [741, 1013]
+    coordinate: [967, 993]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0_0_1
@@ -344,6 +344,21 @@ blocks:
     coordinate: [365, 1019]
     rotation: 0
     state: enabled
+- name: isdbt_energy_descrambler_0
+  id: isdbt_energy_descrambler
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [636, 997]
+    rotation: 0
+    state: true
 - name: isdbt_frequency_deinterleaver_0
   id: isdbt_frequency_deinterleaver
   parameters:
@@ -956,7 +971,8 @@ connections:
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
 - [isdbt_bit_deinterleaver_0, '0', isdbt_viterbi_decoder_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
-- [isdbt_byte_deinterleaver_0, '0', blocks_null_sink_0_0_0, '0']
+- [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
+- [isdbt_energy_descrambler_0, '0', blocks_null_sink_0_0_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
 - [isdbt_symbol_demapper_0, '0', blocks_null_sink_0_0_1, '0']

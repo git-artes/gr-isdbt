@@ -30,5 +30,6 @@ install(FILES
     symbol_demapper.h
     bit_deinterleaver.h
     viterbi_decoder.h
-    byte_deinterleaver.h DESTINATION include/isdbt
+    byte_deinterleaver.h
+    energy_descrambler.h DESTINATION include/isdbt
 )

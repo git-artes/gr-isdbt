@@ -1,0 +1,21 @@
+id: isdbt_energy_descrambler
+label: Energy Descrambler
+category: '[isdbt]'
+
+templates:
+  imports: import isdbt
+  make: isdbt.energy_descrambler()
+
+inputs:
+-   domain: stream
+    dtype: byte
+    vlen: 204
+
+outputs:
+-   domain: stream
+    dtype: byte
+    vlen: 204
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

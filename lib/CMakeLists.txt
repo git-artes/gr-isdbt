@@ -32,6 +32,7 @@ list(APPEND isdbt_sources
     bit_deinterleaver_impl.cc
     viterbi_decoder_impl.cc
     byte_deinterleaver_impl.cc
+    energy_descrambler_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
