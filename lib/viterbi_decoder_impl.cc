@@ -582,7 +582,7 @@ namespace gr {
                     // constellation size
                     d_m = log2(constellation_size);
            
-                     
+                    // TODO what's the best value for d_bsize??? 
                     //d_bsize = 204*8/d_k; 
                     d_bsize = 24;
                     printf("d_bsize: %i\n",d_bsize);

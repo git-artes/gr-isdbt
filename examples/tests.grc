@@ -200,7 +200,7 @@ blocks:
     bus_structure: null
     coordinate: [445, 786]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_null_sink_0_0_0
   id: blocks_null_sink
   parameters:
@@ -210,12 +210,12 @@ blocks:
     comment: ''
     num_inputs: '1'
     type: byte
-    vlen: '1'
+    vlen: '204'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [491, 1002]
+    coordinate: [741, 1013]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0_0_1
@@ -329,6 +329,21 @@ blocks:
     coordinate: [164, 644]
     rotation: 180
     state: true
+- name: isdbt_byte_deinterleaver_0
+  id: isdbt_byte_deinterleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [365, 1019]
+    rotation: 0
+    state: enabled
 - name: isdbt_frequency_deinterleaver_0
   id: isdbt_frequency_deinterleaver
   parameters:
@@ -941,6 +956,7 @@ connections:
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
 - [isdbt_bit_deinterleaver_0, '0', isdbt_viterbi_decoder_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
+- [isdbt_byte_deinterleaver_0, '0', blocks_null_sink_0_0_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
 - [isdbt_symbol_demapper_0, '0', blocks_null_sink_0_0_1, '0']
@@ -951,7 +967,8 @@ connections:
 - [isdbt_tmcc_decoder_0, '0', isdbt_frequency_deinterleaver_0, '0']
 - [isdbt_viterbi_decoder_0, '0', blocks_null_sink_0_0, '0']
 - [isdbt_viterbi_decoder_0, '1', blocks_nlog10_ff_0, '0']
-- [isdbt_viterbi_decoder_0_0, '0', blocks_null_sink_0_0_0, '0']
+- [isdbt_viterbi_decoder_0_0, '0', blocks_null_sink_0_0, '0']
+- [isdbt_viterbi_decoder_0_0, '0', isdbt_byte_deinterleaver_0, '0']
 - [isdbt_viterbi_decoder_0_0, '1', qtgui_number_sink_0, '0']
 - [isdbt_viterbi_decoder_0_0, '1', single_pole_iir_filter_xx_0, '0']
 - [low_pass_filter_0, '0', isdbt_ofdm_synchronization_0, '0']

@@ -1,0 +1,20 @@
+id: isdbt_byte_deinterleaver
+label: Byte Deinterleaver
+category: '[isdbt]'
+
+templates:
+  imports: import isdbt
+  make: isdbt.byte_deinterleaver()
+
+inputs:
+-   domain: stream
+    dtype: byte
+
+outputs:
+-   domain: stream
+    dtype: byte
+    vlen: 204
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

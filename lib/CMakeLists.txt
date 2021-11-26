@@ -31,6 +31,7 @@ list(APPEND isdbt_sources
     symbol_demapper_impl.cc
     bit_deinterleaver_impl.cc
     viterbi_decoder_impl.cc
+    byte_deinterleaver_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)

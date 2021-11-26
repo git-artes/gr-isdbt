@@ -29,5 +29,6 @@ install(FILES
     time_deinterleaver.h
     symbol_demapper.h
     bit_deinterleaver.h
-    viterbi_decoder.h DESTINATION include/isdbt
+    viterbi_decoder.h
+    byte_deinterleaver.h DESTINATION include/isdbt
 )
