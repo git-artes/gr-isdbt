@@ -27,42 +27,39 @@
  *
  */
 
-#ifndef INCLUDED_ISDBT_BYTE_DEINTERLEAVER_IMPL_H
-#define INCLUDED_ISDBT_BYTE_DEINTERLEAVER_IMPL_H
+#ifndef INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_H
+#define INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_H
 
-#include <isdbt/byte_deinterleaver.h>
-#include <boost/circular_buffer.hpp>
+#include <isdbt/api.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class byte_deinterleaver_impl : public byte_deinterleaver
+    /*!
+     * \brief It receives blocks of 204 bytes (corresponding to a TSP), 
+     * and performs a Reed-Solomon decoding as specified by the standard. 
+     *
+     * \ingroup isdbt
+     *
+     * Optionally, bit-error rate (BER) is output (which is already averaged 
+     * by a single-root filter).
+     *
+     */
+    class ISDBT_API reed_solomon_dec_isdbt : virtual public gr::block
     {
-     private:
-      static const int d_SYNC;
-      static const int d_TSP_SIZE; 
-      static const int d_I;
-      static const int d_M;
-
-      int d_noutput; 
-      std::vector< boost::circular_buffer<unsigned char> * > d_shift;
-      //std::vector< std::deque<unsigned char> * > d_shift;
-
      public:
-      byte_deinterleaver_impl();
-      ~byte_deinterleaver_impl();
+      typedef boost::shared_ptr<reed_solomon_dec_isdbt> sptr;
 
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      // Where all the action really happens
-      int general_work(int noutput_items,
-               gr_vector_int &ninput_items, 
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+      /*!
+       * \brief It receives blocks of 204 bytes (corresponding to a TSP), 
+       * and performs a Reed-Solomon decoding as specified by the standard. 
+       */
+      static sptr make();
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_BYTE_DEINTERLEAVER_IMPL_H */
+#endif /* INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_H */
 

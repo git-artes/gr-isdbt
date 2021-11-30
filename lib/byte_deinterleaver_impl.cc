@@ -66,6 +66,7 @@ namespace gr {
             // size right. Here, we put them in the reverse order of the transmitter. 
             for (int i=d_I-1; i>=0; i--)
                 d_shift.push_back(new boost::circular_buffer<unsigned char>(1 + d_M*i,0)); 
+                //d_shift.push_back(new std::deque<unsigned char>(d_M*i,0)); 
 
             set_tag_propagation_policy(gr::block::TPP_DONT); 
         }

@@ -143,16 +143,21 @@ namespace gr {
                     // The sync byte should be taken from the end and put in the beginning. 
                     //out[i*d_TSP_SIZE] = d_SYNC; 
                     out[i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
+                    //printf("in[%i]=%x\n",d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                     for (int byte = 0; byte < d_TSP_SIZE-1; byte++)
                     {
                         out[byte + i*d_TSP_SIZE+1] = in[byte + i*d_TSP_SIZE] ^ clock_prbs(8);
+                        //printf("in[%i]=%x\n",byte + i*d_TSP_SIZE, in[byte + i*d_TSP_SIZE]);
+                        
                         //out[byte + i*d_TSP_SIZE] = in[byte + i*d_TSP_SIZE] ^ clock_prbs(8);
                     }
+                    //printf("-----------");
                     // For subsequent blocks PRBS is clocked also on SYNC
                     // but its output is not used
                     clock_prbs(8);
                     // d_SYNC should be in this position, but I would like to verify it. 
                     //out[d_TSP_SIZE-1 + i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
+                    //printf("out[%i]=%x\n", i*d_TSP_SIZE, out[i*d_TSP_SIZE]);
                     
                      //printf("DESCRAMBLER: in[%i]=%x\n", d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                 }

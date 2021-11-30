@@ -1,0 +1,27 @@
+id: isdbt_reed_solomon_dec_isdbt
+label: Reed Solomon Decoder
+category: '[isdbt]'
+
+templates:
+  imports: import isdbt
+  make: isdbt.reed_solomon_dec_isdbt()
+
+inputs:
+-   domain: stream
+    dtype: byte
+    vlen: 204
+
+outputs:
+-   domain: stream
+    dtype: byte
+    vlen: 188
+-   label: ber
+    domain: stream
+    dtype: float
+    vlen: 1
+    optional: true
+
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

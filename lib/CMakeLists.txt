@@ -33,6 +33,7 @@ list(APPEND isdbt_sources
     viterbi_decoder_impl.cc
     byte_deinterleaver_impl.cc
     energy_descrambler_impl.cc
+    reed_solomon_dec_isdbt_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
@@ -42,7 +43,7 @@ if(NOT isdbt_sources)
 endif(NOT isdbt_sources)
 
 add_library(gnuradio-isdbt SHARED ${isdbt_sources})
-target_link_libraries(gnuradio-isdbt gnuradio::gnuradio-runtime gnuradio::gnuradio-blocks gnuradio::gnuradio-fft gnuradio::gnuradio-filter Volk::volk)
+target_link_libraries(gnuradio-isdbt gnuradio::gnuradio-runtime gnuradio::gnuradio-blocks gnuradio::gnuradio-fft gnuradio::gnuradio-filter gnuradio::gnuradio-fec Volk::volk)
 target_include_directories(gnuradio-isdbt
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>

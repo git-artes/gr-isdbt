@@ -86,7 +86,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-find_package(Gnuradio "3.8" REQUIRED COMPONENTS blocks fft filter volk)
+find_package(Gnuradio "3.8" REQUIRED COMPONENTS blocks fft filter fec volk)
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
@@ -126,6 +126,9 @@ endif(APPLE)
 # Find gnuradio build dependencies
 ########################################################################
 find_package(Doxygen)
+
+# To be able to use gr-fec
+find_package(GSL)
 
 ########################################################################
 # Setup doxygen option
