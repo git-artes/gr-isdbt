@@ -35,6 +35,7 @@ list(APPEND isdbt_sources
     energy_descrambler_impl.cc
     reed_solomon_dec_isdbt_impl.cc
     tmcc_encoder_impl.cc
+    pilot_signals_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)

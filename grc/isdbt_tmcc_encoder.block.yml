@@ -11,7 +11,7 @@ parameters:
   label: Transmission Mode
   dtype: int
   options: ['1','2','3']
-  option_labels: [MODE1(2K), MODE2(4K), MODE3(8K)]
+  option_labels: [MODE1 (2K), MODE2 (4K), MODE3 (8K)]
 - id: one_seg_present
   label: Oneseg
   default: 'True'

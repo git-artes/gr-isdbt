@@ -19,6 +19,7 @@
 #include "isdbt/energy_descrambler.h"
 #include "isdbt/reed_solomon_dec_isdbt.h"
 #include "isdbt/tmcc_encoder.h"
+#include "isdbt/pilot_signals.h"
 %}
 
 %include "isdbt/ofdm_synchronization.h"
@@ -43,3 +44,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, energy_descrambler);
 GR_SWIG_BLOCK_MAGIC2(isdbt, reed_solomon_dec_isdbt);
 %include "isdbt/tmcc_encoder.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_encoder);
+%include "isdbt/pilot_signals.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, pilot_signals);
