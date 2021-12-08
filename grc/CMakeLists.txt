@@ -33,5 +33,6 @@ install(FILES
     isdbt_pilot_signals.block.yml
     isdbt_frequency_interleaver.block.yml
     isdbt_time_interleaver.block.yml
-    isdbt_hierarchical_combinator.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_hierarchical_combinator.block.yml
+    isdbt_carrier_modulation.block.yml DESTINATION share/gnuradio/grc/blocks
 )

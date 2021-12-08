@@ -244,38 +244,38 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '1'
+    amp: '256'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    noise_type: analog.GR_GAUSSIAN
+    noise_type: analog.GR_UNIFORM
     seed: '0'
-    type: complex
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1615, 241]
-    rotation: 180
+    coordinate: [1031, 395]
+    rotation: 0
     state: true
 - name: analog_noise_source_x_0_0
   id: analog_noise_source_x
   parameters:
     affinity: ''
     alias: ''
-    amp: '1'
+    amp: '256'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    noise_type: analog.GR_GAUSSIAN
+    noise_type: analog.GR_UNIFORM
     seed: '0'
-    type: complex
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1680, 355]
-    rotation: 180
+    coordinate: [1029, 286]
+    rotation: 0
     state: true
 - name: blocks_file_sink_0
   id: blocks_file_sink
@@ -292,9 +292,39 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1535, 1235]
+    coordinate: [1522, 1377]
     rotation: 0
     state: disabled
+- name: blocks_float_to_uchar_0
+  id: blocks_float_to_uchar
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1237, 294]
+    rotation: 0
+    state: true
+- name: blocks_float_to_uchar_1
+  id: blocks_float_to_uchar
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1236, 399]
+    rotation: 0
+    state: true
 - name: blocks_nlog10_ff_0_0
   id: blocks_nlog10_ff
   parameters:
@@ -310,7 +340,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [943, 1196]
+    coordinate: [930, 1338]
     rotation: 0
     state: enabled
 - name: blocks_nlog10_ff_0_0_0
@@ -328,7 +358,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1424, 1353]
+    coordinate: [1411, 1495]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0_0_0
@@ -345,7 +375,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1559, 1108]
+    coordinate: [1546, 1250]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0_0_1
@@ -362,7 +392,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [11, 875]
+    coordinate: [-2, 1017]
     rotation: 180
     state: enabled
 - name: blocks_skiphead_0
@@ -380,43 +410,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [389, 403]
-    rotation: 180
-    state: true
-- name: blocks_stream_to_vector_0
-  id: blocks_stream_to_vector
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: int(data_carriers/13*segments_a)
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1414, 316]
-    rotation: 180
-    state: true
-- name: blocks_stream_to_vector_0_0
-  id: blocks_stream_to_vector
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: int(data_carriers/13*segments_b)
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1479, 430]
+    coordinate: [370, 563]
     rotation: 180
     state: true
 - name: blocks_throttle_0
@@ -435,7 +429,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1031, 703]
+    coordinate: [1000, 866]
     rotation: 0
     state: enabled
 - name: blocks_vector_to_stream_0
@@ -453,7 +447,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [373, 805]
+    coordinate: [360, 947]
     rotation: 180
     state: true
 - name: blocks_vector_to_stream_1
@@ -471,9 +465,45 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1469, 1167]
+    coordinate: [1456, 1309]
     rotation: 0
     state: disabled
+- name: blocks_vector_to_stream_2
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: 1512*4
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1769, 393]
+    rotation: 0
+    state: true
+- name: blocks_vector_to_stream_2_0
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: 1512*4
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1763, 446]
+    rotation: 0
+    state: true
 - name: channels_channel_model_0
   id: channels_channel_model
   parameters:
@@ -492,7 +522,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1273, 684]
+    coordinate: [1260, 826]
     rotation: 0
     state: enabled
 - name: digital_ofdm_cyclic_prefixer_0
@@ -511,7 +541,47 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 679]
+    coordinate: [705, 842]
+    rotation: 0
+    state: true
+- name: dtv_dvbt_inner_coder_0
+  id: dtv_dvbt_inner_coder
+  parameters:
+    affinity: ''
+    alias: ''
+    code_rate: C2_3
+    comment: ''
+    constellation: qpsk
+    hierarchy: alpha4
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ninput: '1'
+    noutput: 1512*4
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1535, 267]
+    rotation: 0
+    state: true
+- name: dtv_dvbt_inner_coder_0_0
+  id: dtv_dvbt_inner_coder
+  parameters:
+    affinity: ''
+    alias: ''
+    code_rate: C3_4
+    comment: ''
+    constellation: 64qam
+    hierarchy: alpha4
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ninput: '1'
+    noutput: 1512*4
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1528, 379]
     rotation: 0
     state: true
 - name: fft_vxx_0
@@ -532,7 +602,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [465, 643]
+    coordinate: [434, 806]
     rotation: 0
     state: true
 - name: isdbt_bit_deinterleaver_0_0
@@ -550,7 +620,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [109, 1116]
+    coordinate: [96, 1258]
     rotation: 0
     state: true
 - name: isdbt_byte_deinterleaver_0
@@ -565,9 +635,45 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 1115]
+    coordinate: [723, 1257]
     rotation: 0
     state: enabled
+- name: isdbt_carrier_modulation_0
+  id: isdbt_carrier_modulation
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments: segments_a
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1501, 520]
+    rotation: 180
+    state: true
+- name: isdbt_carrier_modulation_0_0
+  id: isdbt_carrier_modulation
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments: segments_b
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1478, 598]
+    rotation: 180
+    state: true
 - name: isdbt_energy_descrambler_0
   id: isdbt_energy_descrambler
   parameters:
@@ -580,7 +686,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [974, 1116]
+    coordinate: [961, 1258]
     rotation: 0
     state: true
 - name: isdbt_frequency_deinterleaver_0
@@ -597,7 +703,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [780, 947]
+    coordinate: [767, 1089]
     rotation: 180
     state: true
 - name: isdbt_frequency_interleaver_0
@@ -614,7 +720,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [596, 401]
+    coordinate: [577, 561]
     rotation: 180
     state: true
 - name: isdbt_hierarchical_combinator_0
@@ -633,7 +739,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1152, 395]
+    coordinate: [1133, 555]
     rotation: 180
     state: true
 - name: isdbt_ofdm_synchronization_0
@@ -651,7 +757,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1479, 922]
+    coordinate: [1466, 1064]
     rotation: 180
     state: true
 - name: isdbt_pilot_signals_0
@@ -667,7 +773,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [49, 410]
+    coordinate: [30, 570]
     rotation: 180
     state: true
 - name: isdbt_reed_solomon_dec_isdbt_0
@@ -682,7 +788,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1227, 1120]
+    coordinate: [1214, 1262]
     rotation: 0
     state: true
 - name: isdbt_symbol_demapper_0
@@ -704,7 +810,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [163, 906]
+    coordinate: [150, 1048]
     rotation: 180
     state: true
 - name: isdbt_time_deinterleaver_0
@@ -726,7 +832,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [477, 905]
+    coordinate: [464, 1047]
     rotation: 180
     state: enabled
 - name: isdbt_time_interleaver_0
@@ -748,7 +854,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [862, 353]
+    coordinate: [843, 513]
     rotation: 180
     state: true
 - name: isdbt_tmcc_decoder_0
@@ -765,7 +871,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1075, 946]
+    coordinate: [1062, 1088]
     rotation: 180
     state: true
 - name: isdbt_tmcc_encoder_0
@@ -794,7 +900,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [196, 506]
+    coordinate: [165, 669]
     rotation: 0
     state: true
 - name: isdbt_viterbi_decoder_0_0
@@ -811,7 +917,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [442, 1106]
+    coordinate: [429, 1248]
     rotation: 0
     state: true
 - name: low_pass_filter_0
@@ -835,7 +941,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1561, 691]
+    coordinate: [1548, 833]
     rotation: 0
     state: enabled
 - name: qtgui_const_sink_x_0
@@ -927,7 +1033,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [93, 799]
+    coordinate: [80, 941]
     rotation: 180
     state: true
 - name: qtgui_freq_sink_x_0
@@ -1007,8 +1113,8 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1598, 549]
-    rotation: 180
+    coordinate: [1779, 729]
+    rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0_0
   id: qtgui_time_sink_x
@@ -1104,7 +1210,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1095, 1206]
+    coordinate: [1082, 1348]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0_0_0
@@ -1201,7 +1307,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1551, 1337]
+    coordinate: [1538, 1479]
     rotation: 0
     state: true
 - name: single_pole_iir_filter_xx_0
@@ -1219,26 +1325,32 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [706, 1172]
+    coordinate: [693, 1314]
     rotation: 0
     state: true
 
 connections:
-- [analog_noise_source_x_0, '0', blocks_stream_to_vector_0, '0']
-- [analog_noise_source_x_0_0, '0', blocks_stream_to_vector_0_0, '0']
+- [analog_noise_source_x_0, '0', blocks_float_to_uchar_1, '0']
+- [analog_noise_source_x_0_0, '0', blocks_float_to_uchar_0, '0']
+- [blocks_float_to_uchar_0, '0', dtv_dvbt_inner_coder_0, '0']
+- [blocks_float_to_uchar_1, '0', dtv_dvbt_inner_coder_0_0, '0']
 - [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
-- [blocks_stream_to_vector_0, '0', isdbt_hierarchical_combinator_0, '0']
-- [blocks_stream_to_vector_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
+- [blocks_vector_to_stream_2, '0', isdbt_carrier_modulation_0, '0']
+- [blocks_vector_to_stream_2_0, '0', isdbt_carrier_modulation_0_0, '0']
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
 - [digital_ofdm_cyclic_prefixer_0, '0', blocks_throttle_0, '0']
+- [dtv_dvbt_inner_coder_0, '0', blocks_vector_to_stream_2, '0']
+- [dtv_dvbt_inner_coder_0_0, '0', blocks_vector_to_stream_2_0, '0']
 - [fft_vxx_0, '0', digital_ofdm_cyclic_prefixer_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
 - [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
+- [isdbt_carrier_modulation_0, '0', isdbt_hierarchical_combinator_0, '0']
+- [isdbt_carrier_modulation_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_frequency_interleaver_0, '0', blocks_skiphead_0, '0']

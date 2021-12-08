@@ -39,6 +39,7 @@ list(APPEND isdbt_sources
     frequency_interleaver_impl.cc
     time_interleaver_impl.cc
     hierarchical_combinator_impl.cc
+    carrier_modulation_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
