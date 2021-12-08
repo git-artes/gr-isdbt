@@ -255,9 +255,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [595, 371]
+    coordinate: [46, 358]
     rotation: 0
-    state: true
+    state: disabled
 - name: analog_noise_source_x_0_0
   id: analog_noise_source_x
   parameters:
@@ -274,9 +274,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [593, 262]
+    coordinate: [44, 249]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -295,6 +295,50 @@ blocks:
     coordinate: [1522, 1377]
     rotation: 0
     state: disabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/flarroca/facultad/gnuradio/layer_a.ts
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [103, 144]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/flarroca/facultad/gnuradio/layer_b.ts
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [169, 423]
+    rotation: 0
+    state: true
 - name: blocks_float_to_uchar_0
   id: blocks_float_to_uchar
   parameters:
@@ -307,9 +351,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [801, 270]
+    coordinate: [252, 257]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_float_to_uchar_1
   id: blocks_float_to_uchar
   parameters:
@@ -322,9 +366,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 375]
+    coordinate: [251, 362]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_nlog10_ff_0_0
   id: blocks_nlog10_ff
   parameters:
@@ -421,14 +465,14 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: '204'
+    num_items: '188'
     type: byte
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [990, 265]
+    coordinate: [441, 252]
     rotation: 0
     state: true
 - name: blocks_stream_to_vector_0_0
@@ -439,14 +483,14 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: '204'
+    num_items: '188'
     type: byte
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1011, 377]
+    coordinate: [401, 355]
     rotation: 0
     state: true
 - name: blocks_throttle_0
@@ -620,6 +664,52 @@ blocks:
     coordinate: [1528, 379]
     rotation: 0
     state: true
+- name: dtv_dvbt_reed_solomon_enc_0
+  id: dtv_dvbt_reed_solomon_enc
+  parameters:
+    affinity: ''
+    alias: ''
+    blocks: '1'
+    comment: ''
+    gfpoly: '0x11d'
+    k: '239'
+    m: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '255'
+    p: '2'
+    s: '51'
+    t: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [692, 175]
+    rotation: 0
+    state: true
+- name: dtv_dvbt_reed_solomon_enc_0_0
+  id: dtv_dvbt_reed_solomon_enc
+  parameters:
+    affinity: ''
+    alias: ''
+    blocks: '1'
+    comment: ''
+    gfpoly: '0x11d'
+    k: '239'
+    m: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '255'
+    p: '2'
+    s: '51'
+    t: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [684, 346]
+    rotation: 0
+    state: true
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -761,6 +851,44 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [961, 1258]
+    rotation: 0
+    state: true
+- name: isdbt_energy_dispersal_0
+  id: isdbt_energy_dispersal
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    nsegments: segments_a
+    rate: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [981, 211]
+    rotation: 0
+    state: true
+- name: isdbt_energy_dispersal_0_0
+  id: isdbt_energy_dispersal
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    nsegments: segments_b
+    rate: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [971, 359]
     rotation: 0
     state: true
 - name: isdbt_frequency_deinterleaver_0
@@ -1406,13 +1534,15 @@ blocks:
 connections:
 - [analog_noise_source_x_0, '0', blocks_float_to_uchar_1, '0']
 - [analog_noise_source_x_0_0, '0', blocks_float_to_uchar_0, '0']
+- [blocks_file_source_0, '0', blocks_stream_to_vector_0, '0']
+- [blocks_file_source_0_0, '0', blocks_stream_to_vector_0_0, '0']
 - [blocks_float_to_uchar_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_float_to_uchar_1, '0', blocks_stream_to_vector_0_0, '0']
 - [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
-- [blocks_stream_to_vector_0, '0', isdbt_byte_interleaver_0, '0']
-- [blocks_stream_to_vector_0_0, '0', isdbt_byte_interleaver_0_0, '0']
+- [blocks_stream_to_vector_0, '0', dtv_dvbt_reed_solomon_enc_0, '0']
+- [blocks_stream_to_vector_0_0, '0', dtv_dvbt_reed_solomon_enc_0_0, '0']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
@@ -1422,6 +1552,8 @@ connections:
 - [digital_ofdm_cyclic_prefixer_0, '0', blocks_throttle_0, '0']
 - [dtv_dvbt_inner_coder_0, '0', blocks_vector_to_stream_2, '0']
 - [dtv_dvbt_inner_coder_0_0, '0', blocks_vector_to_stream_2_0, '0']
+- [dtv_dvbt_reed_solomon_enc_0, '0', isdbt_energy_dispersal_0, '0']
+- [dtv_dvbt_reed_solomon_enc_0_0, '0', isdbt_energy_dispersal_0_0, '0']
 - [fft_vxx_0, '0', digital_ofdm_cyclic_prefixer_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
 - [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
@@ -1430,6 +1562,8 @@ connections:
 - [isdbt_carrier_modulation_0, '0', isdbt_hierarchical_combinator_0, '0']
 - [isdbt_carrier_modulation_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']
+- [isdbt_energy_dispersal_0, '0', isdbt_byte_interleaver_0, '0']
+- [isdbt_energy_dispersal_0_0, '0', isdbt_byte_interleaver_0_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_frequency_interleaver_0, '0', blocks_skiphead_0, '0']
 - [isdbt_hierarchical_combinator_0, '0', isdbt_time_interleaver_0, '0']
