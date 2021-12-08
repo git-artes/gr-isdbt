@@ -168,8 +168,8 @@ blocks:
     orient: Qt.Horizontal
     rangeType: float
     start: 1e-9
-    step: 1e-6
-    stop: '0.5'
+    step: 1e-2
+    stop: '10'
     value: 1e-9
     widget: counter_slider
   states:
@@ -284,7 +284,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/flarroca/salida.ts
+    file: /home/flarroca/salida_b.ts
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -292,7 +292,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1522, 1377]
+    coordinate: [1662, 1279]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_0_1
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/flarroca/salida_a.ts
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1568, 1507]
     rotation: 0
     state: disabled
 - name: blocks_file_source_0
@@ -402,9 +420,45 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1411, 1495]
+    coordinate: [1494, 1377]
     rotation: 0
     state: enabled
+- name: blocks_nlog10_ff_0_0_0_1
+  id: blocks_nlog10_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 1605]
+    rotation: 0
+    state: disabled
+- name: blocks_nlog10_ff_0_0_1
+  id: blocks_nlog10_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [869, 1584]
+    rotation: 0
+    state: disabled
 - name: blocks_null_sink_0_0_0
   id: blocks_null_sink
   parameters:
@@ -419,7 +473,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1546, 1250]
+    coordinate: [1420, 1208]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0_0_1
@@ -545,7 +599,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1456, 1309]
+    coordinate: [1475, 1273]
+    rotation: 0
+    state: enabled
+- name: blocks_vector_to_stream_1_1
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '188'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1381, 1501]
     rotation: 0
     state: disabled
 - name: blocks_vector_to_stream_2
@@ -563,7 +635,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1769, 393]
+    coordinate: [1734, 355]
     rotation: 0
     state: true
 - name: blocks_vector_to_stream_2_0
@@ -581,7 +653,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1763, 446]
+    coordinate: [1728, 408]
     rotation: 0
     state: true
 - name: channels_channel_model_0
@@ -641,7 +713,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1535, 267]
+    coordinate: [1500, 229]
     rotation: 0
     state: true
 - name: dtv_dvbt_inner_coder_0_0
@@ -661,7 +733,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1528, 379]
+    coordinate: [1493, 341]
     rotation: 0
     state: true
 - name: dtv_dvbt_reed_solomon_enc_0
@@ -684,7 +756,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [692, 175]
+    coordinate: [643, 172]
     rotation: 0
     state: true
 - name: dtv_dvbt_reed_solomon_enc_0_0
@@ -707,7 +779,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [684, 346]
+    coordinate: [635, 343]
     rotation: 0
     state: true
 - name: fft_vxx_0
@@ -748,7 +820,25 @@ blocks:
     bus_structure: null
     coordinate: [96, 1258]
     rotation: 0
-    state: true
+    state: enabled
+- name: isdbt_bit_deinterleaver_0_0_0
+  id: isdbt_bit_deinterleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments: segments_a
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [114, 1426]
+    rotation: 0
+    state: disabled
 - name: isdbt_byte_deinterleaver_0
   id: isdbt_byte_deinterleaver
   parameters:
@@ -764,6 +854,21 @@ blocks:
     coordinate: [723, 1257]
     rotation: 0
     state: enabled
+- name: isdbt_byte_deinterleaver_0_0
+  id: isdbt_byte_deinterleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [707, 1443]
+    rotation: 0
+    state: disabled
 - name: isdbt_byte_interleaver_0
   id: isdbt_byte_interleaver
   parameters:
@@ -780,7 +885,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 260]
+    coordinate: [1168, 237]
     rotation: 0
     state: true
 - name: isdbt_byte_interleaver_0_0
@@ -799,7 +904,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1222, 370]
+    coordinate: [1158, 347]
     rotation: 0
     state: true
 - name: isdbt_carrier_modulation_0
@@ -852,7 +957,22 @@ blocks:
     bus_structure: null
     coordinate: [961, 1258]
     rotation: 0
-    state: true
+    state: enabled
+- name: isdbt_energy_descrambler_0_0
+  id: isdbt_energy_descrambler
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [930, 1463]
+    rotation: 0
+    state: disabled
 - name: isdbt_energy_dispersal_0
   id: isdbt_energy_dispersal
   parameters:
@@ -869,7 +989,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [981, 211]
+    coordinate: [889, 220]
     rotation: 0
     state: true
 - name: isdbt_energy_dispersal_0_0
@@ -888,7 +1008,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [971, 359]
+    coordinate: [879, 368]
     rotation: 0
     state: true
 - name: isdbt_frequency_deinterleaver_0
@@ -992,7 +1112,22 @@ blocks:
     bus_structure: null
     coordinate: [1214, 1262]
     rotation: 0
-    state: true
+    state: enabled
+- name: isdbt_reed_solomon_dec_isdbt_0_0
+  id: isdbt_reed_solomon_dec_isdbt
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1155, 1488]
+    rotation: 0
+    state: disabled
 - name: isdbt_symbol_demapper_0
   id: isdbt_symbol_demapper
   parameters:
@@ -1121,7 +1256,24 @@ blocks:
     bus_structure: null
     coordinate: [429, 1248]
     rotation: 0
-    state: true
+    state: enabled
+- name: isdbt_viterbi_decoder_0_0_0
+  id: isdbt_viterbi_decoder
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rate: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [437, 1434]
+    rotation: 0
+    state: disabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -1318,200 +1470,258 @@ blocks:
     coordinate: [1779, 729]
     rotation: 0
     state: disabled
-- name: qtgui_time_sink_x_0_0
-  id: qtgui_time_sink_x
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
   parameters:
     affinity: ''
     alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
     autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
     comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
     gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '"BER pre-Viterbi"'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0'
+    min: '-10'
+    name: '"BER pre-Viterbi (log10)"'
     nconnections: '1'
-    size: '1024'
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
     type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
     update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '0'
-    ymin: '-9'
-    yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1082, 1348]
+    coordinate: [1091, 1334]
     rotation: 0
-    state: true
-- name: qtgui_time_sink_x_0_0_0
-  id: qtgui_time_sink_x
+    state: enabled
+- name: qtgui_number_sink_0_0
+  id: qtgui_number_sink
   parameters:
     affinity: ''
     alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
     autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
     comment: ''
-    ctrlpanel: 'False'
-    entags: 'False'
-    grid: 'False'
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
     gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '"BER post-Viterbi"'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0'
+    min: '-35'
+    name: '"BER post-Viterbi (log10)"'
     nconnections: '1'
-    size: '8192'
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
     type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
     update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '0'
-    ymin: '-9'
-    yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1538, 1479]
+    coordinate: [1632, 1405]
     rotation: 0
-    state: true
+    state: enabled
+- name: qtgui_number_sink_0_0_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0'
+    min: '-35'
+    name: '"BER post-Viterbi (log10)"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1522, 1608]
+    rotation: 0
+    state: disabled
+- name: qtgui_number_sink_0_1
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0'
+    min: '-10'
+    name: '"BER pre-Viterbi (log10)"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [994, 1646]
+    rotation: 0
+    state: disabled
 - name: single_pole_iir_filter_xx_0
   id: single_pole_iir_filter_xx
   parameters:
@@ -1529,7 +1739,25 @@ blocks:
     bus_structure: null
     coordinate: [693, 1314]
     rotation: 0
-    state: true
+    state: enabled
+- name: single_pole_iir_filter_xx_0_0
+  id: single_pole_iir_filter_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: 1e-3
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [669, 1531]
+    rotation: 0
+    state: disabled
 
 connections:
 - [analog_noise_source_x_0, '0', blocks_float_to_uchar_1, '0']
@@ -1538,14 +1766,17 @@ connections:
 - [blocks_file_source_0_0, '0', blocks_stream_to_vector_0_0, '0']
 - [blocks_float_to_uchar_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_float_to_uchar_1, '0', blocks_stream_to_vector_0_0, '0']
-- [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
-- [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
+- [blocks_nlog10_ff_0_0, '0', qtgui_number_sink_0, '0']
+- [blocks_nlog10_ff_0_0_0, '0', qtgui_number_sink_0_0, '0']
+- [blocks_nlog10_ff_0_0_0_1, '0', qtgui_number_sink_0_0_0, '0']
+- [blocks_nlog10_ff_0_0_1, '0', qtgui_number_sink_0_1, '0']
 - [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
 - [blocks_stream_to_vector_0, '0', dtv_dvbt_reed_solomon_enc_0, '0']
 - [blocks_stream_to_vector_0_0, '0', dtv_dvbt_reed_solomon_enc_0_0, '0']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
+- [blocks_vector_to_stream_1_1, '0', blocks_file_sink_0_1, '0']
 - [blocks_vector_to_stream_2, '0', isdbt_carrier_modulation_0, '0']
 - [blocks_vector_to_stream_2_0, '0', isdbt_carrier_modulation_0_0, '0']
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']
@@ -1556,12 +1787,15 @@ connections:
 - [dtv_dvbt_reed_solomon_enc_0_0, '0', isdbt_energy_dispersal_0_0, '0']
 - [fft_vxx_0, '0', digital_ofdm_cyclic_prefixer_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
+- [isdbt_bit_deinterleaver_0_0_0, '0', isdbt_viterbi_decoder_0_0_0, '0']
 - [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
+- [isdbt_byte_deinterleaver_0_0, '0', isdbt_energy_descrambler_0_0, '0']
 - [isdbt_byte_interleaver_0, '0', dtv_dvbt_inner_coder_0, '0']
 - [isdbt_byte_interleaver_0_0, '0', dtv_dvbt_inner_coder_0_0, '0']
 - [isdbt_carrier_modulation_0, '0', isdbt_hierarchical_combinator_0, '0']
 - [isdbt_carrier_modulation_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']
+- [isdbt_energy_descrambler_0_0, '0', isdbt_reed_solomon_dec_isdbt_0_0, '0']
 - [isdbt_energy_dispersal_0, '0', isdbt_byte_interleaver_0, '0']
 - [isdbt_energy_dispersal_0_0, '0', isdbt_byte_interleaver_0_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
@@ -1572,7 +1806,10 @@ connections:
 - [isdbt_reed_solomon_dec_isdbt_0, '0', blocks_null_sink_0_0_0, '0']
 - [isdbt_reed_solomon_dec_isdbt_0, '0', blocks_vector_to_stream_1, '0']
 - [isdbt_reed_solomon_dec_isdbt_0, '1', blocks_nlog10_ff_0_0_0, '0']
+- [isdbt_reed_solomon_dec_isdbt_0_0, '0', blocks_vector_to_stream_1_1, '0']
+- [isdbt_reed_solomon_dec_isdbt_0_0, '1', blocks_nlog10_ff_0_0_0_1, '0']
 - [isdbt_symbol_demapper_0, '0', blocks_null_sink_0_0_1, '0']
+- [isdbt_symbol_demapper_0, '0', isdbt_bit_deinterleaver_0_0_0, '0']
 - [isdbt_symbol_demapper_0, '1', isdbt_bit_deinterleaver_0_0, '0']
 - [isdbt_time_deinterleaver_0, '0', blocks_vector_to_stream_0, '0']
 - [isdbt_time_deinterleaver_0, '0', isdbt_symbol_demapper_0, '0']
@@ -1581,9 +1818,12 @@ connections:
 - [isdbt_tmcc_encoder_0, '0', fft_vxx_0, '0']
 - [isdbt_viterbi_decoder_0_0, '0', isdbt_byte_deinterleaver_0, '0']
 - [isdbt_viterbi_decoder_0_0, '1', single_pole_iir_filter_xx_0, '0']
+- [isdbt_viterbi_decoder_0_0_0, '0', isdbt_byte_deinterleaver_0_0, '0']
+- [isdbt_viterbi_decoder_0_0_0, '1', single_pole_iir_filter_xx_0_0, '0']
 - [low_pass_filter_0, '0', isdbt_ofdm_synchronization_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
 - [single_pole_iir_filter_xx_0, '0', blocks_nlog10_ff_0_0, '0']
+- [single_pole_iir_filter_xx_0_0, '0', blocks_nlog10_ff_0_0_1, '0']
 
 metadata:
   file_format: 1
