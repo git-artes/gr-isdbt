@@ -110,6 +110,42 @@ blocks:
     coordinate: [1044, 79]
     rotation: 0
     state: true
+- name: length_a
+  id: variable
+  parameters:
+    comment: ''
+    value: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1181, 20]
+    rotation: 0
+    state: true
+- name: length_b
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1182, 83]
+    rotation: 0
+    state: true
+- name: length_c
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1181, 144]
+    rotation: 0
+    state: true
 - name: mode
   id: variable
   parameters:
@@ -155,6 +191,42 @@ blocks:
     coordinate: [233, 30]
     rotation: 0
     state: enabled
+- name: segments_a
+  id: variable
+  parameters:
+    comment: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1265, 24]
+    rotation: 0
+    state: true
+- name: segments_b
+  id: variable
+  parameters:
+    comment: ''
+    value: '12'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1266, 87]
+    rotation: 0
+    state: true
+- name: segments_c
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1265, 148]
+    rotation: 0
+    state: true
 - name: total_carriers
   id: variable
   parameters:
@@ -183,7 +255,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1085, 291]
+    coordinate: [1615, 241]
+    rotation: 180
+    state: true
+- name: analog_noise_source_x_0_0
+  id: analog_noise_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_type: analog.GR_GAUSSIAN
+    seed: '0'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1680, 355]
     rotation: 180
     state: true
 - name: blocks_file_sink_0
@@ -300,14 +391,32 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: data_carriers
+    num_items: int(data_carriers/13*segments_a)
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [884, 366]
+    coordinate: [1414, 316]
+    rotation: 180
+    state: true
+- name: blocks_stream_to_vector_0_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: int(data_carriers/13*segments_b)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1479, 430]
     rotation: 180
     state: true
 - name: blocks_throttle_0
@@ -436,7 +545,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mode: '3'
-    segments: '12'
+    segments: segments_b
   states:
     bus_sink: false
     bus_source: false
@@ -500,12 +609,31 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mode: '3'
-    oneseg: 'False'
+    oneseg: 'True'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [596, 401]
+    rotation: 180
+    state: true
+- name: isdbt_hierarchical_combinator_0
+  id: isdbt_hierarchical_combinator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments_A: segments_a
+    segments_B: segments_b
+    segments_C: segments_c
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1152, 395]
     rotation: 180
     state: true
 - name: isdbt_ofdm_synchronization_0
@@ -569,9 +697,9 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mode: '3'
-    segments_A: '1'
-    segments_B: '12'
-    segments_C: '0'
+    segments_A: segments_a
+    segments_B: segments_b
+    segments_C: segments_c
   states:
     bus_sink: false
     bus_source: false
@@ -585,15 +713,15 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    length_A: '4'
-    length_B: '2'
-    length_C: '0'
+    length_A: length_a
+    length_B: length_b
+    length_C: length_c
     maxoutbuf: '0'
     minoutbuf: '0'
     mode: '3'
-    segments_A: '1'
-    segments_B: '12'
-    segments_C: '0'
+    segments_A: segments_a
+    segments_B: segments_b
+    segments_C: segments_c
   states:
     bus_sink: false
     bus_source: false
@@ -601,6 +729,28 @@ blocks:
     coordinate: [477, 905]
     rotation: 180
     state: enabled
+- name: isdbt_time_interleaver_0
+  id: isdbt_time_interleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length_A: length_a
+    length_B: length_b
+    length_C: length_c
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    segments_A: segments_a
+    segments_B: segments_b
+    segments_C: segments_c
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [862, 353]
+    rotation: 180
+    state: true
 - name: isdbt_tmcc_decoder_0
   id: isdbt_tmcc_decoder
   parameters:
@@ -627,18 +777,18 @@ blocks:
     conv_code_A: '1'
     conv_code_B: '2'
     conv_code_C: '0'
-    int_length_A: '4'
-    int_length_B: '2'
-    int_length_C: '0'
+    int_length_A: length_a
+    int_length_B: length_b
+    int_length_C: length_c
     maxoutbuf: '0'
     minoutbuf: '0'
     mod_scheme_A: '4'
     mod_scheme_B: '64'
     mod_scheme_C: '4'
     mode: '3'
-    nsegs_A: '1'
-    nsegs_B: '12'
-    nsegs_C: '0'
+    nsegs_A: segments_a
+    nsegs_B: segments_b
+    nsegs_C: segments_c
     one_seg_present: 'True'
   states:
     bus_sink: false
@@ -1075,10 +1225,12 @@ blocks:
 
 connections:
 - [analog_noise_source_x_0, '0', blocks_stream_to_vector_0, '0']
+- [analog_noise_source_x_0_0, '0', blocks_stream_to_vector_0_0, '0']
 - [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
-- [blocks_stream_to_vector_0, '0', isdbt_frequency_interleaver_0, '0']
+- [blocks_stream_to_vector_0, '0', isdbt_hierarchical_combinator_0, '0']
+- [blocks_stream_to_vector_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
@@ -1090,6 +1242,7 @@ connections:
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
 - [isdbt_frequency_interleaver_0, '0', blocks_skiphead_0, '0']
+- [isdbt_hierarchical_combinator_0, '0', isdbt_time_interleaver_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
 - [isdbt_pilot_signals_0, '0', isdbt_tmcc_encoder_0, '0']
 - [isdbt_reed_solomon_dec_isdbt_0, '0', blocks_null_sink_0_0_0, '0']
@@ -1099,6 +1252,7 @@ connections:
 - [isdbt_symbol_demapper_0, '1', isdbt_bit_deinterleaver_0_0, '0']
 - [isdbt_time_deinterleaver_0, '0', blocks_vector_to_stream_0, '0']
 - [isdbt_time_deinterleaver_0, '0', isdbt_symbol_demapper_0, '0']
+- [isdbt_time_interleaver_0, '0', isdbt_frequency_interleaver_0, '0']
 - [isdbt_tmcc_decoder_0, '0', isdbt_frequency_deinterleaver_0, '0']
 - [isdbt_tmcc_encoder_0, '0', fft_vxx_0, '0']
 - [isdbt_viterbi_decoder_0_0, '0', isdbt_byte_deinterleaver_0, '0']

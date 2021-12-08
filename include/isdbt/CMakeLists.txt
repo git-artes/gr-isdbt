@@ -35,5 +35,7 @@ install(FILES
     reed_solomon_dec_isdbt.h
     tmcc_encoder.h
     pilot_signals.h
-    frequency_interleaver.h DESTINATION include/isdbt
+    frequency_interleaver.h
+    time_interleaver.h
+    hierarchical_combinator.h DESTINATION include/isdbt
 )

@@ -21,6 +21,8 @@
 #include "isdbt/tmcc_encoder.h"
 #include "isdbt/pilot_signals.h"
 #include "isdbt/frequency_interleaver.h"
+#include "isdbt/time_interleaver.h"
+#include "isdbt/hierarchical_combinator.h"
 %}
 
 %include "isdbt/ofdm_synchronization.h"
@@ -49,3 +51,7 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_encoder);
 GR_SWIG_BLOCK_MAGIC2(isdbt, pilot_signals);
 %include "isdbt/frequency_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_interleaver);
+%include "isdbt/time_interleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
+%include "isdbt/hierarchical_combinator.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_combinator);

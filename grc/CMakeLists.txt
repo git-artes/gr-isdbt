@@ -31,5 +31,7 @@ install(FILES
     isdbt_reed_solomon_dec_isdbt.block.yml
     isdbt_tmcc_encoder.block.yml
     isdbt_pilot_signals.block.yml
-    isdbt_frequency_interleaver.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_frequency_interleaver.block.yml
+    isdbt_time_interleaver.block.yml
+    isdbt_hierarchical_combinator.block.yml DESTINATION share/gnuradio/grc/blocks
 )

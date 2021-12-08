@@ -55,3 +55,5 @@ GR_ADD_TEST(qa_reed_solomon_dec_isdbt ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURC
 GR_ADD_TEST(qa_tmcc_encoder ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tmcc_encoder.py)
 GR_ADD_TEST(qa_pilot_signals ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pilot_signals.py)
 GR_ADD_TEST(qa_frequency_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_interleaver.py)
+GR_ADD_TEST(qa_time_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.py)
+GR_ADD_TEST(qa_hierarchical_combinator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_hierarchical_combinator.py)
