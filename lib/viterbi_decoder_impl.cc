@@ -631,8 +631,10 @@ namespace gr {
 
 #ifdef DTV_SSE2
                     viterbi_chunks_init_sse2(d_metric0, d_path0);
+                    printf("[Viterbi decoder] Choosing SSE2 implementation\n");
 #else
                     viterbi_chunks_init_generic(d_metric0_generic, d_path0_generic);
+                    printf("[Viterbi decoder] Choosing generic (slower) implementation\n");
 #endif
                 }
 
