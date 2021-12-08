@@ -28,5 +28,6 @@ install(FILES
     isdbt_viterbi_decoder.block.yml
     isdbt_byte_deinterleaver.block.yml
     isdbt_energy_descrambler.block.yml
-    isdbt_reed_solomon_dec_isdbt.block.yml DESTINATION share/gnuradio/grc/blocks
+    isdbt_reed_solomon_dec_isdbt.block.yml
+    isdbt_tmcc_encoder.block.yml DESTINATION share/gnuradio/grc/blocks
 )

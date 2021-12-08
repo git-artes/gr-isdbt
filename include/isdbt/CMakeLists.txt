@@ -32,5 +32,6 @@ install(FILES
     viterbi_decoder.h
     byte_deinterleaver.h
     energy_descrambler.h
-    reed_solomon_dec_isdbt.h DESTINATION include/isdbt
+    reed_solomon_dec_isdbt.h
+    tmcc_encoder.h DESTINATION include/isdbt
 )
