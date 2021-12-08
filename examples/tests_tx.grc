@@ -255,7 +255,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1031, 395]
+    coordinate: [595, 371]
     rotation: 0
     state: true
 - name: analog_noise_source_x_0_0
@@ -274,7 +274,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1029, 286]
+    coordinate: [593, 262]
     rotation: 0
     state: true
 - name: blocks_file_sink_0
@@ -307,7 +307,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1237, 294]
+    coordinate: [801, 270]
     rotation: 0
     state: true
 - name: blocks_float_to_uchar_1
@@ -322,7 +322,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1236, 399]
+    coordinate: [800, 375]
     rotation: 0
     state: true
 - name: blocks_nlog10_ff_0_0
@@ -412,6 +412,42 @@ blocks:
     bus_structure: null
     coordinate: [370, 563]
     rotation: 180
+    state: true
+- name: blocks_stream_to_vector_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '204'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [990, 265]
+    rotation: 0
+    state: true
+- name: blocks_stream_to_vector_0_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '204'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1011, 377]
+    rotation: 0
     state: true
 - name: blocks_throttle_0
   id: blocks_throttle
@@ -638,6 +674,44 @@ blocks:
     coordinate: [723, 1257]
     rotation: 0
     state: enabled
+- name: isdbt_byte_interleaver_0
+  id: isdbt_byte_interleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    nsegments: segments_a
+    rate: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1232, 260]
+    rotation: 0
+    state: true
+- name: isdbt_byte_interleaver_0_0
+  id: isdbt_byte_interleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation_size: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    nsegments: segments_b
+    rate: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1222, 370]
+    rotation: 0
+    state: true
 - name: isdbt_carrier_modulation_0
   id: isdbt_carrier_modulation
   parameters:
@@ -1332,11 +1406,13 @@ blocks:
 connections:
 - [analog_noise_source_x_0, '0', blocks_float_to_uchar_1, '0']
 - [analog_noise_source_x_0_0, '0', blocks_float_to_uchar_0, '0']
-- [blocks_float_to_uchar_0, '0', dtv_dvbt_inner_coder_0, '0']
-- [blocks_float_to_uchar_1, '0', dtv_dvbt_inner_coder_0_0, '0']
+- [blocks_float_to_uchar_0, '0', blocks_stream_to_vector_0, '0']
+- [blocks_float_to_uchar_1, '0', blocks_stream_to_vector_0_0, '0']
 - [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
+- [blocks_stream_to_vector_0, '0', isdbt_byte_interleaver_0, '0']
+- [blocks_stream_to_vector_0_0, '0', isdbt_byte_interleaver_0_0, '0']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
@@ -1349,6 +1425,8 @@ connections:
 - [fft_vxx_0, '0', digital_ofdm_cyclic_prefixer_0, '0']
 - [isdbt_bit_deinterleaver_0_0, '0', isdbt_viterbi_decoder_0_0, '0']
 - [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
+- [isdbt_byte_interleaver_0, '0', dtv_dvbt_inner_coder_0, '0']
+- [isdbt_byte_interleaver_0_0, '0', dtv_dvbt_inner_coder_0_0, '0']
 - [isdbt_carrier_modulation_0, '0', isdbt_hierarchical_combinator_0, '0']
 - [isdbt_carrier_modulation_0_0, '0', isdbt_hierarchical_combinator_0, '1']
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']

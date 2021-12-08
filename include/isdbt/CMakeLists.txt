@@ -38,5 +38,6 @@ install(FILES
     frequency_interleaver.h
     time_interleaver.h
     hierarchical_combinator.h
-    carrier_modulation.h DESTINATION include/isdbt
+    carrier_modulation.h
+    byte_interleaver.h DESTINATION include/isdbt
 )

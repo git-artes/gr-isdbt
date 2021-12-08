@@ -24,6 +24,7 @@
 #include "isdbt/time_interleaver.h"
 #include "isdbt/hierarchical_combinator.h"
 #include "isdbt/carrier_modulation.h"
+#include "isdbt/byte_interleaver.h"
 %}
 
 %include "isdbt/ofdm_synchronization.h"
@@ -58,3 +59,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_combinator);
 %include "isdbt/carrier_modulation.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, carrier_modulation);
+%include "isdbt/byte_interleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, byte_interleaver);
