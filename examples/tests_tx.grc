@@ -183,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [587, 336]
+    coordinate: [1085, 291]
     rotation: 180
     state: true
 - name: blocks_file_sink_0
@@ -274,6 +274,24 @@ blocks:
     coordinate: [11, 875]
     rotation: 180
     state: enabled
+- name: blocks_skiphead_0
+  id: blocks_skiphead
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: See sec. 3.9.2 of the standard.
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '2'
+    type: complex
+    vlen: data_carriers
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [389, 403]
+    rotation: 180
+    state: true
 - name: blocks_stream_to_vector_0
   id: blocks_stream_to_vector
   parameters:
@@ -289,7 +307,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [386, 411]
+    coordinate: [884, 366]
     rotation: 180
     state: true
 - name: blocks_throttle_0
@@ -471,6 +489,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [780, 947]
+    rotation: 180
+    state: true
+- name: isdbt_frequency_interleaver_0
+  id: isdbt_frequency_interleaver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: '3'
+    oneseg: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [596, 401]
     rotation: 180
     state: true
 - name: isdbt_ofdm_synchronization_0
@@ -1042,7 +1077,8 @@ connections:
 - [analog_noise_source_x_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_nlog10_ff_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_nlog10_ff_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
-- [blocks_stream_to_vector_0, '0', isdbt_pilot_signals_0, '0']
+- [blocks_skiphead_0, '0', isdbt_pilot_signals_0, '0']
+- [blocks_stream_to_vector_0, '0', isdbt_frequency_interleaver_0, '0']
 - [blocks_throttle_0, '0', channels_channel_model_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_file_sink_0, '0']
@@ -1053,6 +1089,7 @@ connections:
 - [isdbt_byte_deinterleaver_0, '0', isdbt_energy_descrambler_0, '0']
 - [isdbt_energy_descrambler_0, '0', isdbt_reed_solomon_dec_isdbt_0, '0']
 - [isdbt_frequency_deinterleaver_0, '0', isdbt_time_deinterleaver_0, '0']
+- [isdbt_frequency_interleaver_0, '0', blocks_skiphead_0, '0']
 - [isdbt_ofdm_synchronization_0, '0', isdbt_tmcc_decoder_0, '0']
 - [isdbt_pilot_signals_0, '0', isdbt_tmcc_encoder_0, '0']
 - [isdbt_reed_solomon_dec_isdbt_0, '0', blocks_null_sink_0_0_0, '0']

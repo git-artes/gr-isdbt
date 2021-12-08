@@ -20,6 +20,7 @@
 #include "isdbt/reed_solomon_dec_isdbt.h"
 #include "isdbt/tmcc_encoder.h"
 #include "isdbt/pilot_signals.h"
+#include "isdbt/frequency_interleaver.h"
 %}
 
 %include "isdbt/ofdm_synchronization.h"
@@ -46,3 +47,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, reed_solomon_dec_isdbt);
 GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_encoder);
 %include "isdbt/pilot_signals.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, pilot_signals);
+%include "isdbt/frequency_interleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, frequency_interleaver);

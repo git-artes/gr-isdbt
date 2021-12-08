@@ -54,3 +54,4 @@ GR_ADD_TEST(qa_energy_descrambler ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DI
 GR_ADD_TEST(qa_reed_solomon_dec_isdbt ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_reed_solomon_dec_isdbt.py)
 GR_ADD_TEST(qa_tmcc_encoder ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tmcc_encoder.py)
 GR_ADD_TEST(qa_pilot_signals ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pilot_signals.py)
+GR_ADD_TEST(qa_frequency_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_frequency_interleaver.py)

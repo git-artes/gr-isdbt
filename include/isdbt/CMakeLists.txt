@@ -34,5 +34,6 @@ install(FILES
     energy_descrambler.h
     reed_solomon_dec_isdbt.h
     tmcc_encoder.h
-    pilot_signals.h DESTINATION include/isdbt
+    pilot_signals.h
+    frequency_interleaver.h DESTINATION include/isdbt
 )
