@@ -72,6 +72,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '4'
+    option0: 1/4.0
     option1: 1/8.0
     option2: 1/16.0
     option3: 1/32.0
@@ -79,13 +80,13 @@ blocks:
     options: '[0, 1, 2]'
     orient: Qt.QHBoxLayout
     type: real
-    value: 1/4.0
+    value: 1/4
     widget: radio_buttons
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [582, 16]
+    coordinate: [584, 4.0]
     rotation: 0
     state: enabled
 - name: mode
@@ -101,6 +102,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '3'
+    option0: '3'
     option1: '2'
     option2: '1'
     option3: '3'
@@ -183,7 +185,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/flarroca/facultad/proyectos/2021_gr-isdbt/569MHz_recording/569MHz_recording.dat
+    file: /home/gnuradio/persistent/569MHz_recording.dat
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -805,6 +807,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: sync

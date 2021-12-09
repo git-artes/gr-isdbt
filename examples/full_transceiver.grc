@@ -258,7 +258,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/flarroca/result_layer_b.ts
+    file: /home/gnuradio/persistent/result_layer_b.ts
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -268,7 +268,7 @@ blocks:
     bus_structure: null
     coordinate: [1526, 1449]
     rotation: 180
-    state: enabled
+    state: disabled
 - name: blocks_file_sink_0_0
   id: blocks_file_sink
   parameters:
@@ -276,7 +276,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/flarroca/result_layer_a.ts
+    file: /home/gnuradio/persistent/result_layer_a.ts
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -284,9 +284,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1400, 1743]
+    coordinate: [1416, 1764.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -294,7 +294,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/flarroca/facultad/gnuradio/layer_a.ts
+    file: /home/gnuradio/persistent/layer_a.ts
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -316,7 +316,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/flarroca/facultad/gnuradio/layer_b.ts
+    file: /home/gnuradio/persistent/layer_b.ts
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -348,7 +348,7 @@ blocks:
     bus_structure: null
     coordinate: [1210, 1489]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_nlog10_ff_0_0_0_0
   id: blocks_nlog10_ff
   parameters:
@@ -366,7 +366,7 @@ blocks:
     bus_structure: null
     coordinate: [1119, 1826]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_nlog10_ff_0_0_1
   id: blocks_nlog10_ff
   parameters:
@@ -384,7 +384,7 @@ blocks:
     bus_structure: null
     coordinate: [722, 1563]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_nlog10_ff_0_0_1_0
   id: blocks_nlog10_ff
   parameters:
@@ -402,7 +402,7 @@ blocks:
     bus_structure: null
     coordinate: [748, 1827]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_null_sink_0_0
   id: blocks_null_sink
   parameters:
@@ -436,7 +436,7 @@ blocks:
     bus_structure: null
     coordinate: [1360, 1671]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_null_sink_0_0_0_0
   id: blocks_null_sink
   parameters:
@@ -453,7 +453,7 @@ blocks:
     bus_structure: null
     coordinate: [1287, 1296]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_skiphead_0
   id: blocks_skiphead
   parameters:
@@ -526,7 +526,7 @@ blocks:
     bus_structure: null
     coordinate: [1462, 1401]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_throttle_0_0
   id: blocks_throttle
   parameters:
@@ -544,6 +544,25 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [560, 972]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle_0_1
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1272, 1724.0]
     rotation: 0
     state: enabled
 - name: blocks_vector_to_stream_0
@@ -581,7 +600,7 @@ blocks:
     bus_structure: null
     coordinate: [1278, 1401]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_vector_to_stream_0_0_0
   id: blocks_vector_to_stream
   parameters:
@@ -599,7 +618,7 @@ blocks:
     bus_structure: null
     coordinate: [1144, 1687]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_vector_to_stream_0_1
   id: blocks_vector_to_stream
   parameters:
@@ -813,7 +832,7 @@ blocks:
     bus_structure: null
     coordinate: [64, 1412]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: isdbt_bit_deinterleaver_0_0
   id: isdbt_bit_deinterleaver
   parameters:
@@ -831,7 +850,7 @@ blocks:
     bus_structure: null
     coordinate: [88, 1703]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: isdbt_byte_deinterleaver_0
   id: isdbt_byte_deinterleaver
   parameters:
@@ -846,7 +865,7 @@ blocks:
     bus_structure: null
     coordinate: [604, 1418]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: isdbt_byte_deinterleaver_0_0
   id: isdbt_byte_deinterleaver
   parameters:
@@ -861,7 +880,7 @@ blocks:
     bus_structure: null
     coordinate: [560, 1707]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: isdbt_byte_interleaver_0
   id: isdbt_byte_interleaver
   parameters:
@@ -950,7 +969,7 @@ blocks:
     bus_structure: null
     coordinate: [809, 1418]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: isdbt_energy_descrambler_0_0
   id: isdbt_energy_descrambler
   parameters:
@@ -965,7 +984,7 @@ blocks:
     bus_structure: null
     coordinate: [736, 1707]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: isdbt_energy_dispersal_0
   id: isdbt_energy_dispersal
   parameters:
@@ -1105,7 +1124,7 @@ blocks:
     bus_structure: null
     coordinate: [1020, 1402]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: isdbt_reed_solomon_dec_isdbt_0_0
   id: isdbt_reed_solomon_dec_isdbt
   parameters:
@@ -1120,7 +1139,7 @@ blocks:
     bus_structure: null
     coordinate: [928, 1691]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: isdbt_symbol_demapper_0
   id: isdbt_symbol_demapper
   parameters:
@@ -1249,7 +1268,7 @@ blocks:
     bus_structure: null
     coordinate: [356, 1418]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: isdbt_viterbi_decoder_0_0
   id: isdbt_viterbi_decoder
   parameters:
@@ -1266,7 +1285,7 @@ blocks:
     bus_structure: null
     coordinate: [336, 1707]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -1525,7 +1544,7 @@ blocks:
     bus_structure: null
     coordinate: [851, 1527]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_number_sink_0_0
   id: qtgui_number_sink
   parameters:
@@ -1588,7 +1607,7 @@ blocks:
     bus_structure: null
     coordinate: [1358, 1496]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_number_sink_0_0_0
   id: qtgui_number_sink
   parameters:
@@ -1651,7 +1670,7 @@ blocks:
     bus_structure: null
     coordinate: [1267, 1833]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_number_sink_0_1
   id: qtgui_number_sink
   parameters:
@@ -1714,7 +1733,7 @@ blocks:
     bus_structure: null
     coordinate: [877, 1791]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: single_pole_iir_filter_xx_0
   id: single_pole_iir_filter_xx
   parameters:
@@ -1732,7 +1751,7 @@ blocks:
     bus_structure: null
     coordinate: [510, 1518]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: single_pole_iir_filter_xx_0_0
   id: single_pole_iir_filter_xx
   parameters:
@@ -1750,7 +1769,7 @@ blocks:
     bus_structure: null
     coordinate: [536, 1782]
     rotation: 0
-    state: disabled
+    state: enabled
 
 connections:
 - [blocks_file_source_0, '0', blocks_stream_to_vector_0, '0']
@@ -1764,10 +1783,11 @@ connections:
 - [blocks_stream_to_vector_0_0, '0', dtv_dvbt_reed_solomon_enc_0_0, '0']
 - [blocks_throttle_0, '0', blocks_file_sink_0, '0']
 - [blocks_throttle_0_0, '0', channels_channel_model_0, '0']
+- [blocks_throttle_0_1, '0', blocks_file_sink_0_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_0_0, '0', blocks_throttle_0, '0']
-- [blocks_vector_to_stream_0_0_0, '0', blocks_file_sink_0_0, '0']
 - [blocks_vector_to_stream_0_0_0, '0', blocks_null_sink_0_0_0, '0']
+- [blocks_vector_to_stream_0_0_0, '0', blocks_throttle_0_1, '0']
 - [blocks_vector_to_stream_0_1, '0', isdbt_carrier_modulation_0, '0']
 - [blocks_vector_to_stream_0_1_0, '0', isdbt_carrier_modulation_0_0, '0']
 - [channels_channel_model_0, '0', low_pass_filter_0, '0']

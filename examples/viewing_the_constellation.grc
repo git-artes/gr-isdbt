@@ -130,7 +130,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/flarroca/facultad/proyectos/2021_gr-isdbt/569MHz_recording/569MHz_recording.dat
+    file: /home/gnuradio/persistent/569MHz_recording.dat
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -1033,6 +1033,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: sync
