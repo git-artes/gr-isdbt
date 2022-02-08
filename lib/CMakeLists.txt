@@ -42,6 +42,7 @@ list(APPEND isdbt_sources
     carrier_modulation_impl.cc
     byte_interleaver_impl.cc
     energy_dispersal_impl.cc
+    subset_of_carriers_impl.cc
 )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)

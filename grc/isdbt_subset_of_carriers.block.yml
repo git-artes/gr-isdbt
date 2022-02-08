@@ -1,0 +1,32 @@
+id: isdbt_subset_of_carriers
+label: Subset of Carriers
+category: '[isdbt]'
+
+templates:
+  imports: import isdbt
+  make: isdbt.subset_of_carriers(${total}, ${first}, ${last})
+
+parameters:
+- id: total  
+  label: Total
+  dtype: int
+- id: first  
+  label: First
+  dtype: int
+- id: last  
+  label: Last
+  dtype: int
+
+inputs:
+-   domain: stream
+    dtype: complex
+    vlen: ${total}
+
+outputs:
+-   domain: stream
+    dtype: complex
+    vlen: ${last - first + 1}
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1
