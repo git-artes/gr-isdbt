@@ -74,7 +74,6 @@ On Debian/Ubuntu based distributions, you may have to run:
 *A*: Again, you should read carefully the errors. Again, it's most probably a missing library, for instance log4cpp (in Ubuntu liblog4cpp5-dev). If the problem is with the API of GNU Radio, you should update it.   
 
 *Q*: I got the following error: "ModuleNotFoundError: No module named 'isdbt'". What's wrong? 
-
 *A*: You probably didn't setup the PYTHONPATH correctly. It should include at least /usr/local/lib/python3/dist-packages. For a system-wide solution, you may edit `/etc/environment` and include the following line `PYTHONPATH="$PYTHONPATH:/usr/local/lib/python3/dist-packages"`. 
 
 *Q*: I got the following error: "AttributeError: 'module' object has no attribute 'viterbi_decoder'" (or some other block). Why?  
