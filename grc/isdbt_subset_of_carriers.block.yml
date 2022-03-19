@@ -3,7 +3,7 @@ label: Subset of Carriers
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.subset_of_carriers(${total}, ${first}, ${last})
 
 parameters:

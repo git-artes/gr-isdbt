@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_BYTE_DEINTERLEAVER_IMPL_H
 #define INCLUDED_ISDBT_BYTE_DEINTERLEAVER_IMPL_H
 
-#include <isdbt/byte_deinterleaver.h>
+#include <gnuradio/isdbt/byte_deinterleaver.h>
 #include <boost/circular_buffer.hpp>
 
 namespace gr {

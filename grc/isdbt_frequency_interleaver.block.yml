@@ -3,7 +3,7 @@ label: Frequency Interleaver
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.frequency_interleaver(${oneseg}, ${mode})
 
 parameters:

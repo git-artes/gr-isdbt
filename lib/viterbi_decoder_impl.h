@@ -22,7 +22,7 @@
 #ifndef INCLUDED_ISDBT_VITERBI_DECODER_IMPL_H
 #define INCLUDED_ISDBT_VITERBI_DECODER_IMPL_H
 
-#include <isdbt/viterbi_decoder.h>
+#include <gnuradio/isdbt/viterbi_decoder.h>
 
 #ifdef DTV_SSE2
 #include <xmmintrin.h>

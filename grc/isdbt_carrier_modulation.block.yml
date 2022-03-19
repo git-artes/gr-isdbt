@@ -3,7 +3,7 @@ label: Carrier Modulation
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.carrier_modulation(${mode}, ${segments}, ${constellation_size})
 
 

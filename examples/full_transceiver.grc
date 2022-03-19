@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -75,7 +76,7 @@ blocks:
     gui_hint: ''
     label: Sampling Error
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: 1-1e-4
     step: 1e-6
@@ -96,7 +97,7 @@ blocks:
     gui_hint: ''
     label: Frequency Error (Hz)
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: -samp_rate/200
     step: '1'
@@ -177,7 +178,7 @@ blocks:
     gui_hint: ''
     label: Channel noise
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: 1e-9
     step: 1e-6
@@ -1302,7 +1303,7 @@ blocks:
     samp_rate: samp_rate
     type: fir_filter_ccf
     width: 0.5e6
-    win: firdes.WIN_HAMMING
+    win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
@@ -1454,6 +1455,7 @@ blocks:
     minoutbuf: '0'
     name: '""'
     nconnections: '1'
+    norm_window: 'False'
     showports: 'True'
     tr_chan: '0'
     tr_level: '0.0'
@@ -1472,7 +1474,7 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    wintype: firdes.WIN_BLACKMAN_hARRIS
+    wintype: window.WIN_BLACKMAN_hARRIS
     ymax: '10'
     ymin: '-140'
   states:
@@ -1838,3 +1840,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: v3.11.0.0git-55-g8526e6f8

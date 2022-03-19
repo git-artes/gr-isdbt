@@ -3,7 +3,7 @@ label: Byte Interleaver
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.byte_interleaver(${mode}, ${constellation_size}, ${rate}, ${nsegments})
 
 parameters:

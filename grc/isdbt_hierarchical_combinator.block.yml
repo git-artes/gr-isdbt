@@ -3,7 +3,7 @@ label: Hierarchical Combinator
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.hierarchical_combinator(${mode}, ${segments_A}, ${segments_B}, ${segments_C})
 
 parameters:

@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_CARRIER_MODULATION_IMPL_H
 #define INCLUDED_ISDBT_CARRIER_MODULATION_IMPL_H
 
-#include <isdbt/carrier_modulation.h>
+#include <gnuradio/isdbt/carrier_modulation.h>
 #include <boost/circular_buffer.hpp>
 
 namespace gr {

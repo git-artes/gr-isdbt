@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_SYMBOL_DEMAPPER_IMPL_H
 #define INCLUDED_ISDBT_SYMBOL_DEMAPPER_IMPL_H
 
-#include <isdbt/symbol_demapper.h>
+#include <gnuradio/isdbt/symbol_demapper.h>
 
 namespace gr {
   namespace isdbt {

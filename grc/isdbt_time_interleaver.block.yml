@@ -3,7 +3,7 @@ label: Time Interleaver
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.time_interleaver(${mode}, ${segments_A}, ${length_A}, ${segments_B}, ${length_B}, ${segments_C}, ${length_C})
 
 parameters:

@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_TIME_INTERLEAVER_IMPL_H
 #define INCLUDED_ISDBT_TIME_INTERLEAVER_IMPL_H
 
-#include <isdbt/time_interleaver.h>
+#include <gnuradio/isdbt/time_interleaver.h>
 #include <boost/circular_buffer.hpp>
 
 namespace gr {

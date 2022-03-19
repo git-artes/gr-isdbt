@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_TMCC_DECODER_IMPL_H
 #define INCLUDED_ISDBT_TMCC_DECODER_IMPL_H
 
-#include <isdbt/tmcc_decoder.h>
+#include <gnuradio/isdbt/tmcc_decoder.h>
 #include <stdio.h>
 
 namespace gr {

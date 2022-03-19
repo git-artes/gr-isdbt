@@ -3,7 +3,7 @@ label: Symbol Demapper
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.symbol_demapper(${mode}, ${segments_A}, ${constellation_size_A}, ${segments_B}, ${constellation_size_B}, ${segments_C}, ${constellation_size_C})
 
 parameters:

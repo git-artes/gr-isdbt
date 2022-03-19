@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_ENERGY_DESCRAMBLER_IMPL_H
 #define INCLUDED_ISDBT_ENERGY_DESCRAMBLER_IMPL_H
 
-#include <isdbt/energy_descrambler.h>
+#include <gnuradio/isdbt/energy_descrambler.h>
 
 namespace gr {
   namespace isdbt {

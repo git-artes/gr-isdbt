@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_TMCC_ENCODER_IMPL_H
 #define INCLUDED_ISDBT_TMCC_ENCODER_IMPL_H
 
-#include <isdbt/tmcc_encoder.h>
+#include <gnuradio/isdbt/tmcc_encoder.h>
 #include <bitset>
 
 namespace gr {

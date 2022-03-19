@@ -3,7 +3,7 @@ label: Viterbi Decoder
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.viterbi_decoder(${constellation_size}, ${rate})
 
 parameters:

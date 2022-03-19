@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
 #define INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
 
-#include <isdbt/energy_dispersal.h>
+#include <gnuradio/isdbt/energy_dispersal.h>
 
 namespace gr {
     namespace isdbt {

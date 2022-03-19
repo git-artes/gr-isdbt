@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_OFDM_SYNCHRONIZATION_IMPL_H
 #define INCLUDED_ISDBT_OFDM_SYNCHRONIZATION_IMPL_H
 
-#include <isdbt/ofdm_synchronization.h>
+#include <gnuradio/isdbt/ofdm_synchronization.h>
 #include <gnuradio/fft/fft.h>
 #include <gnuradio/filter/mmse_fir_interpolator_cc.h>
 
@@ -82,7 +82,7 @@ namespace gr {
 
                 //FFT part
                 gr_complex * d_postfft; 
-                gr::fft::fft_complex d_fft_calculator; 
+                gr::fft::fft_complex_fwd d_fft_calculator; 
 
                 //zero padding to the left
                 int d_zeros_on_left;
