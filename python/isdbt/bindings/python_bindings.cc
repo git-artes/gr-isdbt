@@ -21,25 +21,25 @@ namespace py = pybind11;
 // Please do not delete
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
-void bind_bit_deinterleaver_python(py::module& m);
-void bind_byte_deinterleaver_python(py::module& m);
-void bind_byte_interleaver_python(py::module& m);
-void bind_carrier_modulation_python(py::module& m);
-void bind_energy_descrambler_python(py::module& m);
-void bind_energy_dispersal_python(py::module& m);
-void bind_frequency_deinterleaver_python(py::module& m);
-void bind_frequency_interleaver_python(py::module& m);
-void bind_hierarchical_combinator_python(py::module& m);
-void bind_ofdm_synchronization_python(py::module& m);
-void bind_pilot_signals_python(py::module& m);
-void bind_reed_solomon_dec_isdbt_python(py::module& m);
-void bind_subset_of_carriers_python(py::module& m);
-void bind_symbol_demapper_python(py::module& m);
-void bind_time_deinterleaver_python(py::module& m);
-void bind_time_interleaver_python(py::module& m);
-void bind_tmcc_decoder_python(py::module& m);
-void bind_tmcc_encoder_python(py::module& m);
-void bind_viterbi_decoder_python(py::module& m);
+void bind_bit_deinterleaver(py::module& m);
+void bind_byte_deinterleaver(py::module& m);
+void bind_byte_interleaver(py::module& m);
+void bind_carrier_modulation(py::module& m);
+void bind_energy_descrambler(py::module& m);
+void bind_energy_dispersal(py::module& m);
+void bind_frequency_deinterleaver(py::module& m);
+void bind_frequency_interleaver(py::module& m);
+void bind_hierarchical_combinator(py::module& m);
+void bind_ofdm_synchronization(py::module& m);
+void bind_pilot_signals(py::module& m);
+void bind_reed_solomon_dec_isdbt(py::module& m);
+void bind_subset_of_carriers(py::module& m);
+void bind_symbol_demapper(py::module& m);
+void bind_time_deinterleaver(py::module& m);
+void bind_time_interleaver(py::module& m);
+void bind_tmcc_decoder(py::module& m);
+void bind_tmcc_encoder(py::module& m);
+void bind_viterbi_decoder(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -61,31 +61,30 @@ PYBIND11_MODULE(isdbt_python, m)
 
     // Allow access to base block methods
     py::module::import("gnuradio.gr");
-
     /**************************************/
     // The following comment block is used for
     // gr_modtool to insert binding function calls
     // Please do not delete
     /**************************************/
     // BINDING_FUNCTION_CALLS(
-    bind_bit_deinterleaver_python(m);
-    bind_byte_deinterleaver_python(m);
-    bind_byte_interleaver_python(m);
-    bind_carrier_modulation_python(m);
-    bind_energy_descrambler_python(m);
-    bind_energy_dispersal_python(m);
-    bind_frequency_deinterleaver_python(m);
-    bind_frequency_interleaver_python(m);
-    bind_hierarchical_combinator_python(m);
-    bind_ofdm_synchronization_python(m);
-    bind_pilot_signals_python(m);
-    bind_reed_solomon_dec_isdbt_python(m);
-    bind_subset_of_carriers_python(m);
-    bind_symbol_demapper_python(m);
-    bind_time_deinterleaver_python(m);
-    bind_time_interleaver_python(m);
-    bind_tmcc_decoder_python(m);
-    bind_tmcc_encoder_python(m);
-    bind_viterbi_decoder_python(m);
+    bind_bit_deinterleaver(m);
+    bind_byte_deinterleaver(m);
+    bind_byte_interleaver(m);
+    bind_carrier_modulation(m);
+    bind_energy_descrambler(m);
+    bind_energy_dispersal(m);
+    bind_frequency_deinterleaver(m);
+    bind_frequency_interleaver(m);
+    bind_hierarchical_combinator(m);
+    bind_ofdm_synchronization(m);
+    bind_pilot_signals(m);
+    bind_reed_solomon_dec_isdbt(m);
+    bind_subset_of_carriers(m);
+    bind_symbol_demapper(m);
+    bind_time_deinterleaver(m);
+    bind_time_interleaver(m);
+    bind_tmcc_decoder(m);
+    bind_tmcc_encoder(m);
+    bind_viterbi_decoder(m);
     // ) END BINDING_FUNCTION_CALLS
 }
