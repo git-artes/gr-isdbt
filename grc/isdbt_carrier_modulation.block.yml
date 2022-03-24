@@ -16,7 +16,7 @@ parameters:
   default: 3
 - id: constellation_size
   label: Layer Modulation Scheme
-  detype: enum
+  dtype: enum
   options: ['4', '16', '64']
   option_labels: [QPSK, 16QAM, 64QAM]
 - id: segments
