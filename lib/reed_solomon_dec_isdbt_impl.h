@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_IMPL_H
 #define INCLUDED_ISDBT_REED_SOLOMON_DEC_ISDBT_IMPL_H
 
-#include <isdbt/reed_solomon_dec_isdbt.h>
+#include <gnuradio/isdbt/reed_solomon_dec_isdbt.h>
 
 
 extern "C" {

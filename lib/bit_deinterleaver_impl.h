@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_BIT_DEINTERLEAVER_IMPL_H
 #define INCLUDED_ISDBT_BIT_DEINTERLEAVER_IMPL_H
 
-#include <isdbt/bit_deinterleaver.h>
+#include <gnuradio/isdbt/bit_deinterleaver.h>
 
 namespace gr {
   namespace isdbt {

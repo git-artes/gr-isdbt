@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_HIERARCHICAL_COMBINATOR_IMPL_H
 #define INCLUDED_ISDBT_HIERARCHICAL_COMBINATOR_IMPL_H
 
-#include <isdbt/hierarchical_combinator.h>
+#include <gnuradio/isdbt/hierarchical_combinator.h>
 
 namespace gr {
     namespace isdbt {

@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_FREQUENCY_INTERLEAVER_IMPL_H
 #define INCLUDED_ISDBT_FREQUENCY_INTERLEAVER_IMPL_H
 
-#include <isdbt/frequency_interleaver.h>
+#include <gnuradio/isdbt/frequency_interleaver.h>
 
 namespace gr {
     namespace isdbt {

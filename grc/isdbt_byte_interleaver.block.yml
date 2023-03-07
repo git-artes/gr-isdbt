@@ -3,7 +3,7 @@ label: Byte Interleaver
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.byte_interleaver(${mode}, ${constellation_size}, ${rate}, ${nsegments})
 
 parameters:
@@ -18,7 +18,7 @@ parameters:
   dtype: int
 - id: constellation_size
   label: Layer Modulation Scheme
-  detype: enum
+  dtype: enum
   options: ['4', '16', '64']
   option_labels: [QPSK, 16QAM, 64QAM]
 - id: rate

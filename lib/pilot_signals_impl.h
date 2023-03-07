@@ -30,7 +30,7 @@
 #ifndef INCLUDED_ISDBT_PILOT_SIGNALS_IMPL_H
 #define INCLUDED_ISDBT_PILOT_SIGNALS_IMPL_H
 
-#include <isdbt/pilot_signals.h>
+#include <gnuradio/isdbt/pilot_signals.h>
 
 namespace gr {
   namespace isdbt {

@@ -3,7 +3,7 @@ label: Energy Descrambler
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.energy_descrambler()
 
 inputs:

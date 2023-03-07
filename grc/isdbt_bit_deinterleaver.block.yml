@@ -3,7 +3,7 @@ label: Bit Deinterleaver
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.bit_deinterleaver(${mode}, ${segments}, ${constellation_size})
 
 parameters:

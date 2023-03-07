@@ -3,7 +3,7 @@ label: TMCC Encoder
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.tmcc_encoder(${mode}, ${one_seg_present}, ${mod_scheme_A}, ${mod_scheme_B}, ${mod_scheme_C}, ${conv_code_A}, ${conv_code_B}, ${conv_code_C}, ${int_length_A}, ${int_length_B}, ${int_length_C}, ${nsegs_A}, ${nsegs_B}, ${nsegs_C})
 
 parameters:

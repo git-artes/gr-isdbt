@@ -96,7 +96,7 @@ namespace gr {
                             sizeof(float))
 
               ),
-              d_fft_calculator(gr::fft::fft_complex(pow(2.0,10+mode),true,1)), 
+              d_fft_calculator(gr::fft::fft_complex_fwd(pow(2.0,10+mode),true)), 
               d_inter(gr::filter::mmse_fir_interpolator_cc())
               {
                   // TODO why must fft_complex be initialized in the constructor declaration????

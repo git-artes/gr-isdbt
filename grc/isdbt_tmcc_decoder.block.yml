@@ -3,7 +3,7 @@ label: TMCC Decoder
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.tmcc_decoder(${mode}, ${print_params})
 
 parameters:

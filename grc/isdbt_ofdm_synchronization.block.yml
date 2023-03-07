@@ -3,7 +3,7 @@ label: OFDM Synchronization
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.ofdm_synchronization(${mode}, ${cp_length}, ${interpolate})
 
 parameters:

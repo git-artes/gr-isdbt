@@ -3,7 +3,7 @@ label: Carrier Modulation
 category: '[isdbt]'
 
 templates:
-  imports: import isdbt
+  imports: import gnuradio.isdbt as isdbt
   make: isdbt.carrier_modulation(${mode}, ${segments}, ${constellation_size})
 
 
@@ -16,7 +16,7 @@ parameters:
   default: 3
 - id: constellation_size
   label: Layer Modulation Scheme
-  detype: enum
+  dtype: enum
   options: ['4', '16', '64']
   option_labels: [QPSK, 16QAM, 64QAM]
 - id: segments

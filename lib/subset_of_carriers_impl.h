@@ -32,7 +32,7 @@
 #ifndef INCLUDED_ISDBT_SUBSET_OF_CARRIERS_IMPL_H
 #define INCLUDED_ISDBT_SUBSET_OF_CARRIERS_IMPL_H
 
-#include <isdbt/subset_of_carriers.h>
+#include <gnuradio/isdbt/subset_of_carriers.h>
 
 namespace gr {
   namespace isdbt {
