@@ -4,7 +4,7 @@
 
 **If you find the code useful, please consider starring the repository and/or citing our research paper (e.g. https://iie.fing.edu.uy/publicaciones/2020/LFAIM20/ regarding the transmitter or https://iie.fing.edu.uy/publicaciones/2016/LFGGB16/ regarding the receiver).**
 
-**IMPORTANT**: We're currently porting this OOT to GNU Radio 3.8. To use the stable version (that works on 3.7 only) you should switch to the branch maint-3.7.
+**IMPORTANT**: It should work for all versions of GNU Radio starting at 3.7 (still testing for >=3.9). Switch to the corresponding branch if using either GNU Radio 3.7 or 3.8.
 
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
