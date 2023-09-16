@@ -13,8 +13,8 @@
 /* If manual edits are made, the following tags should be modified accordingly.    */
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
-/* BINDTOOL_HEADER_FILE(energy_descrambler.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(b31be5d7bc38b4b39e18cd1bbec11474)                     */
+/* BINDTOOL_HEADER_FILE(energy_descrambler.h)                                      */
+/* BINDTOOL_HEADER_FILE_HASH(2e4e03e5c77256858f34c3446ad43feb)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>

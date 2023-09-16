@@ -263,10 +263,10 @@ namespace gr {
             tmcc_decoder_impl::tmcc_parity_check( )
             {
 
-                int n = 273,
+                static const int n = 273,
                     k = 191,
-                    r = n-k,
-                    i, j, s;
+                    r = n-k;
+                int i, j, s;
 
                 char syndrome[r];
                 //unsigned char tmcc_large[n];
@@ -553,12 +553,12 @@ namespace gr {
                             //d_symbol_index = 203;
 
                             // Then, we print the full tmcc
-                            /*
+
                                for (int i = 0; i < d_symbols_per_frame; i++)
                                printf("%i", d_rcv_tmcc_data[i]);
                                printf("\n");
 
-*/
+
                             if (d_print_params)
                             {
                                 tmcc_print();

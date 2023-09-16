@@ -59,7 +59,7 @@ GR_PYBIND_MAKE_OOT(isdbt
 add_custom_target(
   copy_bindings_for_tests ALL
   COMMAND
-    ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/*.so"
+    ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/isdbt_python.lib"
     ${CMAKE_BINARY_DIR}/test_modules/gnuradio/isdbt/
   DEPENDS isdbt_python)
 
