@@ -55,12 +55,25 @@ GR_PYBIND_MAKE_OOT(isdbt
    gr::isdbt
    "${isdbt_python_files}")
 
-# copy in bindings .so file for use in QA test module
-add_custom_target(
-  copy_bindings_for_tests ALL
-  COMMAND
-    ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/*.so"
-    ${CMAKE_BINARY_DIR}/test_modules/gnuradio/isdbt/
-  DEPENDS isdbt_python)
+
+# copy in bindings .so / .lib file for use in QA test module
+IF (WIN32)
+  # windows uses .lib
+  add_custom_target(
+    copy_bindings_for_tests ALL
+    COMMAND
+      ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/isdbt_python.lib"
+      ${CMAKE_BINARY_DIR}/test_modules/gnuradio/isdbt/
+    DEPENDS isdbt_python)
+
+ELSE()
+  # linux uses .so
+  add_custom_target(
+    copy_bindings_for_tests ALL
+    COMMAND
+      ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/*.so"
+      ${CMAKE_BINARY_DIR}/test_modules/gnuradio/isdbt/
+    DEPENDS isdbt_python)
+ENDIF()
 
 install(TARGETS isdbt_python DESTINATION ${GR_PYTHON_DIR}/gnuradio/isdbt COMPONENT pythonapi)

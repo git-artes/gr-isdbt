@@ -13,8 +13,8 @@
 /* If manual edits are made, the following tags should be modified accordingly.    */
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
-/* BINDTOOL_HEADER_FILE(hierarchical_combinator.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(9967d9c95bccd500aba7fb8a01769b01)                     */
+/* BINDTOOL_HEADER_FILE(hierarchical_combinator.h)                                 */
+/* BINDTOOL_HEADER_FILE_HASH(87d6830ba485b9eb688517fe19bf69ca)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
