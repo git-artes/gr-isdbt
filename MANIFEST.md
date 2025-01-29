@@ -1,17 +1,28 @@
-title: The ISDBT OOT Module
-brief: Short description of gr-isdbt
+title: gr-isdbt
+brief: A complete transceiver for the digital TV standard ISDB-T. 
 tags: # Tags are arbitrary, but look at CGRAN what other authors are using
-  - sdr
-author:
-  - Author Name <authors@email.address>
-copyright_owner:
-  - Copyright Owner 1
-license:
-gr_supported_version: # Put a comma separated list of supported GR versions here
-#repo: # Put the URL of the repository here, or leave blank for default
-#website: <module_website> # If you have a separate project website, put it here
-#icon: <icon_url> # Put a URL to a square image here that will be used as an icon on CGRAN
----
-A longer, multi-line description of gr-isdbt.
-You may use some *basic* Markdown here.
-If left empty, it will try to find a README file instead.
+  - DTV 
+  - ISDB-T 
+  - OFDM 
+  - Viterbi 
+
+author: 
+  - Federico "Larroca" La Rocca <flarroca@fing.edu.uy> 
+  - Pablo Belzarena 
+  - Gabriel Gomez Sena 
+  - Pablo Flores Guridi 
+  - Victor Gonzalez Barbone 
+
+copyright_owner: 
+  - Federico "Larroca" La Rocca  
+  - Pablo Belzarena 
+  - Gabriel Gomez Sena 
+  - Pablo Flores Guridi 
+  - Victor Gonzalez Barbone 
+
+license:  
+repo: https://github.com/git-artes/gr-isdbt 
+website: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/ 
+icon: http://iie.fing.edu.uy/investigacion/grupos/artes/gr-isdbt/icon.png  
+--- 
+gr-isdbt is a complete ISDB-T transceiver (i.e. from the USRP to the audio/video transport stream and vice-versa). In addition to being capable of producing the multimedia stream, several indicators are available (such as SNR, pre and post viterbi BER, synchronization errors, channel estimate, etc.). More may be obtained by using our other OOT project gr-mer, which calculates several digital modulator indicators (e.g. MER).  
