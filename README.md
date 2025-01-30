@@ -4,7 +4,7 @@
 
 **If you find the code useful, please consider starring the repository and/or citing our research paper (e.g. https://iie.fing.edu.uy/publicaciones/2020/LFAIM20/ regarding the transmitter or https://iie.fing.edu.uy/publicaciones/2016/LFGGB16/ regarding the receiver).**
 
-**IMPORTANT**: It should work for all versions of GNU Radio starting at 3.7 (still testing for >=3.9). Switch to the corresponding branch if using either GNU Radio 3.7 or 3.8.
+**IMPORTANT**: It should work for all versions of GNU Radio starting at 3.7. Switch to the corresponding branch if using either GNU Radio 3.7 or 3.8. If you're using 3.9 or above, the master branch should work fine. It's been tested in Ubuntu 22.04 and 24.04.
 
 Here in Uruguay we use the so-called "international" version, or ISDB-Tb (ABNT NBR 15601). However, the transmission scheme is exactly the same as in the original version, thus both references are equivalent.  
 
@@ -55,7 +55,7 @@ On Debian/Ubuntu based distributions, you may have to run:
     sudo ldconfig  
 
 **Remarks**
-- Instructions above assume you have downloaded and compiled GNU Radio (either with the build-gnuradio script or with PyBOMBS). If you've used a pre-compiled binary package (like in $ sudo apt-get install gnuradio), then you should also install gnuradio-dev (and naturally cmake and git, if they were not installed, plus libboost-all-dev, libcppunit-dev, liblog4cpp5-dev, swig, liborc-dev and libgsl-dev). A one-liner for all these is `$sudo apt-get install gnuradio-dev cmake git libboost-all-dev libcppunit-dev liblog4cpp5-dev swig liborc-dev libgsl-dev`.
+- Instructions above assume you have downloaded and compiled GNU Radio (either with the build-gnuradio script or with PyBOMBS). If you've used a pre-compiled binary package (like in $ sudo apt-get install gnuradio), then you should also install gnuradio-dev (and naturally cmake and git, if they were not installed, plus libboost-all-dev, libcppunit-dev, liblog4cpp5-dev, swig, liborc-dev and libgsl-dev). A one-liner for all these is `$sudo apt-get install gnuradio-dev cmake git libboost-all-dev libcppunit-dev liblog4cpp5-dev swig liborc-dev libgsl-dev clang-format`.
 - The above build instructions are general. You may accelerate the compilation time by using the -j flag. Please visit http://www.math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process for a guide.   
 - Note that gr-isdbt makes heavy use of VOLK. A profile should be run to make the best out of it. Please visit https://gnuradio.org/redmine/projects/gnuradio/wiki/Volk for instructions, or simply run:   
 
@@ -82,6 +82,9 @@ On Debian/Ubuntu based distributions, you may have to run:
 
 *Q*: Video is not playing. Why?   
 *A*: In our experience, the best player is ffplay, which comes along ffmpeg. You should try it.    
+
+*Q*: It complains about `AttributeError: 'gnuradio.gr.gr_python.logger' object has no attribute 'warning'`. Why?
+*A*: This is a bug in certain versions of GNU Radio. See https://github.com/gnuradio/gnuradio/issues/6923 for a solution (or simply turn real-time scheduler to `off`).
 
 IIE Instituto de Ingeniería Eléctrica  
 Facultad de Ingeniería  
