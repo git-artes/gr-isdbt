@@ -188,7 +188,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/flarroca/Dropbox/backups/2024_setiembre/facultad/gnuradio/569MHz_recording/569MHz_recording.dat
+    file: /home/flarroca/gnuradio/persistent/569MHz_recording.dat
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
