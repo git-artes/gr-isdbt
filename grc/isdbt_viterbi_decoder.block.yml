@@ -1,0 +1,35 @@
+id: isdbt_viterbi_decoder
+label: Viterbi Decoder
+category: '[isdbt]'
+
+templates:
+  imports: import gnuradio.isdbt as isdbt
+  make: isdbt.viterbi_decoder(${constellation_size}, ${rate})
+
+parameters:
+-   id: constellation_size
+    label: Modulation Scheme
+    dtype: enum
+    default: '4'
+    options: ['4', '16', '64']
+    option_labels: [QPSK, 16QAM, 64QAM]
+-   id: rate
+    label: Rate
+    dtype: enum
+    default: '0'
+    options: ['0', '1', '2', '3', '4']
+    option_labels: [1/2, 2/3, 3/4, 5/6, 7/8]
+
+inputs:
+-   domain: stream
+    dtype: byte
+
+outputs:
+-   domain: stream
+    dtype: byte
+-   domain: stream
+    dtype: float
+    optional: true
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

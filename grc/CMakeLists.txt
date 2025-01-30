@@ -6,4 +6,25 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
-install(FILES DESTINATION share/gnuradio/grc/blocks)
+install(FILES
+    isdbt_ofdm_synchronization.block.yml
+    isdbt_tmcc_decoder.block.yml
+    isdbt_frequency_deinterleaver.block.yml
+    isdbt_time_deinterleaver.block.yml
+    isdbt_symbol_demapper.block.yml
+    isdbt_bit_deinterleaver.block.yml
+    isdbt_viterbi_decoder.block.yml
+    isdbt_byte_deinterleaver.block.yml
+    isdbt_energy_descrambler.block.yml
+    isdbt_reed_solomon_dec_isdbt.block.yml
+    isdbt_tmcc_encoder.block.yml
+    isdbt_pilot_signals.block.yml
+    isdbt_frequency_interleaver.block.yml
+    isdbt_time_interleaver.block.yml
+    isdbt_hierarchical_combinator.block.yml
+    isdbt_carrier_modulation.block.yml
+    isdbt_byte_interleaver.block.yml
+    isdbt_energy_dispersal.block.yml
+    isdbt_subset_of_carriers.block.yml 
+    DESTINATION share/gnuradio/grc/blocks
+)

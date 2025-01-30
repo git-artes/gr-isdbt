@@ -1,0 +1,34 @@
+id: isdbt_tmcc_decoder
+label: TMCC Decoder
+category: '[isdbt]'
+
+templates:
+  imports: import gnuradio.isdbt as isdbt
+  make: isdbt.tmcc_decoder(${mode}, ${print_params})
+
+parameters:
+- id: mode  
+  label: Transmission Mode
+  dtype: int
+  options: ['1','2','3']
+  option_labels: [MODE1 (2K), MODE2 (4K), MODE3 (8K)]
+- id: print_params
+  label: Print params
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
+
+inputs:
+- label: in
+  dtype: complex
+  vlen: ${13*108*(2**(mode-1)) + 1} 
+
+outputs:
+- label: out
+  dtype: complex
+  vlen: ${13*96*(2**(mode-1))} 
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1
+

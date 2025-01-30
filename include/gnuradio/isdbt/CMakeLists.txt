@@ -9,4 +9,26 @@
 ########################################################################
 # Install public header files
 ########################################################################
-install(FILES api.h DESTINATION include/gnuradio/isdbt)
+install(FILES
+    api.h
+    ofdm_synchronization.h
+    tmcc_decoder.h
+    frequency_deinterleaver.h
+    time_deinterleaver.h
+    symbol_demapper.h
+    bit_deinterleaver.h
+    viterbi_decoder.h
+    byte_deinterleaver.h
+    energy_descrambler.h
+    reed_solomon_dec_isdbt.h
+    tmcc_encoder.h
+    pilot_signals.h
+    frequency_interleaver.h
+    time_interleaver.h
+    hierarchical_combinator.h
+    carrier_modulation.h
+    byte_interleaver.h
+    energy_dispersal.h
+    subset_of_carriers.h
+    DESTINATION include/gnuradio/isdbt
+)

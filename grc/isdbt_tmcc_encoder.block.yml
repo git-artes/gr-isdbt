@@ -1,0 +1,88 @@
+id: isdbt_tmcc_encoder
+label: TMCC Encoder
+category: '[isdbt]'
+
+templates:
+  imports: import gnuradio.isdbt as isdbt
+  make: isdbt.tmcc_encoder(${mode}, ${one_seg_present}, ${mod_scheme_A}, ${mod_scheme_B}, ${mod_scheme_C}, ${conv_code_A}, ${conv_code_B}, ${conv_code_C}, ${int_length_A}, ${int_length_B}, ${int_length_C}, ${nsegs_A}, ${nsegs_B}, ${nsegs_C})
+
+parameters:
+- id: mode  
+  label: Transmission Mode
+  dtype: int
+  options: ['1','2','3']
+  option_labels: [MODE1 (2K), MODE2 (4K), MODE3 (8K)]
+- id: one_seg_present
+  label: Oneseg
+  default: 'True'
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
+- id: mod_scheme_A
+  label: Layer A Modulation
+  dtype: enum
+  options: ['4', '16', '64']
+  option_labels: [QPSK, 16QAM, 64QAM]
+  default: '4'
+- id: mod_scheme_B
+  label: Layer B Modulation
+  dtype: enum
+  options: ['4', '16', '64']
+  option_labels: [QPSK, 16QAM, 64QAM]
+  default: '4'
+- id: mod_scheme_C
+  label: Layer C Modulation
+  dtype: enum
+  options: ['4', '16', '64']
+  option_labels: [QPSK, 16QAM, 64QAM]
+  default: '4'
+- id: conv_code_A
+  label: Layer A Rate
+  dtype: enum
+  options: ['0', '1', '2', '3', '4']
+  option_labels: [1/2, 2/3, 3/4, 5/6, 7/8]
+  default: '0'
+- id: conv_code_B
+  label: Layer B Rate
+  dtype: enum
+  options: ['0', '1', '2', '3', '4']
+  option_labels: [1/2, 2/3, 3/4, 5/6, 7/8]
+  default: '0'
+- id: conv_code_C
+  label: Layer C Rate
+  dtype: enum
+  options: ['0', '1', '2', '3', '4']
+  option_labels: [1/2, 2/3, 3/4, 5/6, 7/8]
+  default: '0'
+- id: int_length_A
+  dtype: int
+  label: Layer A Interleaver length
+- id: int_length_B
+  dtype: int
+  label: Layer B Interleaver length
+- id: int_length_C
+  dtype: int
+  label: Layer C Interleaver length
+- id: nsegs_A
+  label: Layer A Segments
+  dtype: int
+- id: nsegs_B
+  label: Layer B Segments
+  dtype: int
+- id: nsegs_C
+  label: Layer C Segments
+  dtype: int
+
+inputs:
+- label: in
+  dtype: complex
+  vlen: ${2**(10+mode)} 
+
+outputs:
+- label: out
+  dtype: complex
+  vlen: ${2**(10+mode)} 
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1
